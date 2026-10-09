@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Le monde</title>
+<meta name="description" content="Le carnet du groupe : les personnages, lieux, objets, factions et questions d'Harmonia, d'après les notes des joueurs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Le carnet du groupe : onglets en intercalaires de cuir, fiches sur papier, la source de chaque fait. */
+.page.large { max-width: 64rem; }
+.outils { display: flex; flex-wrap: wrap; gap: .8rem 1rem; align-items: center; justify-content: space-between; margin-top: 1.6rem; }
+.onglets { display: flex; flex-wrap: wrap; gap: .4rem; }
+.onglets button {
+  font-family: var(--f-ui); font-size: .85rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+  color: var(--parchemin); background: #2a1e10; border: 1px solid var(--laiton-sombre); border-radius: 4px 4px 0 0; padding: .55rem .9rem;
+}
+.onglets button[aria-selected="true"] { background: var(--laiton); color: var(--nuit); border-color: var(--laiton); }
+.onglets button span { opacity: .7; margin-left: .3rem; }
+.recherche input { font-family: var(--f-ui); font-size: 1rem; color: var(--parchemin); background: #15121a; border: 1px solid var(--laiton-sombre); border-radius: 4px; padding: .55rem .8rem; width: min(100%, 16rem); }
+.fiches { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1rem; }
+.fiche { background: linear-gradient(180deg, #f3e9d3, #e8dabb); color: #2b2116; border-radius: 3px; padding: 1rem 1.1rem; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+.fiche h2 { color: #2b2116; font-size: 1.35rem; margin: 0 0 .2rem; }
+.fiche .resume { font-style: italic; color: #5b4b35; margin: 0 0 .6rem; }
+.fiche ul { margin: 0; padding-left: 1.1rem; font-family: var(--f-ui); font-size: .95rem; }
+.fiche li { margin: .25rem 0; }
+.fiche .source { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #7a5a22; margin-left: .3rem; white-space: nowrap; }
+.fiche .rien { font-family: var(--f-ui); font-size: .85rem; color: #7a6a52; }
+.vide { margin-top: 1.4rem; color: var(--cendre); font-style: italic; }
+.note-source { margin-top: 2rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page large">
+  <span class="kicker">Voie 5</span>
+  <h1>Le monde</h1>
+  <p class="chapeau">Le carnet du groupe : tout ce que vous avez appris sur Harmonia, rangé à partir de vos notes.</p>
+
+  <div class="outils">
+    <div class="onglets" role="tablist" id="onglets" aria-label="Catégories"></div>
+    <label class="recherche"><span class="lisible">Chercher une fiche</span><input type="search" id="recherche" placeholder="Chercher…" autocomplete="off"></label>
+  </div>
+  <div class="fiches" id="fiches" role="tabpanel"></div>
+  <p class="vide" id="vide" hidden>Aucune fiche ne correspond.</p>
+
+  <p class="note-source">Chaque fait indique d’où il vient : <b>Saison 1</b> pour ce qui s’est passé avant Gravathor, ou le numéro de la séance où il a été noté.</p>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<style>.lisible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }</style>
+<script src="donnees.js"></script>
+<script src="monde.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const M = window.HARMONIA_MONDE;
+  const CATEGORIES = [['personnages', 'Personnages'], ['lieux', 'Lieux'], ['objets', 'Objets'], ['factions', 'Factions'], ['questions', 'Questions en suspens']];
+  const sourceLisible = s => s === 'S1' ? 'Saison 1' : 'Séance ' + s.replace(/^S2-0?/, '');
+  const sansAccents = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  let courante = CATEGORIES[0][0];
+  const onglets = document.getElementById('onglets'), fiches = document.getElementById('fiches'), recherche = document.getElementById('recherche');
+
+  CATEGORIES.forEach(([cle, nom]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.cle = cle;
+    b.innerHTML = `${nom}<span>${(M[cle] || []).length}</span>`;
+    b.addEventListener('click', () => { courante = cle; afficher(); });
+    onglets.appendChild(b);
+  });
+
+  function afficher() {
+    onglets.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.cle === courante)));
+    const q = sansAccents(recherche.value.trim());
+    // la recherche fouille toutes les catégories ; sans recherche, on affiche l'onglet choisi
+    const liste = q ? CATEGORIES.flatMap(([c]) => M[c] || []) : (M[courante] || []);
+    const trouvees = liste.filter(f => !q || sansAccents([f.nom, f.resume, ...f.faits.map(x => x[0])].join(' ')).includes(q));
+    fiches.innerHTML = '';
+    trouvees.forEach(f => {
+      const a = document.createElement('article'); a.className = 'fiche';
+      const h = document.createElement('h2'); h.textContent = f.nom; a.appendChild(h);
+      if (f.resume) { const p = document.createElement('p'); p.className = 'resume'; p.textContent = f.resume; a.appendChild(p); }
+      if (f.faits.length) {
+        const ul = document.createElement('ul');
+        f.faits.forEach(([texte, src]) => {
+          const li = document.createElement('li'); li.textContent = texte;
+          const s = document.createElement('span'); s.className = 'source'; s.textContent = sourceLisible(src); li.appendChild(s);
+          ul.appendChild(li);
+        });
+        a.appendChild(ul);
+      } else { const p = document.createElement('p'); p.className = 'rien'; p.textContent = 'Pas encore de réponse.'; a.appendChild(p); }
+      fiches.appendChild(a);
+    });
+    document.getElementById('vide').hidden = trouvees.length > 0;
+  }
+  recherche.addEventListener('input', afficher);
+  afficher();
+})();
+</script>
+</body>
+</html>

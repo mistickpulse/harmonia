@@ -59,8 +59,8 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 .case.tourne { animation: claque .07s linear; }
 @keyframes claque { 0% { transform: perspective(200px) rotateX(0); } 50% { transform: perspective(200px) rotateX(-70deg); filter: brightness(.6); } 100% { transform: perspective(200px) rotateX(0); } }
 .statut .case { color: #ffcf6a; }
-.ligne.pret .statut .case { color: #9fe8a8; }
-.ligne:not(.pret) .statut .case { color: #e0a060; }
+.ligne.heure .statut .case { color: #9fe8a8; }
+.ligne:not(.heure) .statut .case { color: #e0a060; }
 
 .sous { width: min(100%, 64rem); display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; margin-top: 1rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
 .sous .runes { color: var(--runes); letter-spacing: .4em; opacity: .7; }
@@ -110,7 +110,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
   const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÀ0123456789·’ ';
   const LARG = { dest: 21, voie: 1, statut: 12 };
-  const statutDe = d => d.pret ? 'À l’heure' : (d.statut || 'Retardé');
+  const statutDe = d => d.statut || (d.pret ? 'À l’heure' : 'Retardé'); // un statut écrit à la main l’emporte
   const versPlaquettes = (txt, n) => (txt.toUpperCase() + ' '.repeat(n)).slice(0, n);
 
   // Les plaquettes : chaque case tourne un certain nombre de fois avant de s'arrêter sur sa lettre
@@ -133,7 +133,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
   const lignes = document.getElementById('lignes'), menu = document.getElementById('menuSimple');
   H.departs.forEach((d, k) => {
     const l = document.createElement(d.pret ? 'a' : 'div');
-    l.className = 'ligne' + (d.pret ? ' pret' : '');
+    l.className = 'ligne' + (d.pret ? ' pret' : '') + (statutDe(d) === 'À l’heure' ? ' heure' : '');
     if (d.pret) l.href = d.page; else l.setAttribute('aria-disabled', 'true');
     const lu = document.createElement('span'); lu.className = 'lisible';
     lu.textContent = `${d.destination}, voie ${d.voie}, ${statutDe(d)}`; l.appendChild(lu);

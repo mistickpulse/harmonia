@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Dernière séance</title>
+<meta name="description" content="Le récap de la dernière séance d'Harmonia, et les notes brutes des joueurs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Le récap mis en ordre, puis les notes brutes telles qu'écrites, puis les séances précédentes. */
+.meta { font-family: var(--f-ui); color: var(--cendre); font-size: .9rem; margin-top: -.4rem; }
+.recap { margin-top: 2rem; }
+.recap section + section { margin-top: 1.6rem; }
+.recap h2 { border-bottom: 1px solid rgba(214,164,74,.35); padding-bottom: .3rem; }
+.recap ul { margin: .5rem 0 0; padding-left: 1.2rem; }
+.recap li { margin: .35rem 0; }
+.brut { margin-top: 2.4rem; border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: rgba(214,164,74,.05); }
+.brut summary { cursor: pointer; padding: .9rem 1.1rem; font-family: var(--f-ui); letter-spacing: .12em; text-transform: uppercase; font-size: .85rem; color: var(--laiton); }
+.brut .notes { padding: 0 1.1rem 1rem; }
+.note { border-top: 1px dashed rgba(214,164,74,.3); padding-top: .8rem; margin-top: .8rem; }
+.note .qui { font-family: var(--f-ui); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--cendre); }
+.note p { white-space: pre-wrap; margin: .3rem 0 0; }
+.archives { margin-top: 3rem; }
+.archives ul { list-style: none; padding: 0; margin: .5rem 0 0; }
+.archives li { padding: .5rem 0; border-bottom: 1px dashed rgba(214,164,74,.25); font-family: var(--f-ui); }
+.archives a[aria-current] { color: var(--parchemin); text-decoration: none; }
+.attente { margin-top: 2rem; padding: 1.4rem; border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: rgba(214,164,74,.05); }
+.attente p { margin: .3rem 0; }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page" id="contenu">
+  <span class="kicker">Voie 1</span>
+  <h1 id="titre">Dernière séance</h1>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="seances.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const S = window.HARMONIA_SEANCES || [], main = document.getElementById('contenu');
+  const el = (tag, cls, texte) => { const e = document.createElement(tag); if (cls) e.className = cls; if (texte != null) e.textContent = texte; return e; };
+
+  if (!S.length) {
+    const p = window.HARMONIA.prochaineSeance;
+    const box = el('section', 'attente');
+    box.appendChild(el('p', null, `Le premier récap de la saison 2 arrivera après la séance du ${p.libelle}${p.heure ? ' (' + p.heure + ')' : ''}.`));
+    const a = el('p'); a.innerHTML = 'En attendant, relisez <a href="histoire.html">L’histoire jusqu’ici</a>.'; box.appendChild(a);
+    main.appendChild(box);
+    return;
+  }
+
+  // La séance affichée : celle demandée dans l'adresse (?s=S2-01), sinon la plus récente
+  const demandee = new URLSearchParams(location.search).get('s');
+  const s = S.find(x => x.id === demandee) || S[0];
+  document.getElementById('titre').textContent = s.titre || 'Dernière séance';
+  document.title = 'Harmonia · ' + (s.titre || 'Dernière séance');
+  main.appendChild(el('p', 'meta', [s.id.replace(/^S2-0?/, 'Saison 2 · Séance '), s.date, s.dateEnJeu && 'en jeu : ' + s.dateEnJeu, s.preneur && 'notes de ' + s.preneur].filter(Boolean).join(' · ')));
+
+  const recap = el('div', 'recap');
+  (s.recap || []).forEach(([titre, lignes]) => {
+    const sec = el('section'); sec.appendChild(el('h2', null, titre));
+    const ul = el('ul'); lignes.forEach(l => ul.appendChild(el('li', null, l))); sec.appendChild(ul);
+    recap.appendChild(sec);
+  });
+  main.appendChild(recap);
+
+  if ((s.brut || []).length) {
+    const d = el('details', 'brut'); d.appendChild(el('summary', null, `Les notes brutes (${s.brut.length})`));
+    const notes = el('div', 'notes');
+    s.brut.forEach(n => {
+      const b = el('div', 'note'); b.appendChild(el('div', 'qui', [n.auteur, n.quand].filter(Boolean).join(' · ')));
+      b.appendChild(el('p', null, n.texte)); notes.appendChild(b);
+    });
+    d.appendChild(notes); main.appendChild(d);
+  }
+
+  if (S.length > 1) {
+    const arch = el('section', 'archives'); arch.appendChild(el('h2', null, 'Les séances précédentes'));
+    const ul = el('ul');
+    S.forEach(x => {
+      const li = el('li'), a = el('a', null, `${x.id.replace(/^S2-0?/, 'Séance ')} · ${x.titre || ''}`);
+      a.href = '?s=' + encodeURIComponent(x.id); if (x === s) a.setAttribute('aria-current', 'page');
+      li.appendChild(a); ul.appendChild(li);
+    });
+    arch.appendChild(ul); main.appendChild(arch);
+  }
+})();
+</script>
+</body>
+</html>

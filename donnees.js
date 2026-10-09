@@ -55,13 +55,13 @@ window.HARMONIA = {
 
   /* Le tableau des départs : une ligne par rubrique.
      pret = la page existe : la ligne affiche « À l'heure » et devient cliquable.
-     Sinon, elle affiche son statut de gare (Retardé, En attente…). */
+     Sinon, elle affiche son statut de gare (Retardé, En attente…). Un statut écrit à la main s’affiche même si la page est prête. */
   departs: [
-    { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: false, statut: 'En attente' },
+    { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: true, statut: 'En attente' }, // retirer le statut après le premier récap
     { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: true },
     { destination: 'Calendrier', voie: '3', page: 'calendrier.html', pret: true },
     { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: true },
-    { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'Retardé' },
+    { destination: 'Le monde', voie: '5', page: 'monde.html', pret: true },
     { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },
     { destination: 'Financement', voie: '7', page: 'financement.html', pret: true }
   ],
