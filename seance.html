@@ -11,9 +11,14 @@
 <link rel="stylesheet" href="style.css">
 <style>
 /* Une séance : son récap mis en ordre (quand il existe), puis chaque note du scribe, rangée par rubrique, avec sa coche « fiches du monde ». */
-.choix-seance { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.2rem; }
-.choix-seance a { font-family: var(--f-ui); font-size: .85rem; letter-spacing: .08em; text-decoration: none; color: var(--parchemin); background: #2a1e10; border: 1px solid var(--laiton-sombre); border-radius: 3px; padding: .45rem .8rem; }
+.choix-seance { margin-top: 1.2rem; }
+.choix-seance ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+.choix-seance ul ul { margin: .35rem 0 0 1.4rem; padding-left: .8rem; border-left: 1px dashed var(--laiton-sombre); }
+.choix-seance .spin { font-style: italic; }
+.choix-seance .spin::before { content: "↳ "; font-style: normal; color: var(--laiton); }
+.choix-seance a { display: inline-block; font-family: var(--f-ui); font-size: .85rem; letter-spacing: .08em; text-decoration: none; color: var(--parchemin); background: #2a1e10; border: 1px solid var(--laiton-sombre); border-radius: 3px; padding: .45rem .8rem; }
 .choix-seance a[aria-current] { background: var(--laiton); color: var(--nuit); border-color: var(--laiton); }
+.badge-spin { display: inline-block; margin-left: .5rem; vertical-align: middle; font-family: var(--f-ui); font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--nuit); background: var(--laiton); border-radius: 3px; padding: .2rem .5rem; }
 .meta { font-family: var(--f-ui); color: var(--cendre); font-size: .9rem; margin: -.4rem 0 0; }
 .recap { margin-top: 1.8rem; }
 .recap section + section { margin-top: 1.4rem; }
@@ -80,7 +85,14 @@ h2.titre-notes { margin-top: 2.4rem; }
   }
   chargement.remove();
   // Une séance peut avoir un récap validé sans notes (ou l'inverse) : on réunit les deux
-  RECAPS.forEach(r => { if (!seances.some(s => s.id === r.id)) seances.push({ id: r.id, notes: [], derniere: 0 }); });
+  RECAPS.forEach(r => {
+    const x = seances.find(s => s.id === r.id);
+    if (x) { if (r.spinoff) x.spinoff = true; }
+    else seances.push({ id: r.id, spinoff: !!r.spinoff, notes: [], derniere: 0 });
+  });
+  // Les séances rangées comme des dossiers : chaque spin-off sous la séance principale qui la précède
+  const plusRecente = [...seances].sort((a, b) => b.derniere - a.derniere)[0];
+  seances = HarmoniaNotes.arbre(seances);
 
   if (!seances.length) {
     const p = H.prochaineSeance, box = el('section', 'attente');
@@ -92,20 +104,30 @@ h2.titre-notes { margin-top: 2.4rem; }
 
   // La séance affichée : celle de l'adresse (?s=S2-01), sinon la plus récente
   const demandee = new URLSearchParams(location.search).get('s');
-  const s = seances.find(x => x.id === demandee) || seances[0];
+  const s = seances.find(x => x.id === demandee) || plusRecente || seances[0];
   const recap = RECAPS.find(r => r.id === s.id);
 
   if (seances.length > 1) {
     const nav = el('nav', 'choix-seance'); nav.setAttribute('aria-label', 'Choisir une séance');
-    seances.forEach(x => { const a = el('a', null, nomSeance(x.id)); a.href = '?s=' + encodeURIComponent(x.id); if (x === s) a.setAttribute('aria-current', 'page'); nav.appendChild(a); });
-    main.appendChild(nav);
+    const lien = x => {
+      const a = el('a', x.parent ? 'spin' : null, x.spinoff ? `${nomSeance(x.id)} · Spin-off` : nomSeance(x.id));
+      a.href = '?s=' + encodeURIComponent(x.id); if (x === s) a.setAttribute('aria-current', 'page'); return a;
+    };
+    const ul = el('ul');
+    seances.filter(x => !x.parent).forEach(x => {
+      const li = el('li'); li.appendChild(lien(x));
+      if ((x.enfants || []).length) { const sous = el('ul'); x.enfants.forEach(e => { const l2 = el('li'); l2.appendChild(lien(e)); sous.appendChild(l2); }); li.appendChild(sous); }
+      ul.appendChild(li);
+    });
+    nav.appendChild(ul); main.appendChild(nav);
   }
 
   const titre = (recap && recap.titre) || nomSeance(s.id);
-  document.getElementById('titre').textContent = titre;
-  document.title = 'Harmonia · ' + titre;
+  const h1 = document.getElementById('titre'); h1.textContent = titre;
+  if (s.spinoff) h1.appendChild(el('span', 'badge-spin', 'Spin-off'));
+  document.title = 'Harmonia · ' + titre + (s.spinoff ? ' · Spin-off' : '');
   const auteurs = [...new Set(s.notes.map(n => n.auteur).filter(Boolean))].map(a => a === 'Fee BD' ? 'la Fée BD' : a);
-  main.appendChild(el('p', 'meta', [nomSeance(s.id), recap && recap.dateEnJeu && 'en jeu : ' + recap.dateEnJeu, auteurs.length && 'scribe : ' + auteurs.join(', ')].filter(Boolean).join(' · ')));
+  main.appendChild(el('p', 'meta', [nomSeance(s.id), s.parent && 'spin-off, après la ' + nomSeance(s.parent).replace(/^Saison \d+ · /, '').toLowerCase(), recap && recap.dateEnJeu && 'en jeu : ' + recap.dateEnJeu, auteurs.length && 'scribe : ' + auteurs.join(', ')].filter(Boolean).join(' · ')));
 
   // Le récap mis en ordre (validé par Fabian), s'il existe déjà
   if (recap && (recap.recap || []).length) {

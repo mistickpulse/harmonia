@@ -17,6 +17,10 @@
 @media (max-width: 520px) { .ligne2 { grid-template-columns: 1fr; } }
 .champ { display: block; margin-bottom: 1.1rem; }
 .champ > span { display: block; font-family: var(--f-ui); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: #7a5a22; margin-bottom: .3rem; }
+.champ .etiquette { display: block; font-family: var(--f-ui); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: #7a5a22; margin-bottom: .3rem; }
+.case { display: flex; align-items: center; gap: .45rem; margin-top: .5rem; font-family: var(--f-ui); font-weight: 700; color: #2b2116; cursor: pointer; }
+.carnet .case input { width: 1.15rem; height: 1.15rem; padding: 0; margin: 0; accent-color: #7a5a22; }
+.case small { font-weight: 400; color: #6b5b45; }
 .champ > span small { font-weight: 400; letter-spacing: 0; text-transform: none; color: #8a7a62; margin-left: .3rem; }
 .carnet input, .carnet select, .carnet textarea {
   width: 100%; font: inherit; font-size: 1.05rem; color: #2b2116; background: rgba(255,255,255,.35);
@@ -50,7 +54,11 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
 
   <form class="carnet" id="carnet" novalidate>
     <div class="ligne2">
-      <label class="champ"><span>Séance</span><input id="seance" name="seance" required autocomplete="off"></label>
+      <div class="champ">
+        <label for="seance"><span class="etiquette">Séance</span></label>
+        <input id="seance" name="seance" required autocomplete="off">
+        <label class="case"><input type="checkbox" id="spinoff" name="spinoff"> Spin-off <small>(hors de l’histoire principale)</small></label>
+      </div>
       <label class="champ"><span>Qui écrit ?</span><select id="auteur" name="auteur" required><option value="">Choisir…</option></select></label>
     </div>
     <label class="champ"><span>Que s’est-il passé ?</span><textarea id="recit" name="recit" required placeholder="Le récit de la séance, même en vrac."></textarea></label>
@@ -85,6 +93,7 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
   const H = window.HARMONIA, F = H.formulaire;
   const $ = id => document.getElementById(id);
   const CHAMPS = ['seance', 'auteur', 'recit', 'personnages', 'lieux', 'quetes', 'objets', 'questions'];
+  // « Spin-off » n’est pas une question du formulaire : la case s’ajoute au numéro de séance (« S2-02 · Spin-off »)
   const CLE = 'harmonia-scribe-brouillon';
   $('lienSecours').href = H.formulaireNotes;
   F.auteurs.forEach(a => $('auteur').appendChild(new Option(a === 'Fee BD' ? 'La Fée BD' : a, a)));
@@ -94,13 +103,14 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
   const ecrire = v => { try { v ? localStorage.setItem(CLE, JSON.stringify(v)) : localStorage.removeItem(CLE); return true; } catch (e) { return false; } };
   const b = lire();
   CHAMPS.forEach(c => { if (b && b[c]) $(c).value = b[c]; });
+  $('spinoff').checked = !!(b && b.spinoff);
   if (!$('seance').value) $('seance').value = H.seanceEnCours || '';
   if (b && ['personnages', 'lieux', 'quetes', 'objets', 'questions'].some(c => b[c])) $('plus').open = true;
   let minuteur;
   $('carnet').addEventListener('input', () => {
     clearTimeout(minuteur);
     minuteur = setTimeout(() => {
-      const v = Object.fromEntries(CHAMPS.map(c => [c, $(c).value]));
+      const v = Object.fromEntries(CHAMPS.map(c => [c, $(c).value])); v.spinoff = $('spinoff').checked;
       $('brouillon').textContent = ecrire(v) ? 'Brouillon gardé sur cet appareil' : '';
     }, 500);
   });
@@ -116,13 +126,17 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
       $(manque[0]).focus(); return;
     }
     const donnees = new URLSearchParams();
-    CHAMPS.forEach(c => { const v = $(c).value.trim(); if (v) donnees.append(F.champs[c], v); });
+    CHAMPS.forEach(c => {
+      let v = $(c).value.trim();
+      if (c === 'seance' && $('spinoff').checked && !/spin/i.test(v)) v += ' · Spin-off';
+      if (v) donnees.append(F.champs[c], v);
+    });
     $('envoyer').disabled = true; $('envoyer').textContent = 'Envoi…';
     try {
       // Google ne laisse pas lire sa réponse depuis un autre site : on sait seulement que l'envoi est parti.
       await fetch(F.envoi, { method: 'POST', mode: 'no-cors', body: donnees });
-      const seance = $('seance').value, auteur = $('auteur').value;
-      $('carnet').reset(); $('seance').value = seance; $('auteur').value = auteur;
+      const seance = $('seance').value, auteur = $('auteur').value, spin = $('spinoff').checked;
+      $('carnet').reset(); $('seance').value = seance; $('auteur').value = auteur; $('spinoff').checked = spin;
       ecrire(null); $('brouillon').textContent = '';
       message('ok', 'Notes envoyées. Merci, scribe ! Tu peux en envoyer d’autres quand tu veux.');
     } catch (err) {
