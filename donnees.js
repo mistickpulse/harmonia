@@ -36,6 +36,7 @@ window.HARMONIA = {
       ['La Branche Obsidienne', 'Kael, Mirel, Dregar et Syris courent toujours, avec l’orbe.']
     ] },
     { titre: 'Contacts dans le royaume des Nains', points: [
+      ['Météore', 'un nain transcendant puissant, tatoué jusqu’à l’épaule, contact fiable du Cercle des Veilleurs.'],
       ['Mina Frappeforte', 'une alliée naine que connaît la Fée BD.']
     ] }
   ],
