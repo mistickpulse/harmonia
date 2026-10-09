@@ -16,7 +16,7 @@ window.HARMONIA = {
     jours: ['15/02', '16/02', '17/02', '18/02', '19/02', '20/02', '21/02'],
     evenements: [
       { date: '18/02', heure: '12h30', titre: 'Le Train Frelon file vers Gravathor', detail: 'Après l’attaque de la Branche Obsidienne, le voyage continue.' },
-      { date: '', titre: 'Les portes de Gravathor vont fermer', detail: 'Pour une raison inconnue. Il faut arriver avant.' }
+      { date: '', titre: 'Les portes de Gravathor vont fermer', detail: 'Pour une raison inconnue. Il faut arriver avant pour donner le coffre.' }
     ]
   },
 
@@ -29,7 +29,7 @@ window.HARMONIA = {
       ['Récupérer le Coffre de Mnémarèse', 'repris aux Lueurs Vaines, dans une caverne au sud de Valperce.', 'fait'],
       ['Prendre le train pour Gravathor', 'billets obtenus au Bastion de Fomane, pour avoir sauvé la foule du marché.', 'fait'],
       ['Livrer le Coffre de Mnémarèse', 'à Sorra, à la guilde des marchands de la capitale naine. La mission confiée par le Cercle des Veilleurs.'],
-      ['Les portes de Gravathor vont fermer', 'pour une raison inconnue : il faut arriver avant.']
+      ['Les portes de Gravathor vont fermer', 'pour une raison inconnue : il faut arriver avant pour donner le coffre.']
     ] },
     { titre: 'Ce que le groupe a promis', points: [
       ['Retrouver le symbole de la famille de Koma', 'Varynor l’a dessiné : celui de sa famille, au clan des Dragons.', 'fait'],
