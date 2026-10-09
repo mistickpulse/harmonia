@@ -39,7 +39,7 @@
 .registre th:not(:first-child), .registre td:not(:first-child) { text-align: center; }
 .registre td:first-child { font-family: var(--f-titre); font-size: 1.1rem; white-space: nowrap; }
 .marque-paye { display: inline-block; font-family: var(--f-ui); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: .15rem .45rem; border: 2px solid; border-radius: 3px; transform: rotate(-4deg); white-space: nowrap; }
-.paye { color: #2f6b34; } .attente { color: #a06a30; } .retard { color: #a3281e; }
+.paye { color: #2f6b34; } .attente { color: #a06a30; } .retard { color: #a3281e; } .avenir { color: #9a8b72; border-style: dashed !important; transform: none !important; }
 .encours { background: rgba(214,164,74,.18); }
 .legende { margin-top: 1rem; font-family: var(--f-ui); font-size: .85rem; color: #6b5b45; }
 .vide { text-align: center; font-family: var(--f-ui); color: #6b5b45; font-style: italic; padding: 1rem 0; }
@@ -96,7 +96,7 @@
     <h2 id="titreRegistre">Registre des voyageurs</h2>
     <div class="guichet">Qui a réglé sa part</div>
     <div class="registre" id="registre"></div>
-    <p class="legende">La période en cours est surlignée. « En retard » : une période terminée qui n’a pas été réglée.</p>
+    <p class="legende">La période en cours est surlignée. « À venir » : une période qui n’a pas encore commencé. « En retard » : une période terminée qui n’a pas été réglée.</p>
   </section>
 
   <p class="merci">Merci à chacun : c’est grâce à vous que les cartes, les vidéos et ce site existent.</p>
@@ -120,16 +120,19 @@
   const [a0, m0] = F.debut.split('-').map(Number);
   const indexMois = (a, m) => a * 12 + (m - 1);
   const debutIdx = indexMois(a0, m0), maintenant = new Date(), aujourdhui = indexMois(maintenant.getFullYear(), maintenant.getMonth() + 1);
-  const nbPeriodes = Math.max(1, Math.floor((aujourdhui - debutIdx) / N) + 1);
+  // Toutes les périodes de l’année de financement en cours (4 par an pour des périodes de 3 mois), à venir comprises
+  const parAn = Math.max(1, Math.round(12 / N));
+  const anneeEnCours = Math.max(0, Math.floor((aujourdhui - debutIdx) / 12));
+  const nbPeriodes = (anneeEnCours + 1) * parAn;
   const periodes = Array.from({ length: nbPeriodes }, (_, k) => {
     const i = debutIdx + k * N, j = i + N - 1;
     const cle = `${Math.floor(i / 12)}-${String(i % 12 + 1).padStart(2, '0')}`;
     const nom = (x, an) => MOIS[x % 12] + (an ? ' ' + Math.floor(x / 12) : '');
     const libelle = N === 1 ? nom(i, true) : `${nom(i, Math.floor(i / 12) !== Math.floor(j / 12))} → ${nom(j, true)}`;
     const court = N === 1 ? `${MOIS[i % 12].slice(0, 4)}. ${Math.floor(i / 12)}` : `${MOIS[i % 12].slice(0, 3)}.–${MOIS[j % 12].slice(0, 3)}. ${String(Math.floor(j / 12)).slice(2)}`;
-    return { cle, libelle, court, fini: j < aujourdhui, enCours: aujourdhui >= i && aujourdhui <= j };
+    return { cle, libelle, court, fini: j < aujourdhui, enCours: aujourdhui >= i && aujourdhui <= j, avenir: i > aujourdhui };
   });
-  const courante = periodes.find(p => p.enCours) || periodes[periodes.length - 1];
+  const courante = periodes.find(p => p.enCours) || periodes[0];
 
   // Le reçu
   const rythmes = { 1: 'chaque mois', 3: 'tous les trois mois', 6: 'tous les six mois', 12: 'une fois par an' };
@@ -172,7 +175,7 @@
   const boite = document.getElementById('registre');
   if (!nb) { boite.innerHTML = '<p class="vide">La liste des participants arrive bientôt.</p>'; }
   else {
-    const vues = periodes.slice(-6);
+    const vues = periodes.slice(-2 * parAn); // au plus les deux dernières années
     const t = document.createElement('table');
     const tete = document.createElement('tr');
     tete.innerHTML = '<th scope="col">Voyageur</th>';
@@ -186,8 +189,8 @@
       tr.appendChild(nomCase);
       vues.forEach(p => {
         const td = document.createElement('td'); if (p === courante) td.className = 'encours';
-        const paye = v.prelevement || (v.paye || []).includes(p.cle);
-        const [cls, txt] = paye ? ['paye', 'Réglé'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
+        const paye = (v.prelevement && !p.avenir) || (v.paye || []).includes(p.cle);
+        const [cls, txt] = paye ? ['paye', 'Réglé'] : p.avenir ? ['avenir', 'À venir'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
         td.innerHTML = `<span class="marque-paye ${cls}">${txt}</span>`;
         tr.appendChild(td);
       });
