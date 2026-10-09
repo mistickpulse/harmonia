@@ -6,6 +6,9 @@ window.HARMONIA = {
   saison: 'Crépuscule Froid',
 
   // Prochaine séance : debut = date et heure exactes (heure de Paris) pour le compte à rebours
+  // Lien du formulaire Google « Prendre des notes » (vide = le bouton reste caché)
+  formulaireNotes: 'https://forms.gle/nHYskgtPsZEtWc5q9',
+
   prochaineSeance: { debut: '2026-10-11T00:00:00+02:00', libelle: 'Samedi 10/10', heure: 'minuit', quoi: 'Saison 2 · Séance 1' },
 
   /* Calendrier : l'horaire de la semaine en jeu (dates écrites à la main : le calendrier d'Harmonia n'est pas calculé).

@@ -92,6 +92,8 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
     <nav id="lignes" aria-label="Rubriques du site"></nav>
   </section>
 
+  <div class="prendre-notes"></div>
+
   <div class="sous">
     <span>Prochain départ : <b id="prochain"></b></span>
     <span class="runes" aria-hidden="true">ᚺᚨᚱᛗᛟᚾᛁᚨ</span>
@@ -104,6 +106,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 </main>
 
 <script src="donnees.js"></script>
+<script src="commun.js" defer></script>
 <script>
 (() => {
   const H = window.HARMONIA;
@@ -130,7 +133,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
     return boite;
   }
 
-  const lignes = document.getElementById('lignes'), menu = document.getElementById('menuSimple');
+  const lignes = document.getElementById('lignes');
   H.departs.forEach((d, k) => {
     const l = document.createElement(d.pret ? 'a' : 'div');
     l.className = 'ligne' + (d.pret ? ' pret' : '') + (statutDe(d) === 'À l’heure' ? ' heure' : '');
@@ -142,10 +145,6 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
     col('col-voie', plaquettes(d.voie, LARG.voie, 350 + k * 260));
     col('col-statut statut', plaquettes(statutDe(d), LARG.statut, 450 + k * 260));
     lignes.appendChild(l);
-    if (k) menu.appendChild(Object.assign(document.createElement('span'), { textContent: '·' }));
-    const m = document.createElement(d.pret ? 'a' : 'span');
-    m.textContent = d.destination; if (d.pret) m.href = d.page; else m.style.opacity = '.5';
-    menu.appendChild(m);
   });
 
   // Horloge : l'heure réelle, la date d'Harmonia
