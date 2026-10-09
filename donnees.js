@@ -9,13 +9,27 @@ window.HARMONIA = {
   prochaineSeance: { jour: '2026-10-10', libelle: 'Samedi 10/10', heure: '', quoi: 'Saison 2 · Séance 1' },
 
   /* Le tableau des départs : une ligne par rubrique.
-     pret = la page existe ; sinon la ligne affiche « En préparation » et n'est pas cliquable. */
+     pret = la page existe : la ligne affiche « À l'heure » et devient cliquable.
+     Sinon, elle affiche son statut de gare (Retardé, En attente…). */
   departs: [
-    { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: false, statut: 'En préparation' },
-    { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: false, statut: 'En préparation' },
-    { destination: 'Cette semaine', voie: '3', page: 'semaine.html', pret: false, statut: 'En préparation' },
-    { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: false, statut: 'En préparation' },
-    { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'En préparation' },
-    { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true, statut: 'Saison 1' }
-  ]
+    { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: false, statut: 'En attente' },
+    { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: false, statut: 'Retardé' },
+    { destination: 'Cette semaine', voie: '3', page: 'semaine.html', pret: false, statut: 'Retardé' },
+    { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: false, statut: 'Retardé' },
+    { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'Retardé' },
+    { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },
+    { destination: 'Financement', voie: '7', page: 'financement.html', pret: false, statut: 'Retardé' }
+  ],
+
+  /* Financement : les outils qui servent à préparer le jeu, partagés entre les participants.
+     prix = ce que Fabian paie par mois, en euros (null = pas encore renseigné). */
+  financement: {
+    outils: [
+      { nom: 'ChatGPT', usage: 'Images, cartes et illustrations', formule: '', prix: null },
+      { nom: 'Claude', usage: 'Préparation des séances, vidéos, site', formule: '', prix: null },
+      { nom: 'Inkarnate', usage: 'Cartes du monde', formule: '', prix: null },
+      { nom: 'Roll20', usage: 'La table de jeu en ligne', formule: 'Gratuit', prix: 0 }
+    ],
+    participants: null
+  }
 };

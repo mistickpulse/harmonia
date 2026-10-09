@@ -17,8 +17,11 @@
 .fronton h1 { margin: 0; font-size: clamp(2.4rem, 9vw, 4.8rem); background: linear-gradient(180deg, var(--parchemin) 30%, var(--laiton)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 .panneau {
-  /* taille d’une plaquette : 36 cases + 2 colonnes d’écart doivent tenir dans le panneau */
-  --case: clamp(12px, calc((min(100vw, 64rem) - 150px) / 40), 28px);
+  /* taille d’une plaquette : 21 + 1 + 12 cases et les écarts doivent tenir dans le panneau */
+  --case: clamp(12px, calc((min(100vw, 64rem) - 150px) / 38), 28px);
+  --pas: calc(var(--case) + 2px);
+  /* colonnes de largeur fixe : les en-têtes tombent pile au-dessus des plaquettes */
+  --c-dest: calc(21 * var(--pas)); --c-voie: max(calc(var(--case) * 2.4), 3.4rem); --c-statut: calc(12 * var(--pas));
   width: min(100%, 64rem); position: relative;
   padding: clamp(12px, 2.5vw, 26px);
   background: linear-gradient(180deg, #3a2b14, #1d150b 12%, #120d07 88%, #3a2b14);
@@ -35,14 +38,15 @@
 .horloge { text-align: right; font-family: var(--f-ui); color: var(--cendre); font-size: clamp(.7rem, 1.8vw, .9rem); letter-spacing: .12em; text-transform: uppercase; }
 .horloge b { display: block; font-family: "Overpass Mono", monospace; font-size: clamp(1.3rem, 4vw, 2.1rem); color: #ffcf6a; letter-spacing: .08em; text-shadow: 0 0 12px rgba(255,190,80,.5); }
 
-.entetes, .ligne { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: clamp(8px, 2vw, 22px); }
+.entetes, .ligne { display: grid; grid-template-columns: minmax(var(--c-dest), 1fr) var(--c-voie) var(--c-statut); align-items: center; gap: clamp(8px, 2vw, 22px); }
 .entetes { font-family: var(--f-ui); font-size: clamp(.6rem, 1.6vw, .75rem); letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); padding: 4px 8px 8px; }
 .ligne { padding: 8px; border-radius: 4px; text-decoration: none; color: inherit; transition: background .25s ease, box-shadow .25s ease; position: relative; }
 .ligne + .ligne { margin-top: 4px; }
 a.ligne:hover, a.ligne:focus-visible { background: rgba(214,164,74,.1); box-shadow: inset 3px 0 0 var(--laiton); }
 a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 .ligne[aria-disabled="true"] { cursor: default; opacity: .78; }
-.col-voie { text-align: center; }
+.col-voie { text-align: center; justify-self: center; }
+.entetes .col-voie { justify-self: stretch; }
 
 /* Les plaquettes */
 .plaquettes { display: inline-flex; gap: 2px; }
@@ -65,7 +69,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 @media (max-width: 640px) {
   .panneau { --case: clamp(9px, calc((100vw - 100px) / 23), 22px); }
   .entetes { display: none; }
-  .ligne { grid-template-columns: 1fr auto; grid-template-areas: "dest dest" "statut voie"; row-gap: 6px; padding: 10px 8px; border-bottom: 1px solid rgba(214,164,74,.15); }
+  .ligne { grid-template-columns: 1fr auto; justify-items: start; grid-template-areas: "dest dest" "statut voie"; row-gap: 6px; padding: 10px 8px; border-bottom: 1px solid rgba(214,164,74,.15); }
   .col-dest { grid-area: dest; } .col-voie { grid-area: voie; } .col-statut { grid-area: statut; }
   .col-statut .case, .col-voie .case { --case: clamp(8px, calc((100vw - 100px) / 27), 16px); }
 }
@@ -105,7 +109,8 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
   const H = window.HARMONIA;
   const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÀ0123456789·’ ';
-  const LARG = { dest: 21, voie: 1, statut: 14 };
+  const LARG = { dest: 21, voie: 1, statut: 12 };
+  const statutDe = d => d.pret ? 'À l’heure' : (d.statut || 'Retardé');
   const versPlaquettes = (txt, n) => (txt.toUpperCase() + ' '.repeat(n)).slice(0, n);
 
   // Les plaquettes : chaque case tourne un certain nombre de fois avant de s'arrêter sur sa lettre
@@ -131,11 +136,11 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
     l.className = 'ligne' + (d.pret ? ' pret' : '');
     if (d.pret) l.href = d.page; else l.setAttribute('aria-disabled', 'true');
     const lu = document.createElement('span'); lu.className = 'lisible';
-    lu.textContent = `${d.destination}, voie ${d.voie}, ${d.statut}`; l.appendChild(lu);
+    lu.textContent = `${d.destination}, voie ${d.voie}, ${statutDe(d)}`; l.appendChild(lu);
     const col = (cls, el) => { const s = document.createElement('span'); s.className = cls; s.appendChild(el); l.appendChild(s); };
     col('col-dest', plaquettes(d.destination, LARG.dest, 150 + k * 260));
     col('col-voie', plaquettes(d.voie, LARG.voie, 350 + k * 260));
-    col('col-statut statut', plaquettes(d.statut, LARG.statut, 450 + k * 260));
+    col('col-statut statut', plaquettes(statutDe(d), LARG.statut, 450 + k * 260));
     lignes.appendChild(l);
     if (k) menu.appendChild(Object.assign(document.createElement('span'), { textContent: '·' }));
     const m = document.createElement(d.pret ? 'a' : 'span');

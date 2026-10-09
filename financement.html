@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Financement</title>
+<meta name="description" content="Les outils qui servent à préparer Harmonia, et la part de chaque participant.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Un reçu du guichet de la gare : papier, tampon, montants alignés. */
+.recu {
+  margin-top: 2rem; padding: 1.6rem clamp(1rem, 4vw, 2rem) 2rem; color: #2b2116;
+  background: linear-gradient(180deg, #f3e9d3, #e8dabb); border-radius: 3px; position: relative;
+  box-shadow: 0 20px 50px rgba(0,0,0,.6);
+  -webkit-mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 0 0 / 20px 100% repeat-x;
+          mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 0 0 / 20px 100% repeat-x;
+}
+.recu h2 { color: #2b2116; text-align: center; margin-bottom: .2rem; }
+.recu .guichet { text-align: center; font-family: var(--f-ui); font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: #7a5a22; margin-bottom: 1.4rem; }
+.recu table { width: 100%; border-collapse: collapse; font-family: var(--f-ui); }
+.recu th { text-align: left; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: #7a5a22; font-weight: 500; padding: 0 0 .5rem; border-bottom: 1px dashed #a88a55; }
+.recu td { padding: .7rem 0; border-bottom: 1px dashed rgba(168,138,85,.6); vertical-align: top; }
+.recu td small { display: block; color: #6b5b45; font-size: .82rem; }
+.recu .montant { text-align: right; font-family: "Overpass Mono", monospace; white-space: nowrap; padding-left: 1rem; }
+.recu .vide { color: #a06a30; font-style: italic; font-family: var(--f-ui); }
+.recu tfoot td { border: 0; padding-top: 1rem; font-weight: 700; }
+.part { margin-top: 1.4rem; padding: 1rem; text-align: center; border: 2px solid #2b2116; border-radius: 4px; }
+.part .kicker { color: #7a5a22; }
+.part b { display: block; color: #2b2116; font-family: "Overpass Mono", monospace; font-size: clamp(1.8rem, 7vw, 2.6rem); line-height: 1.2; }
+.part small { color: #6b5b45; font-family: var(--f-ui); }
+.tampon { position: absolute; top: 1.2rem; right: 1rem; transform: rotate(-12deg); font-family: var(--f-titre); color: rgba(160,40,30,.75); border: 2px solid rgba(160,40,30,.75); border-radius: 4px; padding: .1rem .5rem; font-size: .95rem; }
+.merci { margin-top: 2rem; color: var(--cendre); }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Guichet</span>
+  <h1>Financement</h1>
+  <p class="chapeau">Harmonia se prépare avec quelques outils payants. Chaque participant en couvre une part égale.</p>
+
+  <section class="recu" aria-labelledby="titreRecu">
+    <span class="tampon" id="tampon" aria-hidden="true">Payé par mois</span>
+    <h2 id="titreRecu">Reçu des voyageurs</h2>
+    <div class="guichet">Gare des Contreforts · Guichet des frais</div>
+    <table>
+      <thead><tr><th scope="col">Outil</th><th scope="col" class="montant">Par mois</th></tr></thead>
+      <tbody id="outils"></tbody>
+      <tfoot><tr><td>Total</td><td class="montant" id="total"></td></tr></tfoot>
+    </table>
+    <div class="part">
+      <span class="kicker">Part de chaque voyageur</span>
+      <b id="part">—</b>
+      <small id="detail"></small>
+    </div>
+  </section>
+
+  <p class="merci">Merci à chacun : c’est grâce à vous que les cartes, les vidéos et ce site existent.</p>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script>
+(() => {
+  const H = window.HARMONIA, F = H.financement;
+  const euros = n => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  const corps = document.getElementById('outils');
+  let total = 0, complet = true;
+  F.outils.forEach(o => {
+    const tr = document.createElement('tr');
+    const a = document.createElement('td');
+    a.innerHTML = `<span></span><small></small>`;
+    a.querySelector('span').textContent = o.nom + (o.formule ? ` · ${o.formule}` : '');
+    a.querySelector('small').textContent = o.usage;
+    const b = document.createElement('td'); b.className = 'montant';
+    if (typeof o.prix === 'number') { b.textContent = euros(o.prix); total += o.prix; }
+    else { b.innerHTML = '<span class="vide">à renseigner</span>'; complet = false; }
+    tr.append(a, b); corps.appendChild(tr);
+  });
+  document.getElementById('total').textContent = complet ? euros(total) : '—';
+  if (complet && F.participants) {
+    document.getElementById('part').textContent = euros(Math.ceil(total / F.participants * 100) / 100);
+    document.getElementById('detail').textContent = `par mois · ${euros(total)} partagés entre ${F.participants} participants`;
+  } else {
+    document.getElementById('detail').textContent = 'calculée dès que les montants et le nombre de participants sont renseignés';
+  }
+
+  const menu = document.getElementById('menuSimple');
+  H.departs.forEach((d, k) => {
+    if (k) menu.appendChild(Object.assign(document.createElement('span'), { textContent: '·' }));
+    const m = document.createElement(d.pret ? 'a' : 'span');
+    m.textContent = d.destination; if (d.pret) m.href = d.page; else m.style.opacity = '.5';
+    menu.appendChild(m);
+  });
+})();
+</script>
+</body>
+</html>
