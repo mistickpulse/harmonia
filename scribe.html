@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Carnet du scribe</title>
+<meta name="description" content="Le carnet du scribe : prendre les notes de la séance.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Le carnet du scribe : une page de papier, des champs comme des lignes d'écriture. */
+.carnet { margin-top: 1.6rem; padding: 1.4rem clamp(1rem, 4vw, 1.8rem) 1.6rem; color: #2b2116; background: linear-gradient(180deg, #f3e9d3, #e8dabb); border-radius: 3px; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.ligne2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 520px) { .ligne2 { grid-template-columns: 1fr; } }
+.champ { display: block; margin-bottom: 1.1rem; }
+.champ > span { display: block; font-family: var(--f-ui); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: #7a5a22; margin-bottom: .3rem; }
+.champ > span small { font-weight: 400; letter-spacing: 0; text-transform: none; color: #8a7a62; margin-left: .3rem; }
+.carnet input, .carnet select, .carnet textarea {
+  width: 100%; font: inherit; font-size: 1.05rem; color: #2b2116; background: rgba(255,255,255,.35);
+  border: 1px solid #b89c66; border-radius: 3px; padding: .55rem .7rem;
+}
+.carnet textarea { min-height: 6rem; resize: vertical; line-height: 1.5; background-image: repeating-linear-gradient(transparent, transparent 1.55rem, rgba(122,90,34,.15) 1.55rem, rgba(122,90,34,.15) 1.6rem); }
+.carnet textarea#recit { min-height: 14rem; }
+.carnet :focus-visible { outline: 2px solid #7a5a22; outline-offset: 1px; }
+details.plus { margin: .4rem 0 1.2rem; }
+details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 700; color: #7a5a22; padding: .4rem 0; }
+.actions { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; justify-content: space-between; margin-top: .6rem; }
+.envoyer { font-family: var(--f-ui); font-weight: 700; font-size: 1rem; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; color: var(--parchemin); background: #2b2116; border: 0; border-radius: 3px; padding: .85rem 1.6rem; }
+.envoyer[disabled] { opacity: .5; cursor: wait; }
+.etat { font-family: var(--f-ui); font-size: .9rem; color: #6b5b45; }
+.message { margin-top: 1rem; padding: .9rem 1rem; border-radius: 3px; font-family: var(--f-ui); }
+.message.ok { background: rgba(47,107,52,.12); color: #2f6b34; border: 1px solid rgba(47,107,52,.4); }
+.message.erreur { background: rgba(163,40,30,.1); color: #a3281e; border: 1px solid rgba(163,40,30,.4); }
+.secours { margin-top: 1.4rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Réservé au scribe</span>
+  <h1>Carnet du scribe</h1>
+  <p class="chapeau">Écris comme ça vient, dans l’ordre ou en vrac : tout sera rangé après la séance. Tu peux envoyer plusieurs fois.</p>
+
+  <form class="carnet" id="carnet" novalidate>
+    <div class="ligne2">
+      <label class="champ"><span>Séance</span><input id="seance" name="seance" required autocomplete="off"></label>
+      <label class="champ"><span>Qui écrit ?</span><select id="auteur" name="auteur" required><option value="">Choisir…</option></select></label>
+    </div>
+    <label class="champ"><span>Que s’est-il passé ?</span><textarea id="recit" name="recit" required placeholder="Le récit de la séance, même en vrac."></textarea></label>
+
+    <details class="plus" id="plus">
+      <summary>Ajouter des détails (facultatif)</summary>
+      <label class="champ"><span>Personnages rencontrés <small>un par ligne : son nom, ce qu’on sait de lui</small></span><textarea id="personnages" name="personnages"></textarea></label>
+      <label class="champ"><span>Lieux visités <small>le nom, à quoi il ressemble, ce qu’on y a trouvé</small></span><textarea id="lieux" name="lieux"></textarea></label>
+      <label class="champ"><span>Quêtes et promesses <small>nouvelles, réglées, promises</small></span><textarea id="quetes" name="quetes"></textarea></label>
+      <label class="champ"><span>Objets, indices, documents <small>trouvés, reçus ou perdus</small></span><textarea id="objets" name="objets"></textarea></label>
+      <label class="champ"><span>Questions et théories <small>ce que le groupe se demande ou soupçonne</small></span><textarea id="questions" name="questions"></textarea></label>
+    </details>
+
+    <div class="actions">
+      <span class="etat" id="brouillon" aria-live="polite"></span>
+      <button class="envoyer" id="envoyer" type="submit">Envoyer les notes</button>
+    </div>
+    <div class="message" id="message" role="status" hidden></div>
+  </form>
+
+  <p class="secours">Un souci avec le carnet ? <a id="lienSecours" target="_blank" rel="noopener">Ouvrir le formulaire Google</a> à la place.</p>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const H = window.HARMONIA, F = H.formulaire;
+  const $ = id => document.getElementById(id);
+  const CHAMPS = ['seance', 'auteur', 'recit', 'personnages', 'lieux', 'quetes', 'objets', 'questions'];
+  const CLE = 'harmonia-scribe-brouillon';
+  $('lienSecours').href = H.formulaireNotes;
+  F.auteurs.forEach(a => $('auteur').appendChild(new Option(a === 'Fee BD' ? 'La Fée BD' : a, a)));
+
+  // Brouillon : gardé dans ce navigateur, pour ne rien perdre si la page se ferme
+  const lire = () => { try { return JSON.parse(localStorage.getItem(CLE) || 'null'); } catch (e) { return null; } };
+  const ecrire = v => { try { v ? localStorage.setItem(CLE, JSON.stringify(v)) : localStorage.removeItem(CLE); return true; } catch (e) { return false; } };
+  const b = lire();
+  CHAMPS.forEach(c => { if (b && b[c]) $(c).value = b[c]; });
+  if (!$('seance').value) $('seance').value = H.seanceEnCours || '';
+  if (b && ['personnages', 'lieux', 'quetes', 'objets', 'questions'].some(c => b[c])) $('plus').open = true;
+  let minuteur;
+  $('carnet').addEventListener('input', () => {
+    clearTimeout(minuteur);
+    minuteur = setTimeout(() => {
+      const v = Object.fromEntries(CHAMPS.map(c => [c, $(c).value]));
+      $('brouillon').textContent = ecrire(v) ? 'Brouillon gardé sur cet appareil' : '';
+    }, 500);
+  });
+  if (b && b.recit) $('brouillon').textContent = 'Brouillon retrouvé';
+
+  // Envoi au formulaire Google, en coulisses
+  const message = (cls, txt) => { const m = $('message'); m.className = 'message ' + cls; m.textContent = txt; m.hidden = false; };
+  $('carnet').addEventListener('submit', async e => {
+    e.preventDefault();
+    const manque = ['seance', 'auteur', 'recit'].filter(c => !$(c).value.trim());
+    if (manque.length) {
+      message('erreur', 'Il manque : ' + manque.map(c => ({ seance: 'la séance', auteur: 'qui écrit', recit: 'le récit' })[c]).join(', ') + '.');
+      $(manque[0]).focus(); return;
+    }
+    const donnees = new URLSearchParams();
+    CHAMPS.forEach(c => { const v = $(c).value.trim(); if (v) donnees.append(F.champs[c], v); });
+    $('envoyer').disabled = true; $('envoyer').textContent = 'Envoi…';
+    try {
+      // Google ne laisse pas lire sa réponse depuis un autre site : on sait seulement que l'envoi est parti.
+      await fetch(F.envoi, { method: 'POST', mode: 'no-cors', body: donnees });
+      const seance = $('seance').value, auteur = $('auteur').value;
+      $('carnet').reset(); $('seance').value = seance; $('auteur').value = auteur;
+      ecrire(null); $('brouillon').textContent = '';
+      message('ok', 'Notes envoyées. Merci, scribe ! Tu peux en envoyer d’autres quand tu veux.');
+    } catch (err) {
+      message('erreur', 'L’envoi a échoué (pas de connexion ?). Tes notes sont toujours là : réessaie, ou utilise le formulaire Google.');
+    } finally {
+      $('envoyer').disabled = false; $('envoyer').textContent = 'Envoyer les notes';
+    }
+  });
+})();
+</script>
+</body>
+</html>

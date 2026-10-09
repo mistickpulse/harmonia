@@ -4,7 +4,7 @@
   const lien = window.HARMONIA && window.HARMONIA.formulaireNotes;
   document.querySelectorAll('.prendre-notes').forEach(boite => {
     if (!lien) { boite.hidden = true; return; }
-    const a = document.createElement('a'); a.className = 'bouton-notes'; a.href = lien; a.target = '_blank'; a.rel = 'noopener';
+    const a = document.createElement('a'); a.className = 'bouton-notes'; a.href = 'scribe.html';
     a.innerHTML = '<span aria-hidden="true">✒</span> Prendre des notes';
     a.addEventListener('click', e => { e.preventDefault(); demander(); });
     boite.appendChild(a);
@@ -19,12 +19,12 @@
         + '<p class="explication">Seul le scribe désigné prend les notes de la séance.</p>'
         + '<div class="choix"><button type="button" class="oui">Oui</button><button type="button" class="non">Non</button></div>';
       document.body.appendChild(fenetre);
-      fenetre.querySelector('.oui').addEventListener('click', () => { fenetre.close(); window.open(lien, '_blank', 'noopener'); });
+      fenetre.querySelector('.oui').addEventListener('click', () => { fenetre.close(); location.href = 'scribe.html'; });
       fenetre.querySelector('.non').addEventListener('click', () => fenetre.close());
       fenetre.addEventListener('click', e => { if (e.target === fenetre) fenetre.close(); }); // clic hors de la fenêtre
     }
     if (fenetre.showModal) fenetre.showModal();
-    else if (confirm('Êtes-vous le scribe de la séance ?')) window.open(lien, '_blank', 'noopener');
+    else if (confirm('Êtes-vous le scribe de la séance ?')) location.href = 'scribe.html';
   }
 })();
 (() => {

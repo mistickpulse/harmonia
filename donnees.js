@@ -6,8 +6,22 @@ window.HARMONIA = {
   saison: 'Crépuscule Froid',
 
   // Prochaine séance : debut = date et heure exactes (heure de Paris) pour le compte à rebours
-  // Lien du formulaire Google « Prendre des notes » (vide = le bouton reste caché)
+  // Lien du formulaire Google (vide = le bouton « Prendre des notes » reste caché). Sert aussi de secours si le carnet du scribe ne marche pas.
   formulaireNotes: 'https://forms.gle/nHYskgtPsZEtWc5q9',
+  // La séance en cours, préremplie dans le carnet du scribe (à avancer après chaque séance)
+  seanceEnCours: 'S2-01',
+
+  /* Le carnet du scribe envoie ses notes directement au formulaire Google (sans l'afficher).
+     Si les questions du formulaire changent, les identifiants « entry.… » changent aussi : les relire dans la page du formulaire.
+     auteurs : exactement les choix du formulaire, lettre pour lettre. */
+  formulaire: {
+    envoi: 'https://docs.google.com/forms/d/e/1FAIpQLSff6kxTnbG8ZN94KIQKnh-Y9nWBPH5LwQFfqHBpixrIOiZnpQ/formResponse',
+    champs: {
+      seance: 'entry.448728290', auteur: 'entry.1271631058', recit: 'entry.456841996', personnages: 'entry.938933139',
+      lieux: 'entry.529195451', quetes: 'entry.451837171', objets: 'entry.868465274', questions: 'entry.910113382'
+    },
+    auteurs: ['Varynor', 'Anoer', 'Larian', 'Fee BD', 'Kagé', 'Telissandre', 'Serah']
+  },
 
   prochaineSeance: { debut: '2026-10-11T00:00:00+02:00', libelle: 'Samedi 10/10', heure: 'minuit', quoi: 'Saison 2 · Séance 1' },
 
