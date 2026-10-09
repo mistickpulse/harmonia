@@ -47,5 +47,14 @@ b, strong { color: var(--laiton); font-weight: 400; }
 .bouton-notes { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--f-ui); font-weight: 700; font-size: .95rem; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; color: var(--nuit); background: var(--laiton); border-radius: 3px; padding: .8rem 1.4rem; box-shadow: 0 0 0 1px var(--laiton), 0 0 24px rgba(214,164,74,.3); }
 .bouton-notes:hover { filter: brightness(1.1); }
 .bouton-notes span { font-size: 1.2em; }
+.scribe { max-width: min(26rem, calc(100vw - 32px)); padding: 1.6rem 1.4rem 1.4rem; text-align: center; color: #2b2116; background: linear-gradient(180deg, #f3e9d3, #e8dabb); border: 2px solid var(--laiton-sombre); border-radius: 6px; box-shadow: 0 20px 60px rgba(0,0,0,.7); }
+.scribe::backdrop { background: rgba(5,4,6,.75); }
+.scribe .question { font-family: var(--f-titre); font-size: 1.5rem; line-height: 1.2; margin: 0 0 .5rem; }
+.scribe .explication { font-family: var(--f-ui); font-size: .9rem; color: #6b5b45; margin: 0 0 1.2rem; }
+.scribe .choix { display: flex; gap: .8rem; justify-content: center; }
+.scribe button { font-family: var(--f-ui); font-weight: 700; font-size: .95rem; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; border-radius: 3px; padding: .7rem 1.6rem; border: 2px solid #2b2116; }
+.scribe .oui { background: #2b2116; color: var(--parchemin); }
+.scribe .non { background: transparent; color: #2b2116; }
+.scribe button:focus-visible { outline: 2px solid var(--laiton-sombre); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
