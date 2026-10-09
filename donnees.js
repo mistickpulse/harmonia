@@ -8,7 +8,7 @@ window.HARMONIA = {
   // Prochaine séance : debut = date et heure exactes (heure de Paris) pour le compte à rebours
   prochaineSeance: { debut: '2026-10-11T00:00:00+02:00', libelle: 'Samedi 10/10', heure: 'minuit', quoi: 'Saison 2 · Séance 1' },
 
-  /* Cette semaine : l'horaire de la semaine en jeu (dates écrites à la main : le calendrier d'Harmonia n'est pas calculé).
+  /* Calendrier : l'horaire de la semaine en jeu (dates écrites à la main : le calendrier d'Harmonia n'est pas calculé).
      jours : les 7 jours affichés ; evenements : date ('JJ/MM'), heure facultative, titre, detail.
      Un événement sans date va dans « Bientôt ». Seulement ce que les joueurs savent. */
   semaine: {
@@ -59,7 +59,7 @@ window.HARMONIA = {
   departs: [
     { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: false, statut: 'En attente' },
     { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: true },
-    { destination: 'Cette semaine', voie: '3', page: 'semaine.html', pret: true },
+    { destination: 'Calendrier', voie: '3', page: 'calendrier.html', pret: true },
     { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: true },
     { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'Retardé' },
     { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },
