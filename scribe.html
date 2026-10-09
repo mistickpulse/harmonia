@@ -20,6 +20,7 @@
 .champ .etiquette { display: block; font-family: var(--f-ui); font-weight: 700; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: #7a5a22; margin-bottom: .3rem; }
 .case { display: flex; align-items: center; gap: .45rem; margin-top: .5rem; font-family: var(--f-ui); font-weight: 700; color: #2b2116; cursor: pointer; }
 .carnet .case input { width: 1.15rem; height: 1.15rem; padding: 0; margin: 0; accent-color: #7a5a22; }
+.aide { display: block; margin-top: .3rem; font-family: var(--f-ui); font-size: .8rem; color: #6b5b45; }
 .case small { font-weight: 400; color: #6b5b45; }
 .champ > span small { font-weight: 400; letter-spacing: 0; text-transform: none; color: #8a7a62; margin-left: .3rem; }
 .carnet input, .carnet select, .carnet textarea {
@@ -57,6 +58,7 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
       <div class="champ">
         <label for="seance"><span class="etiquette">Séance</span></label>
         <input id="seance" name="seance" required autocomplete="off">
+        <small class="aide" id="aideSeance" aria-live="polite"></small>
         <label class="case"><input type="checkbox" id="spinoff" name="spinoff"> Spin-off <small>(hors de l’histoire principale)</small></label>
       </div>
       <label class="champ"><span>Qui écrit ?</span><select id="auteur" name="auteur" required><option value="">Choisir…</option></select></label>
@@ -87,6 +89,7 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
   Harmonia · campagne de Fabian
 </footer>
 <script src="donnees.js"></script>
+<script src="notes.js"></script>
 <script src="commun.js" defer></script>
 <script>
 (() => {
@@ -105,6 +108,17 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
   CHAMPS.forEach(c => { if (b && b[c]) $(c).value = b[c]; });
   $('spinoff').checked = !!(b && b.spinoff);
   if (!$('seance').value) $('seance').value = H.seanceEnCours || '';
+  // Numéro de séance automatique, déduit des notes déjà envoyées (sauf si un brouillon en a déjà un)
+  if (!(b && b.seance)) (async () => {
+    try {
+      const r = await fetch(F.lecture, { cache: 'no-store' });
+      if (!r.ok) return;
+      const p = HarmoniaNotes.prochaineSeance(HarmoniaNotes.seancesDepuisCSV(await r.text()));
+      if (!p || (b && b.seance)) return;
+      $('seance').value = p.id; $('spinoff').checked = p.spinoff;
+      $('aideSeance').textContent = p.suite ? 'Même séance que les dernières notes (modifiable).' : 'Nouvelle séance, déduite des précédentes (modifiable).';
+    } catch (e) { /* tableur illisible : on garde le numéro par défaut */ }
+  })();
   if (b && ['personnages', 'lieux', 'quetes', 'objets', 'questions'].some(c => b[c])) $('plus').open = true;
   let minuteur;
   $('carnet').addEventListener('input', () => {

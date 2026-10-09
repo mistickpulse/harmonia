@@ -76,6 +76,21 @@
     return racines.flatMap(r => [r, ...r.enfants]);
   }
 
-  const api = { lireCSV, idSeance, estSpinOff, seancesDepuisCSV, arbre };
+  /* Le numéro de la séance à venir, déduit des notes déjà envoyées :
+     si la dernière note a moins de 12 heures, on est encore dans la même séance (même numéro, même spin-off) ;
+     sinon, nouvelle séance : le plus grand numéro de la saison + 1. Renvoie null s'il n'y a encore aucune note. */
+  function prochaineSeance(seances, maintenant = new Date()) {
+    const notes = seances.flatMap(s => s.notes.map(n => ({ ...n, idS: s.id, spinS: s.spinoff })));
+    if (!notes.length) return null;
+    const derniere = notes.reduce((a, b) => (b.tri > a.tri ? b : a));
+    // les horodatages du tableur sont des heures locales, lues comme si c'était de l'UTC : on fait pareil pour « maintenant »
+    const ici = Date.UTC(maintenant.getFullYear(), maintenant.getMonth(), maintenant.getDate(), maintenant.getHours(), maintenant.getMinutes(), maintenant.getSeconds());
+    if (derniere.tri && ici - derniere.tri < 12 * 3600e3) return { id: derniere.idS, spinoff: derniere.spinS, suite: true };
+    const [saison] = rang(derniere.idS);
+    const max = Math.max(...seances.filter(s => rang(s.id)[0] === saison).map(s => rang(s.id)[1]));
+    return { id: `S${saison || 2}-${String(max + 1).padStart(2, '0')}`, spinoff: false, suite: false };
+  }
+
+  const api = { lireCSV, idSeance, estSpinOff, seancesDepuisCSV, arbre, prochaineSeance };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else racine.HarmoniaNotes = api;
 })(typeof window !== 'undefined' ? window : this);
