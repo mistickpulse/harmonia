@@ -5,17 +5,49 @@ window.HARMONIA = {
   dateEnJeu: '18/02/876',
   saison: 'Crépuscule Froid',
 
-  // Prochaine séance (heure à compléter quand elle est fixée, ex. '21h')
-  prochaineSeance: { jour: '2026-10-10', libelle: 'Samedi 10/10', heure: '', quoi: 'Saison 2 · Séance 1' },
+  // Prochaine séance : debut = date et heure exactes (heure de Paris) pour le compte à rebours
+  prochaineSeance: { debut: '2026-10-11T00:00:00+02:00', libelle: 'Samedi 10/10', heure: 'minuit', quoi: 'Saison 2 · Séance 1' },
+
+  /* Le fil d'Ariane, version publique (validée par Fabian). Rien du fil caché.
+     Chaque fil : [titre, détail, état]. État : absent = en cours, 'fait' = accompli, 'echec' = échoué.
+     Dans chaque rubrique, mettre les fils terminés dans l'ordre où ils se sont produits :
+     la page n'affiche (rayés) que les 2 plus récents, au-dessus des fils en cours. */
+  fil: [
+    { titre: 'Quête principale', points: [
+      ['Récupérer le Coffre de Mnémarèse', 'repris aux Lueurs Vaines, dans une caverne au sud de Valperce.', 'fait'],
+      ['Prendre le train pour Gravathor', 'billets obtenus au Bastion de Fomane, pour avoir sauvé la foule du marché.', 'fait'],
+      ['Livrer le Coffre de Mnémarèse', 'à Sorra, à la guilde des marchands de la capitale naine. La mission confiée par le Cercle des Veilleurs.'],
+      ['Les portes de Gravathor vont fermer', 'pour une raison inconnue : il faut arriver avant.']
+    ] },
+    { titre: 'Ce que le groupe a promis', points: [
+      ['Retrouver le symbole de la famille de Koma', 'Varynor l’a dessiné : celui de sa famille, au clan des Dragons.', 'fait'],
+      ['Aider Koma à retrouver sa famille', 'dans le 5e Royaume.']
+    ] },
+    { titre: 'Quêtes personnelles', points: [
+      ['Varynor cherche du sang de vampire', 'pour se soigner. Une rumeur parle d’un vampire dans la capitale naine.'],
+      ['Anoer cherche le vampire qui l’a transformé', ''],
+      ['Varynor cherche un remède', 'pour Reduz, la mère de Kamot, à Valperce.'],
+      ['Anoer a eu une vision', 'une Lyre du Chant des Cieux, dans un temple au sommet d’une montagne.']
+    ] },
+    { titre: 'Pistes et objets en cours', points: [
+      ['Protéger la cargaison du Train Frelon', 'la Branche Obsidienne s’est enfuie avec l’orbe.', 'echec'],
+      ['Le parchemin d’invocation planaire', '3 fragments sur 7.'],
+      ['Un point vert sur la carte', 'une ancienne civilisation runique, des lieux défendus par des runes.'],
+      ['La Branche Obsidienne', 'Kael, Mirel, Dregar et Syris courent toujours, avec l’orbe.']
+    ] },
+    { titre: 'Contacts dans le royaume des Nains', points: [
+      ['Mina Frappeforte', 'une alliée naine que connaît la Fée BD.']
+    ] }
+  ],
 
   /* Le tableau des départs : une ligne par rubrique.
      pret = la page existe : la ligne affiche « À l'heure » et devient cliquable.
      Sinon, elle affiche son statut de gare (Retardé, En attente…). */
   departs: [
     { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: false, statut: 'En attente' },
-    { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: false, statut: 'Retardé' },
+    { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: true },
     { destination: 'Cette semaine', voie: '3', page: 'semaine.html', pret: false, statut: 'Retardé' },
-    { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: false, statut: 'Retardé' },
+    { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: true },
     { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'Retardé' },
     { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },
     { destination: 'Financement', voie: '7', page: 'financement.html', pret: true }

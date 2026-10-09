@@ -44,6 +44,14 @@
 .legende { margin-top: 1rem; font-family: var(--f-ui); font-size: .85rem; color: #6b5b45; }
 .vide { text-align: center; font-family: var(--f-ui); color: #6b5b45; font-style: italic; padding: 1rem 0; }
 .merci { margin-top: 2rem; color: var(--cendre); }
+.adu { margin-top: 2rem; padding: 1.4rem clamp(1rem, 4vw, 1.8rem); border: 2px solid var(--laiton); border-radius: 6px; background: rgba(214,164,74,.08); }
+.adu h2 { margin-bottom: .4rem; }
+.adu .somme { margin: 0 0 .8rem; font-family: var(--f-ui); font-size: 1.1rem; color: var(--parchemin); }
+.adu .somme b { font-family: "Overpass Mono", monospace; font-size: clamp(2rem, 8vw, 2.8rem); color: var(--laiton); margin-right: .4rem; }
+.adu ul { margin: 0; padding-left: 1.2rem; font-family: var(--f-ui); }
+.adu li { margin: .3rem 0; }
+.adu strong { color: var(--parchemin); font-weight: 700; }
+.adu .aide { margin: .9rem 0 0; font-family: var(--f-ui); font-size: .9rem; color: var(--cendre); }
 </style>
 </head>
 <body>
@@ -55,7 +63,18 @@
 <main class="page">
   <span class="kicker">Guichet</span>
   <h1>Financement</h1>
-  <p class="chapeau">Harmonia se prépare avec quelques outils payants. Chaque participant en couvre une part égale, réglée <span id="rythme"></span>.</p>
+  <p class="chapeau">Harmonia se prépare avec quelques outils payants. Leur coût est partagé à parts égales entre tous les participants, MJ compris.</p>
+
+  <section class="adu" aria-labelledby="titreAdu">
+    <h2 id="titreAdu">Ce que tu dois régler</h2>
+    <p class="somme"><b id="aduMontant">—</b> <span id="aduRythme"></span></p>
+    <ul>
+      <li><strong>Pour la période en cours :</strong> <span id="aduPeriode"></span>, en un seul versement.</li>
+      <li><strong>Ensuite :</strong> le même montant au début de chaque nouvelle période.</li>
+      <li id="aduMois"></li>
+    </ul>
+    <p class="aide">Le détail du calcul est juste en dessous, et le registre montre qui a déjà réglé.</p>
+  </section>
 
   <section class="papier recu" aria-labelledby="titreRecu">
     <span class="tampon" aria-hidden="true" id="tampon"></span>
@@ -88,6 +107,7 @@
   Harmonia · campagne de Fabian
 </footer>
 <script src="donnees.js"></script>
+<script src="commun.js" defer></script>
 <script>
 (() => {
   const H = window.HARMONIA, F = H.financement;
@@ -113,7 +133,6 @@
 
   // Le reçu
   const rythmes = { 1: 'chaque mois', 3: 'tous les trois mois', 6: 'tous les six mois', 12: 'une fois par an' };
-  document.getElementById('rythme').textContent = rythmes[N] || `tous les ${N} mois`;
   document.getElementById('periode').textContent = 'Période : ' + courante.libelle;
   document.getElementById('thPeriode').textContent = N === 1 ? 'Période' : `${N} mois`;
   document.getElementById('tampon').textContent = 'Période en cours';
@@ -139,9 +158,14 @@
   if (nb) {
     const part = Math.ceil(totalPeriode / nb * 100) / 100;
     document.getElementById('part').textContent = euros(part);
-    document.getElementById('detail').textContent = `${rythmes[N] || `tous les ${N} mois`} · ${euros(totalPeriode)} partagés entre ${nb} participants`;
+    document.getElementById('detail').textContent = `à régler une fois pour ${N === 1 ? 'le mois' : 'les ' + N + ' mois'} (${courante.libelle}) · ${euros(totalPeriode)} ÷ ${nb} participants`;
+    document.getElementById('aduMontant').textContent = euros(part);
+    document.getElementById('aduRythme').textContent = N === 1 ? 'par mois, par joueur' : `tous les ${N} mois, par joueur`;
+    document.getElementById('aduPeriode').textContent = courante.libelle;
+    document.getElementById('aduMois').innerHTML = N === 1 ? '' : `<strong>Ce qui revient à :</strong> environ ${euros(Math.ceil(part / N * 100) / 100)} par mois.`;
   } else {
     document.getElementById('detail').textContent = 'calculée dès que la liste des participants est renseignée';
+    document.getElementById('aduPeriode').textContent = courante.libelle;
   }
 
   // Le registre : une ligne par participant, une colonne par période (les 6 dernières)
@@ -172,13 +196,6 @@
     t.appendChild(tb); boite.appendChild(t);
   }
 
-  const menu = document.getElementById('menuSimple');
-  H.departs.forEach((d, k) => {
-    if (k) menu.appendChild(Object.assign(document.createElement('span'), { textContent: '·' }));
-    const m = document.createElement(d.pret ? 'a' : 'span');
-    m.textContent = d.destination; if (d.pret) m.href = d.page; else m.style.opacity = '.5';
-    menu.appendChild(m);
-  });
 })();
 </script>
 </body>

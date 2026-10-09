@@ -39,7 +39,7 @@ b, strong { color: var(--laiton); font-weight: 400; }
 .pied { border-top: 1px solid rgba(214,164,74,.2); padding: 1.5rem 16px 2rem; text-align: center; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
 .pied nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.2rem; margin-bottom: .6rem; }
 .pied nav a { color: var(--cendre); text-decoration: none; }
-.pied nav a:hover { color: var(--laiton); }
+.pied nav a:hover, .pied nav a[aria-current] { color: var(--laiton); }
 .pied nav span { opacity: .5; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

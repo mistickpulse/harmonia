@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Prochain départ</title>
+<meta name="description" content="La prochaine séance d'Harmonia et le compte à rebours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Un billet du Train Frelon : talon perforé, tampon de compostage, compte à rebours. */
+.billet {
+  margin-top: 2rem; display: grid; grid-template-columns: 1fr auto; color: #2b2116;
+  background: linear-gradient(135deg, #f3e9d3, #e3d2ad); border-radius: 6px; box-shadow: 0 20px 50px rgba(0,0,0,.6); overflow: hidden; position: relative;
+}
+.billet .corps { padding: 1.4rem clamp(1rem, 4vw, 1.8rem); }
+.billet .talon { width: clamp(84px, 22vw, 150px); padding: 1.4rem .8rem; border-left: 2px dashed #a88a55; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .4rem; text-align: center; background: rgba(214,164,74,.15); }
+.billet .compagnie { font-family: var(--f-ui); font-size: .72rem; letter-spacing: .3em; text-transform: uppercase; color: #7a5a22; }
+.trajet { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; margin: .6rem 0 1rem; font-family: var(--f-titre); font-size: clamp(1.4rem, 5vw, 2rem); line-height: 1.1; }
+.trajet .fleche { color: #7a5a22; font-size: .8em; }
+.champs { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .8rem 1.2rem; font-family: var(--f-ui); }
+.champs dt { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: #7a5a22; }
+.champs dd { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.talon .voie { font-family: "Overpass Mono", monospace; font-size: clamp(2rem, 7vw, 3rem); line-height: 1; }
+.talon small { font-family: var(--f-ui); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: #7a5a22; }
+.composte { position: absolute; right: clamp(100px, 25vw, 170px); bottom: 1rem; transform: rotate(-14deg); font-family: var(--f-titre); color: rgba(160,40,30,.7); border: 2px solid rgba(160,40,30,.7); border-radius: 50%; padding: .5rem .8rem; font-size: .85rem; text-align: center; line-height: 1.1; }
+
+.decompte { margin-top: 2rem; text-align: center; }
+.decompte .kicker { display: block; margin-bottom: .8rem; }
+.chiffres { display: flex; justify-content: center; gap: clamp(.6rem, 4vw, 2rem); }
+.chiffres div { display: flex; flex-direction: column; align-items: center; gap: .3rem; min-width: 3.5rem; }
+.chiffres b { font-family: "Overpass Mono", monospace; font-size: clamp(2rem, 9vw, 3.6rem); color: #ffcf6a; line-height: 1; text-shadow: 0 0 14px rgba(255,190,80,.4); font-variant-numeric: tabular-nums; }
+.chiffres span { font-family: var(--f-ui); font-size: .7rem; letter-spacing: .26em; text-transform: uppercase; color: var(--cendre); }
+.etat { font-family: var(--f-titre); font-size: 1.6rem; color: var(--laiton); }
+@media (max-width: 520px) { .billet { grid-template-columns: 1fr; } .billet .talon { width: auto; flex-direction: row; justify-content: space-around; border-left: 0; border-top: 2px dashed #a88a55; } .composte { right: 1rem; bottom: 5.5rem; } }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Voie 4</span>
+  <h1>Prochain départ</h1>
+  <p class="chapeau">Votre billet pour la prochaine séance. Gardez-le précieusement.</p>
+
+  <article class="billet" aria-label="Billet de la prochaine séance">
+    <div class="corps">
+      <div class="compagnie">Compagnie du Train Frelon · Karak-Durn</div>
+      <div class="trajet"><span>Bastion de Fomane</span><span class="fleche" aria-hidden="true">→</span><span>Gravathor</span></div>
+      <dl class="champs">
+        <div><dt>Départ</dt><dd id="jour"></dd></div>
+        <div><dt>Heure</dt><dd id="heure"></dd></div>
+        <div><dt>Voyage</dt><dd id="quoi"></dd></div>
+        <div><dt>Classe</dt><dd>Aventuriers</dd></div>
+      </dl>
+    </div>
+    <div class="talon"><small>Voie</small><span class="voie">4</span><small>Aller simple</small></div>
+    <span class="composte" aria-hidden="true">Composté<br>Fomane</span>
+  </article>
+
+  <section class="decompte" aria-live="polite">
+    <span class="kicker" id="decompteTitre">Départ dans</span>
+    <div class="chiffres" id="chiffres">
+      <div><b id="j">--</b><span>jours</span></div>
+      <div><b id="h">--</b><span>heures</span></div>
+      <div><b id="m">--</b><span>minutes</span></div>
+      <div><b id="s">--</b><span>secondes</span></div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const p = window.HARMONIA.prochaineSeance;
+  document.getElementById('jour').textContent = p.libelle;
+  document.getElementById('heure').textContent = p.heure || 'à préciser';
+  document.getElementById('quoi').textContent = p.quoi;
+  const depart = new Date(p.debut), deux = n => String(n).padStart(2, '0');
+  (function tic() {
+    const reste = depart - Date.now();
+    if (reste <= 0) {
+      document.getElementById('decompteTitre').textContent = 'Le train est parti';
+      document.getElementById('chiffres').innerHTML = `<p class="etat">${reste > -6 * 3600e3 ? 'Séance en cours. Bon voyage !' : 'Prochain départ bientôt affiché.'}</p>`;
+      return;
+    }
+    const s = Math.floor(reste / 1000);
+    document.getElementById('j').textContent = Math.floor(s / 86400);
+    document.getElementById('h').textContent = deux(Math.floor(s / 3600) % 24);
+    document.getElementById('m').textContent = deux(Math.floor(s / 60) % 60);
+    document.getElementById('s').textContent = deux(s % 60);
+    setTimeout(tic, 1000 - (Date.now() % 1000));
+  })();
+})();
+</script>
+</body>
+</html>

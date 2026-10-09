@@ -125,16 +125,6 @@
   Harmonia · campagne de Fabian
 </footer>
 <script src="donnees.js"></script>
-<script>
-(() => {
-  const menu = document.getElementById('menuSimple');
-  window.HARMONIA.departs.forEach((d, k) => {
-    if (k) menu.appendChild(Object.assign(document.createElement('span'), { textContent: '·' }));
-    const m = document.createElement(d.pret ? 'a' : 'span');
-    m.textContent = d.destination; if (d.pret) m.href = d.page; else m.style.opacity = '.5';
-    menu.appendChild(m);
-  });
-})();
-</script>
+<script src="commun.js" defer></script>
 </body>
 </html>

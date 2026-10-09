@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Fil d’Ariane</title>
+<meta name="description" content="Les quêtes, promesses et pistes en cours du groupe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* La feuille de route du voyage : un papier, des rubriques, une case à cocher par fil. */
+.feuille {
+  margin-top: 2rem; padding: 1.6rem clamp(1rem, 4vw, 2rem) 1rem; color: #2b2116;
+  background: linear-gradient(180deg, #f3e9d3, #e8dabb); border-radius: 3px; box-shadow: 0 20px 50px rgba(0,0,0,.6);
+}
+.feuille .entete-feuille { text-align: center; font-family: var(--f-ui); font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: #7a5a22; margin-bottom: 1.2rem; }
+.rubrique + .rubrique { margin-top: 1.6rem; }
+.rubrique h2 { color: #2b2116; font-size: clamp(1.3rem, 4vw, 1.6rem); border-bottom: 1px solid #a88a55; padding-bottom: .3rem; }
+.rubrique ul { list-style: none; margin: .6rem 0 0; padding: 0; }
+.rubrique li { position: relative; padding: .5rem 0 .5rem 1.8rem; border-bottom: 1px dashed rgba(168,138,85,.5); }
+.rubrique li::before { content: ""; position: absolute; left: 0; top: .85rem; width: .9rem; height: .9rem; border: 2px solid #7a5a22; border-radius: 2px; }
+.rubrique li strong { color: #2b2116; font-weight: 700; font-family: var(--f-ui); }
+.rubrique li span { color: #4b3d2b; }
+.rubrique h2 { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.rubrique h2 small { font-family: var(--f-ui); font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: #7a5a22; }
+.rubrique li.fini { opacity: .62; }
+.rubrique li.fini strong, .rubrique li.fini span { text-decoration: line-through; text-decoration-thickness: 1.5px; text-decoration-color: rgba(43,33,22,.7); }
+.rubrique li.fini::before { display: flex; align-items: center; justify-content: center; font-family: var(--f-ui); font-weight: 700; font-size: .75rem; line-height: 1; }
+.rubrique li.fait::before { content: "✓"; color: #2f6b34; border-color: #2f6b34; }
+.rubrique li.echec::before { content: "✗"; color: #a3281e; border-color: #a3281e; }
+.rubrique li .mention { text-decoration: none !important; font-family: var(--f-ui); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; margin-left: .4rem; }
+.rubrique li.fait .mention { color: #2f6b34; } .rubrique li.echec .mention { color: #a3281e; }
+.progression { margin: 0 0 1.4rem; font-family: var(--f-ui); }
+.progression .jauge { height: 10px; border-radius: 5px; background: rgba(122,90,34,.2); overflow: hidden; border: 1px solid rgba(122,90,34,.4); }
+.progression .jauge i { display: block; height: 100%; background: linear-gradient(90deg, #7a5a22, #d6a44a); }
+.progression p { margin: .4rem 0 0; font-size: .85rem; color: #6b5b45; text-align: center; }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Voie 2</span>
+  <h1>Fil d’Ariane</h1>
+  <p class="chapeau">Ce que le groupe poursuit, ce qu’il a promis, et les pistes encore ouvertes.</p>
+
+  <section class="feuille" aria-label="Feuille de route">
+    <div class="entete-feuille" id="dateFeuille"></div>
+    <div class="progression" id="progression"></div>
+    <div id="rubriques"></div>
+  </section>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const H = window.HARMONIA;
+  document.getElementById('dateFeuille').textContent = `Feuille de route · au ${H.dateEnJeu}`;
+  const boite = document.getElementById('rubriques');
+  // Progression : les fils accomplis sur l'ensemble des fils (échecs compris dans les terminés)
+  const tous = H.fil.flatMap(r => r.points), finis = tous.filter(x => x[2]), faits = tous.filter(x => x[2] === 'fait');
+  document.getElementById('progression').innerHTML =
+    `<div class="jauge" role="progressbar" aria-valuemin="0" aria-valuemax="${tous.length}" aria-valuenow="${finis.length}" aria-label="Fils terminés"><i style="width:${Math.round(finis.length / tous.length * 100)}%"></i></div>
+     <p>${finis.length} fils terminés sur ${tous.length} · ${faits.length} accomplis, ${finis.length - faits.length} échoué${finis.length - faits.length > 1 ? 's' : ''} · ${tous.length - finis.length} en cours</p>`;
+  H.fil.forEach(r => {
+    const sec = document.createElement('section'); sec.className = 'rubrique';
+    const h = document.createElement('h2'); h.textContent = r.titre;
+    const enCours = r.points.filter(x => !x[2]).length;
+    const sm = document.createElement('small'); sm.textContent = enCours ? `${enCours} en cours` : 'tout est réglé'; h.appendChild(sm);
+    sec.appendChild(h);
+    const ul = document.createElement('ul');
+    // les 2 derniers fils terminés (pour le contexte), puis les fils en cours
+    const termines = r.points.filter(x => x[2]).slice(-2), ouverts = r.points.filter(x => !x[2]);
+    [...termines, ...ouverts].forEach(([titre, detail, etat]) => {
+      const li = document.createElement('li');
+      if (etat) li.className = 'fini ' + etat;
+      const st = document.createElement('strong'); st.textContent = titre; li.appendChild(st);
+      if (detail) { const sp = document.createElement('span'); sp.textContent = ' : ' + detail; li.appendChild(sp); }
+      if (etat) { const m = document.createElement('span'); m.className = 'mention'; m.textContent = etat === 'fait' ? 'Accompli' : 'Échoué'; li.appendChild(m); }
+      ul.appendChild(li);
+    });
+    sec.appendChild(ul); boite.appendChild(sec);
+  });
+})();
+</script>
+</body>
+</html>
