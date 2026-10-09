@@ -18,7 +18,7 @@ window.HARMONIA = {
     { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: false, statut: 'Retardé' },
     { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'Retardé' },
     { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },
-    { destination: 'Financement', voie: '7', page: 'financement.html', pret: false, statut: 'Retardé' }
+    { destination: 'Financement', voie: '7', page: 'financement.html', pret: true }
   ],
 
   /* Financement : les outils qui servent à préparer le jeu, partagés à parts égales entre les participants.
@@ -35,7 +35,14 @@ window.HARMONIA = {
       { nom: 'Roll20', usage: 'La table de jeu en ligne', prix: 0, par: 'mois', formule: 'Gratuit' }
     ],
     participants: [
-      // { nom: 'Prénom', paye: ['2026-10'] },
+      { nom: 'Fabian', perso: 'Maître du jeu', paye: [] },
+      { nom: 'Nathan', perso: 'Varynor Mornelion', paye: [] },
+      { nom: 'Vincent', perso: 'Larian Feuillelune', paye: [] },
+      { nom: 'Jeremy', perso: 'Kagé', paye: [] },
+      { nom: 'Lucas', perso: 'Anoer Maethyr', paye: [] },
+      { nom: 'Kelly', perso: 'Telissandre', paye: [] },
+      { nom: 'Morgane', perso: 'Serah', paye: [] },
+      { nom: 'Aurélie', perso: 'la Fée BD', paye: [] }
     ]
   }
 };

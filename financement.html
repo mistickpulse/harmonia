@@ -157,7 +157,9 @@
     const tb = document.createElement('tbody');
     F.participants.forEach(v => {
       const tr = document.createElement('tr');
-      const nomCase = document.createElement('td'); nomCase.textContent = v.nom; tr.appendChild(nomCase);
+      const nomCase = document.createElement('td'); nomCase.textContent = v.perso || v.nom;
+      if (v.perso) { const sm = document.createElement('small'); sm.textContent = v.nom; nomCase.appendChild(sm); }
+      tr.appendChild(nomCase);
       vues.forEach(p => {
         const td = document.createElement('td'); if (p === courante) td.className = 'encours';
         const paye = (v.paye || []).includes(p.cle);
