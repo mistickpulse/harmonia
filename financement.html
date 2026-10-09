@@ -4,34 +4,45 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Harmonia · Financement</title>
-<meta name="description" content="Les outils qui servent à préparer Harmonia, et la part de chaque participant.">
+<meta name="description" content="Les outils qui servent à préparer Harmonia, la part de chaque participant et qui a déjà réglé.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
-/* Un reçu du guichet de la gare : papier, tampon, montants alignés. */
-.recu {
+/* Un reçu du guichet de la gare, puis le registre des voyageurs avec leurs tampons. */
+.papier {
   margin-top: 2rem; padding: 1.6rem clamp(1rem, 4vw, 2rem) 2rem; color: #2b2116;
   background: linear-gradient(180deg, #f3e9d3, #e8dabb); border-radius: 3px; position: relative;
   box-shadow: 0 20px 50px rgba(0,0,0,.6);
+}
+.recu {
   -webkit-mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 0 0 / 20px 100% repeat-x;
           mask: radial-gradient(circle 7px at 50% 100%, transparent 98%, #000) 0 0 / 20px 100% repeat-x;
 }
-.recu h2 { color: #2b2116; text-align: center; margin-bottom: .2rem; }
-.recu .guichet { text-align: center; font-family: var(--f-ui); font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: #7a5a22; margin-bottom: 1.4rem; }
-.recu table { width: 100%; border-collapse: collapse; font-family: var(--f-ui); }
-.recu th { text-align: left; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: #7a5a22; font-weight: 500; padding: 0 0 .5rem; border-bottom: 1px dashed #a88a55; }
-.recu td { padding: .7rem 0; border-bottom: 1px dashed rgba(168,138,85,.6); vertical-align: top; }
-.recu td small { display: block; color: #6b5b45; font-size: .82rem; }
-.recu .montant { text-align: right; font-family: "Overpass Mono", monospace; white-space: nowrap; padding-left: 1rem; }
-.recu .vide { color: #a06a30; font-style: italic; font-family: var(--f-ui); }
-.recu tfoot td { border: 0; padding-top: 1rem; font-weight: 700; }
+.papier h2 { color: #2b2116; text-align: center; margin-bottom: .2rem; }
+.papier .guichet { text-align: center; font-family: var(--f-ui); font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: #7a5a22; margin-bottom: 1.4rem; }
+.papier table { width: 100%; border-collapse: collapse; font-family: var(--f-ui); }
+.papier th { text-align: left; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: #7a5a22; font-weight: 500; padding: 0 .3rem .5rem 0; border-bottom: 1px dashed #a88a55; }
+.papier td { padding: .7rem .3rem .7rem 0; border-bottom: 1px dashed rgba(168,138,85,.6); vertical-align: top; }
+.papier td small { display: block; color: #6b5b45; font-size: .82rem; }
+.montant { text-align: right !important; font-family: "Overpass Mono", monospace; white-space: nowrap; }
+.papier tfoot td { border: 0; padding-top: 1rem; font-weight: 700; }
 .part { margin-top: 1.4rem; padding: 1rem; text-align: center; border: 2px solid #2b2116; border-radius: 4px; }
 .part .kicker { color: #7a5a22; }
 .part b { display: block; color: #2b2116; font-family: "Overpass Mono", monospace; font-size: clamp(1.8rem, 7vw, 2.6rem); line-height: 1.2; }
 .part small { color: #6b5b45; font-family: var(--f-ui); }
 .tampon { position: absolute; top: 1.2rem; right: 1rem; transform: rotate(-12deg); font-family: var(--f-titre); color: rgba(160,40,30,.75); border: 2px solid rgba(160,40,30,.75); border-radius: 4px; padding: .1rem .5rem; font-size: .95rem; }
+
+/* Registre */
+.registre { overflow-x: auto; }
+.registre th:not(:first-child), .registre td:not(:first-child) { text-align: center; }
+.registre td:first-child { font-family: var(--f-titre); font-size: 1.1rem; white-space: nowrap; }
+.marque-paye { display: inline-block; font-family: var(--f-ui); font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; padding: .15rem .45rem; border: 2px solid; border-radius: 3px; transform: rotate(-4deg); white-space: nowrap; }
+.paye { color: #2f6b34; } .attente { color: #a06a30; } .retard { color: #a3281e; }
+.encours { background: rgba(214,164,74,.18); }
+.legende { margin-top: 1rem; font-family: var(--f-ui); font-size: .85rem; color: #6b5b45; }
+.vide { text-align: center; font-family: var(--f-ui); color: #6b5b45; font-style: italic; padding: 1rem 0; }
 .merci { margin-top: 2rem; color: var(--cendre); }
 </style>
 </head>
@@ -44,22 +55,29 @@
 <main class="page">
   <span class="kicker">Guichet</span>
   <h1>Financement</h1>
-  <p class="chapeau">Harmonia se prépare avec quelques outils payants. Chaque participant en couvre une part égale.</p>
+  <p class="chapeau">Harmonia se prépare avec quelques outils payants. Chaque participant en couvre une part égale, réglée <span id="rythme"></span>.</p>
 
-  <section class="recu" aria-labelledby="titreRecu">
-    <span class="tampon" id="tampon" aria-hidden="true">Payé par mois</span>
+  <section class="papier recu" aria-labelledby="titreRecu">
+    <span class="tampon" aria-hidden="true" id="tampon"></span>
     <h2 id="titreRecu">Reçu des voyageurs</h2>
-    <div class="guichet">Gare des Contreforts · Guichet des frais</div>
+    <div class="guichet" id="periode"></div>
     <table>
-      <thead><tr><th scope="col">Outil</th><th scope="col" class="montant">Par mois</th></tr></thead>
+      <thead><tr><th scope="col">Outil</th><th scope="col" class="montant">Par mois</th><th scope="col" class="montant" id="thPeriode"></th></tr></thead>
       <tbody id="outils"></tbody>
-      <tfoot><tr><td>Total</td><td class="montant" id="total"></td></tr></tfoot>
+      <tfoot><tr><td>Total</td><td class="montant" id="totalMois"></td><td class="montant" id="totalPeriode"></td></tr></tfoot>
     </table>
     <div class="part">
       <span class="kicker">Part de chaque voyageur</span>
       <b id="part">—</b>
       <small id="detail"></small>
     </div>
+  </section>
+
+  <section class="papier" aria-labelledby="titreRegistre">
+    <h2 id="titreRegistre">Registre des voyageurs</h2>
+    <div class="guichet">Qui a réglé sa part</div>
+    <div class="registre" id="registre"></div>
+    <p class="legende">La période en cours est surlignée. « En retard » : une période terminée qui n’a pas été réglée.</p>
   </section>
 
   <p class="merci">Merci à chacun : c’est grâce à vous que les cartes, les vidéos et ce site existent.</p>
@@ -74,25 +92,82 @@
 (() => {
   const H = window.HARMONIA, F = H.financement;
   const euros = n => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  const arrondi = n => Math.round(n * 100) / 100;
+  const N = F.periodeMois || 3;
+  const MOIS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+
+  // Périodes : de « debut » jusqu'à celle qui contient aujourd'hui
+  const [a0, m0] = F.debut.split('-').map(Number);
+  const indexMois = (a, m) => a * 12 + (m - 1);
+  const debutIdx = indexMois(a0, m0), maintenant = new Date(), aujourdhui = indexMois(maintenant.getFullYear(), maintenant.getMonth() + 1);
+  const nbPeriodes = Math.max(1, Math.floor((aujourdhui - debutIdx) / N) + 1);
+  const periodes = Array.from({ length: nbPeriodes }, (_, k) => {
+    const i = debutIdx + k * N, j = i + N - 1;
+    const cle = `${Math.floor(i / 12)}-${String(i % 12 + 1).padStart(2, '0')}`;
+    const nom = (x, an) => MOIS[x % 12] + (an ? ' ' + Math.floor(x / 12) : '');
+    const libelle = N === 1 ? nom(i, true) : `${nom(i, Math.floor(i / 12) !== Math.floor(j / 12))} → ${nom(j, true)}`;
+    const court = N === 1 ? `${MOIS[i % 12].slice(0, 4)}. ${Math.floor(i / 12)}` : `${MOIS[i % 12].slice(0, 3)}.–${MOIS[j % 12].slice(0, 3)}. ${String(Math.floor(j / 12)).slice(2)}`;
+    return { cle, libelle, court, fini: j < aujourdhui, enCours: aujourdhui >= i && aujourdhui <= j };
+  });
+  const courante = periodes.find(p => p.enCours) || periodes[periodes.length - 1];
+
+  // Le reçu
+  const rythmes = { 1: 'chaque mois', 3: 'tous les trois mois', 6: 'tous les six mois', 12: 'une fois par an' };
+  document.getElementById('rythme').textContent = rythmes[N] || `tous les ${N} mois`;
+  document.getElementById('periode').textContent = 'Période : ' + courante.libelle;
+  document.getElementById('thPeriode').textContent = N === 1 ? 'Période' : `${N} mois`;
+  document.getElementById('tampon').textContent = 'Période en cours';
   const corps = document.getElementById('outils');
-  let total = 0, complet = true;
+  let totalMois = 0;
   F.outils.forEach(o => {
+    const parMois = o.par === 'an' ? o.prix / 12 : o.prix;
+    totalMois += parMois;
     const tr = document.createElement('tr');
     const a = document.createElement('td');
-    a.innerHTML = `<span></span><small></small>`;
-    a.querySelector('span').textContent = o.nom + (o.formule ? ` · ${o.formule}` : '');
-    a.querySelector('small').textContent = o.usage;
-    const b = document.createElement('td'); b.className = 'montant';
-    if (typeof o.prix === 'number') { b.textContent = euros(o.prix); total += o.prix; }
-    else { b.innerHTML = '<span class="vide">à renseigner</span>'; complet = false; }
-    tr.append(a, b); corps.appendChild(tr);
+    a.append(document.createTextNode(o.nom + (o.formule ? ` · ${o.formule}` : '')));
+    const sm = document.createElement('small');
+    sm.textContent = o.usage + (o.par === 'an' && o.prix ? ` · ${euros(o.prix)} par an` : '');
+    a.appendChild(sm);
+    const b = document.createElement('td'); b.className = 'montant'; b.textContent = euros(arrondi(parMois));
+    const c = document.createElement('td'); c.className = 'montant'; c.textContent = euros(arrondi(parMois * N));
+    tr.append(a, b, c); corps.appendChild(tr);
   });
-  document.getElementById('total').textContent = complet ? euros(total) : '—';
-  if (complet && F.participants) {
-    document.getElementById('part').textContent = euros(Math.ceil(total / F.participants * 100) / 100);
-    document.getElementById('detail').textContent = `par mois · ${euros(total)} partagés entre ${F.participants} participants`;
+  const totalPeriode = arrondi(totalMois * N);
+  document.getElementById('totalMois').textContent = euros(arrondi(totalMois));
+  document.getElementById('totalPeriode').textContent = euros(totalPeriode);
+  const nb = F.participants.length;
+  if (nb) {
+    const part = Math.ceil(totalPeriode / nb * 100) / 100;
+    document.getElementById('part').textContent = euros(part);
+    document.getElementById('detail').textContent = `${rythmes[N] || `tous les ${N} mois`} · ${euros(totalPeriode)} partagés entre ${nb} participants`;
   } else {
-    document.getElementById('detail').textContent = 'calculée dès que les montants et le nombre de participants sont renseignés';
+    document.getElementById('detail').textContent = 'calculée dès que la liste des participants est renseignée';
+  }
+
+  // Le registre : une ligne par participant, une colonne par période (les 6 dernières)
+  const boite = document.getElementById('registre');
+  if (!nb) { boite.innerHTML = '<p class="vide">La liste des participants arrive bientôt.</p>'; }
+  else {
+    const vues = periodes.slice(-6);
+    const t = document.createElement('table');
+    const tete = document.createElement('tr');
+    tete.innerHTML = '<th scope="col">Voyageur</th>';
+    vues.forEach(p => { const th = document.createElement('th'); th.scope = 'col'; th.textContent = p.court; th.title = p.libelle; if (p === courante) th.className = 'encours'; tete.appendChild(th); });
+    const thead = document.createElement('thead'); thead.appendChild(tete); t.appendChild(thead);
+    const tb = document.createElement('tbody');
+    F.participants.forEach(v => {
+      const tr = document.createElement('tr');
+      const nomCase = document.createElement('td'); nomCase.textContent = v.nom; tr.appendChild(nomCase);
+      vues.forEach(p => {
+        const td = document.createElement('td'); if (p === courante) td.className = 'encours';
+        const paye = (v.paye || []).includes(p.cle);
+        const [cls, txt] = paye ? ['paye', 'Payé'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
+        td.innerHTML = `<span class="marque-paye ${cls}">${txt}</span>`;
+        tr.appendChild(td);
+      });
+      tb.appendChild(tr);
+    });
+    t.appendChild(tb); boite.appendChild(t);
   }
 
   const menu = document.getElementById('menuSimple');
