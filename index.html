@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Départs</title>
+<meta name="description" content="Le site de la campagne Harmonia : dernière séance, fil d'Ariane, semaine en cours, prochain départ et le monde.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Le tableau des départs d'une gare naine : un panneau de laiton, des plaquettes qui claquent en tournant. */
+.gare { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 3vh 16px 0; }
+.fronton { text-align: center; margin-bottom: 1.6rem; }
+.fronton .kicker { display: block; margin-bottom: .3rem; }
+.fronton h1 { margin: 0; font-size: clamp(2.4rem, 9vw, 4.8rem); background: linear-gradient(180deg, var(--parchemin) 30%, var(--laiton)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.panneau {
+  /* taille d’une plaquette : 36 cases + 2 colonnes d’écart doivent tenir dans le panneau */
+  --case: clamp(12px, calc((min(100vw, 64rem) - 150px) / 40), 28px);
+  width: min(100%, 64rem); position: relative;
+  padding: clamp(12px, 2.5vw, 26px);
+  background: linear-gradient(180deg, #3a2b14, #1d150b 12%, #120d07 88%, #3a2b14);
+  border: 2px solid var(--laiton-sombre); border-radius: 6px;
+  box-shadow: 0 0 0 1px #000, 0 0 0 6px #2a1e0d, 0 0 0 7px var(--laiton-sombre), 0 30px 80px rgba(0,0,0,.7), inset 0 0 40px rgba(0,0,0,.8);
+}
+/* Rivets aux quatre coins */
+.panneau::before, .panneau::after { content: ""; position: absolute; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f3d28b, #7a5a22 70%); }
+.panneau::before { left: 8px; } .panneau::after { right: 8px; }
+
+.bandeau { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; padding: 0 4px 12px; border-bottom: 1px solid rgba(214,164,74,.35); margin-bottom: 10px; }
+.bandeau .titre { font-family: var(--f-titre); font-size: clamp(1.2rem, 3.6vw, 2rem); color: var(--laiton); letter-spacing: .06em; line-height: 1; }
+.bandeau .titre small { display: block; font-family: var(--f-ui); font-size: .62em; letter-spacing: .3em; text-transform: uppercase; color: var(--cendre); margin-top: .35rem; }
+.horloge { text-align: right; font-family: var(--f-ui); color: var(--cendre); font-size: clamp(.7rem, 1.8vw, .9rem); letter-spacing: .12em; text-transform: uppercase; }
+.horloge b { display: block; font-family: "Overpass Mono", monospace; font-size: clamp(1.3rem, 4vw, 2.1rem); color: #ffcf6a; letter-spacing: .08em; text-shadow: 0 0 12px rgba(255,190,80,.5); }
+
+.entetes, .ligne { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: clamp(8px, 2vw, 22px); }
+.entetes { font-family: var(--f-ui); font-size: clamp(.6rem, 1.6vw, .75rem); letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); padding: 4px 8px 8px; }
+.ligne { padding: 8px; border-radius: 4px; text-decoration: none; color: inherit; transition: background .25s ease, box-shadow .25s ease; position: relative; }
+.ligne + .ligne { margin-top: 4px; }
+a.ligne:hover, a.ligne:focus-visible { background: rgba(214,164,74,.1); box-shadow: inset 3px 0 0 var(--laiton); }
+a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
+.ligne[aria-disabled="true"] { cursor: default; opacity: .78; }
+.col-voie { text-align: center; }
+
+/* Les plaquettes */
+.plaquettes { display: inline-flex; gap: 2px; }
+.case {
+  width: var(--case); height: calc(var(--case) * 1.45); display: inline-flex; align-items: center; justify-content: center;
+  font-family: "Overpass Mono", ui-monospace, monospace; font-weight: 600; font-size: calc(var(--case) * .78); color: #f2e6cc;
+  background: linear-gradient(180deg, #2a2620 0%, #1b1813 49%, #000 50%, #1d1a15 51%, #2b2721 100%);
+  border-radius: 2px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 1px 0 rgba(0,0,0,.8); position: relative; overflow: hidden;
+}
+.case.tourne { animation: claque .07s linear; }
+@keyframes claque { 0% { transform: perspective(200px) rotateX(0); } 50% { transform: perspective(200px) rotateX(-70deg); filter: brightness(.6); } 100% { transform: perspective(200px) rotateX(0); } }
+.statut .case { color: #ffcf6a; }
+.ligne.pret .statut .case { color: #9fe8a8; }
+.ligne:not(.pret) .statut .case { color: #e0a060; }
+
+.sous { width: min(100%, 64rem); display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; margin-top: 1rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
+.sous .runes { color: var(--runes); letter-spacing: .4em; opacity: .7; }
+
+/* Sur téléphone : la destination en haut, voie et statut en dessous */
+@media (max-width: 640px) {
+  .panneau { --case: clamp(9px, calc((100vw - 100px) / 23), 22px); }
+  .entetes { display: none; }
+  .ligne { grid-template-columns: 1fr auto; grid-template-areas: "dest dest" "statut voie"; row-gap: 6px; padding: 10px 8px; border-bottom: 1px solid rgba(214,164,74,.15); }
+  .col-dest { grid-area: dest; } .col-voie { grid-area: voie; } .col-statut { grid-area: statut; }
+  .col-statut .case, .col-voie .case { --case: clamp(8px, calc((100vw - 100px) / 27), 16px); }
+}
+.lisible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<main class="gare">
+  <header class="fronton">
+    <span class="kicker">Karak-Durn · Saison 2</span>
+    <h1>Harmonia</h1>
+  </header>
+
+  <section class="panneau" aria-labelledby="titreDeparts">
+    <div class="bandeau">
+      <div class="titre" id="titreDeparts">Départs<small>Gare des Contreforts · Gravathor</small></div>
+      <div class="horloge" aria-label="Date en jeu"><b id="heure">--:--</b><span id="dateJeu"></span></div>
+    </div>
+    <div class="entetes" aria-hidden="true"><span>Destination</span><span class="col-voie">Voie</span><span>Statut</span></div>
+    <nav id="lignes" aria-label="Rubriques du site"></nav>
+  </section>
+
+  <div class="sous">
+    <span>Prochain départ : <b id="prochain"></b></span>
+    <span class="runes" aria-hidden="true">ᚺᚨᚱᛗᛟᚾᛁᚨ</span>
+  </div>
+
+  <footer class="pied" style="width:100%;margin-top:auto">
+    <nav id="menuSimple" aria-label="Menu simple"></nav>
+    Harmonia · campagne de Fabian
+  </footer>
+</main>
+
+<script src="donnees.js"></script>
+<script>
+(() => {
+  const H = window.HARMONIA;
+  const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÀ0123456789·’ ';
+  const LARG = { dest: 21, voie: 1, statut: 14 };
+  const versPlaquettes = (txt, n) => (txt.toUpperCase() + ' '.repeat(n)).slice(0, n);
+
+  // Les plaquettes : chaque case tourne un certain nombre de fois avant de s'arrêter sur sa lettre
+  function plaquettes(txt, n, retard) {
+    const boite = document.createElement('span'); boite.className = 'plaquettes'; boite.setAttribute('aria-hidden', 'true');
+    [...versPlaquettes(txt, n)].forEach((lettre, i) => {
+      const c = document.createElement('span'); c.className = 'case'; boite.appendChild(c);
+      if (calme) { c.textContent = lettre; return; }
+      let tours = 5 + Math.floor(Math.random() * 9);
+      const tic = () => {
+        c.classList.remove('tourne'); void c.offsetWidth; c.classList.add('tourne');
+        c.textContent = tours > 0 ? ALPHABET[Math.floor(Math.random() * ALPHABET.length)] : lettre;
+        if (tours-- > 0) setTimeout(tic, 55 + Math.random() * 25);
+      };
+      setTimeout(tic, retard + i * 35);
+    });
+    return boite;
+  }
+
+  const lignes = document.getElementById('lignes'), menu = document.getElementById('menuSimple');
+  H.departs.forEach((d, k) => {
+    const l = document.createElement(d.pret ? 'a' : 'div');
+    l.className = 'ligne' + (d.pret ? ' pret' : '');
+    if (d.pret) l.href = d.page; else l.setAttribute('aria-disabled', 'true');
+    const lu = document.createElement('span'); lu.className = 'lisible';
+    lu.textContent = `${d.destination}, voie ${d.voie}, ${d.statut}`; l.appendChild(lu);
+    const col = (cls, el) => { const s = document.createElement('span'); s.className = cls; s.appendChild(el); l.appendChild(s); };
+    col('col-dest', plaquettes(d.destination, LARG.dest, 150 + k * 260));
+    col('col-voie', plaquettes(d.voie, LARG.voie, 350 + k * 260));
+    col('col-statut statut', plaquettes(d.statut, LARG.statut, 450 + k * 260));
+    lignes.appendChild(l);
+    if (k) menu.appendChild(Object.assign(document.createElement('span'), { textContent: '·' }));
+    const m = document.createElement(d.pret ? 'a' : 'span');
+    m.textContent = d.destination; if (d.pret) m.href = d.page; else m.style.opacity = '.5';
+    menu.appendChild(m);
+  });
+
+  // Horloge : l'heure réelle, la date d'Harmonia
+  document.getElementById('dateJeu').textContent = `${H.dateEnJeu} · ${H.saison}`;
+  const heure = document.getElementById('heure');
+  (function tic() { const d = new Date(); heure.textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); setTimeout(tic, 1000 * (60 - d.getSeconds())); })();
+
+  const p = H.prochaineSeance;
+  document.getElementById('prochain').textContent = [p.libelle, p.heure, p.quoi].filter(Boolean).join(' · ');
+})();
+</script>
+</body>
+</html>

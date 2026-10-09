@@ -1,0 +1,45 @@
+/* Harmonia : charte commune (nuit, parchemin, laiton), dans l'esprit de la bande-annonce de la saison 2. */
+:root {
+  --nuit: #0b0a0d;
+  --nuit-2: #15121a;
+  --parchemin: #efe4cf;
+  --cendre: #a79d8c;
+  --laiton: #d6a44a;
+  --laiton-sombre: #7a5a22;
+  --braise: #e0703a;
+  --runes: #6fd8f0;
+  --f-titre: "IM Fell English SC", "IM Fell English", Georgia, "Times New Roman", serif;
+  --f-recit: "IM Fell English", Georgia, "Times New Roman", serif;
+  --f-ui: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh; color: var(--parchemin); font-family: var(--f-recit); line-height: 1.6;
+  background: radial-gradient(ellipse at 50% -10%, #2a1f12 0%, var(--nuit) 60%) fixed, var(--nuit);
+}
+a { color: var(--laiton); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--parchemin); outline-offset: 3px; }
+
+/* Barre du haut, commune à toutes les pages sauf l'accueil */
+.entete { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 14px 16px; border-bottom: 1px solid rgba(214,164,74,.25); }
+.entete a { font-family: var(--f-ui); text-decoration: none; letter-spacing: .14em; text-transform: uppercase; font-size: .85rem; }
+.entete .marque { font-family: var(--f-titre); text-transform: none; letter-spacing: .02em; font-size: 1.3rem; color: var(--parchemin); }
+
+/* Pages de lecture */
+.page { max-width: 46rem; margin: 0 auto; padding: 2.5rem 16px 4rem; }
+.kicker { font-family: var(--f-ui); font-weight: 500; font-size: .8rem; letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); }
+h1 { font-family: var(--f-titre); font-weight: 400; font-size: clamp(2.2rem, 7vw, 3.6rem); line-height: 1.05; margin: .3rem 0 1rem; }
+h2 { font-family: var(--f-titre); font-weight: 400; font-size: clamp(1.5rem, 4.5vw, 2rem); line-height: 1.15; margin: 0 0 .6rem; color: var(--parchemin); }
+.chapeau { font-size: 1.2rem; color: var(--cendre); font-style: italic; }
+b, strong { color: var(--laiton); font-weight: 400; }
+
+/* Pied de page : le menu classique, en secours du tableau */
+.pied { border-top: 1px solid rgba(214,164,74,.2); padding: 1.5rem 16px 2rem; text-align: center; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
+.pied nav { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem 1.2rem; margin-bottom: .6rem; }
+.pied nav a { color: var(--cendre); text-decoration: none; }
+.pied nav a:hover { color: var(--laiton); }
+.pied nav span { opacity: .5; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
