@@ -1,6 +1,5 @@
-/* Les séances de la saison 2 : le récap réorganisé (par Claude, validé par Fabian) et les notes brutes des joueurs.
-   La plus récente en premier. Chaque séance :
-   id ('S2-01'), titre, date (date réelle), dateEnJeu, preneur (le personnage qui a pris les notes),
-   recap : sections [titre, [lignes]] (le récit, ce qu'on a appris…),
-   brut : les notes telles qu'envoyées par le formulaire [{ auteur, quand, texte }]. */
+/* Les récaps mis en ordre par Claude et validés par Fabian, une entrée par séance.
+   Les notes brutes ne sont pas ici : la page « Dernière séance » les lit en direct dans le tableur du formulaire.
+   Chaque récap : id (le même que dans le tableur, ex. 'S2-01'), titre, date (date réelle), dateEnJeu (croisée avec la note de Fabian),
+   recap : sections [titre, [lignes]] (le récit, ce qu'on a appris…). */
 window.HARMONIA_SEANCES = [];

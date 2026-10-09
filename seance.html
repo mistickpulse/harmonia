@@ -4,31 +4,35 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Harmonia · Dernière séance</title>
-<meta name="description" content="Le récap de la dernière séance d'Harmonia, et les notes brutes des joueurs.">
+<meta name="description" content="Les notes des séances d'Harmonia, prises par le scribe, et leur récap.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
-/* Le récap mis en ordre, puis les notes brutes telles qu'écrites, puis les séances précédentes. */
-.meta { font-family: var(--f-ui); color: var(--cendre); font-size: .9rem; margin-top: -.4rem; }
-.recap { margin-top: 2rem; }
-.recap section + section { margin-top: 1.6rem; }
+/* Une séance : son récap mis en ordre (quand il existe), puis chaque note du scribe, rangée par rubrique, avec sa coche « fiches du monde ». */
+.choix-seance { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.2rem; }
+.choix-seance a { font-family: var(--f-ui); font-size: .85rem; letter-spacing: .08em; text-decoration: none; color: var(--parchemin); background: #2a1e10; border: 1px solid var(--laiton-sombre); border-radius: 3px; padding: .45rem .8rem; }
+.choix-seance a[aria-current] { background: var(--laiton); color: var(--nuit); border-color: var(--laiton); }
+.meta { font-family: var(--f-ui); color: var(--cendre); font-size: .9rem; margin: -.4rem 0 0; }
+.recap { margin-top: 1.8rem; }
+.recap section + section { margin-top: 1.4rem; }
 .recap h2 { border-bottom: 1px solid rgba(214,164,74,.35); padding-bottom: .3rem; }
 .recap ul { margin: .5rem 0 0; padding-left: 1.2rem; }
 .recap li { margin: .35rem 0; }
-.brut { margin-top: 2.4rem; border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: rgba(214,164,74,.05); }
-.brut summary { cursor: pointer; padding: .9rem 1.1rem; font-family: var(--f-ui); letter-spacing: .12em; text-transform: uppercase; font-size: .85rem; color: var(--laiton); }
-.brut .notes { padding: 0 1.1rem 1rem; }
-.note { border-top: 1px dashed rgba(214,164,74,.3); padding-top: .8rem; margin-top: .8rem; }
-.note .qui { font-family: var(--f-ui); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--cendre); }
-.note p { white-space: pre-wrap; margin: .3rem 0 0; }
-.archives { margin-top: 3rem; }
-.archives ul { list-style: none; padding: 0; margin: .5rem 0 0; }
-.archives li { padding: .5rem 0; border-bottom: 1px dashed rgba(214,164,74,.25); font-family: var(--f-ui); }
-.archives a[aria-current] { color: var(--parchemin); text-decoration: none; }
-.attente { margin-top: 2rem; padding: 1.4rem; border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: rgba(214,164,74,.05); }
-.attente p { margin: .3rem 0; }
+.recap-attente { margin-top: 1.6rem; padding: .9rem 1.1rem; border-left: 3px solid var(--laiton); background: rgba(214,164,74,.06); font-family: var(--f-ui); color: var(--cendre); }
+h2.titre-notes { margin-top: 2.4rem; }
+.note { margin-top: 1rem; padding: 1.1rem 1.2rem 1.2rem; color: #2b2116; background: linear-gradient(180deg, #f3e9d3, #e8dabb); border-radius: 3px; box-shadow: 0 12px 34px rgba(0,0,0,.5); }
+.note .tete { display: flex; justify-content: space-between; align-items: center; gap: .6rem 1rem; flex-wrap: wrap; border-bottom: 1px dashed #a88a55; padding-bottom: .5rem; margin-bottom: .6rem; }
+.note .qui { font-family: var(--f-titre); font-size: 1.25rem; }
+.note .quand { font-family: var(--f-ui); font-size: .8rem; color: #7a6a52; display: block; }
+.coche { font-family: var(--f-ui); font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: .25rem .55rem; border-radius: 3px; border: 2px solid; white-space: nowrap; }
+.coche.oui { color: #2f6b34; } .coche.non { color: #a06a30; }
+.note h3 { font-family: var(--f-ui); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: #7a5a22; margin: .9rem 0 .2rem; }
+.note p { margin: 0; white-space: pre-wrap; }
+.attente, .souci { margin-top: 2rem; padding: 1.2rem 1.3rem; border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: rgba(214,164,74,.05); }
+.attente p, .souci p { margin: .3rem 0; }
+.legende { margin-top: 1.6rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
 </style>
 </head>
 <body>
@@ -41,6 +45,7 @@
   <span class="kicker">Voie 1</span>
   <h1 id="titre">Dernière séance</h1>
   <div class="prendre-notes"></div>
+  <p class="meta" id="chargement">Lecture des notes du scribe…</p>
 </main>
 
 <footer class="pied">
@@ -49,55 +54,86 @@
 </footer>
 <script src="donnees.js"></script>
 <script src="seances.js"></script>
+<script src="traitees.js"></script>
+<script src="notes.js"></script>
 <script src="commun.js" defer></script>
 <script>
-(() => {
-  const S = window.HARMONIA_SEANCES || [], main = document.getElementById('contenu');
+(async () => {
+  const H = window.HARMONIA, RECAPS = window.HARMONIA_SEANCES || [], TRAITEES = new Set(window.HARMONIA_TRAITEES || []);
+  const main = document.getElementById('contenu'), chargement = document.getElementById('chargement');
   const el = (tag, cls, texte) => { const e = document.createElement(tag); if (cls) e.className = cls; if (texte != null) e.textContent = texte; return e; };
+  const nomSeance = id => id.replace(/^S(\d+)-0?(\d+)$/, (_, s, n) => `Saison ${s} · Séance ${n}`);
+  const RUBRIQUES = [['recit', 'Ce qui s’est passé'], ['personnages', 'Personnages rencontrés'], ['lieux', 'Lieux visités'], ['quetes', 'Quêtes et promesses'], ['objets', 'Objets, indices, documents'], ['questions', 'Questions et théories']];
 
-  if (!S.length) {
-    const p = window.HARMONIA.prochaineSeance;
-    const box = el('section', 'attente');
-    box.appendChild(el('p', null, `Le premier récap de la saison 2 arrivera après la séance du ${p.libelle}${p.heure ? ' (' + p.heure + ')' : ''}.`));
+  // Le tableur du formulaire est la base de données des notes : on le lit en direct
+  let seances = [];
+  try {
+    const r = await fetch(H.formulaire.lecture, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    seances = HarmoniaNotes.seancesDepuisCSV(await r.text());
+  } catch (e) {
+    chargement.remove();
+    const s = el('section', 'souci');
+    s.appendChild(el('p', null, 'Impossible de lire les notes du scribe pour le moment. Réessayez dans quelques minutes.'));
+    main.appendChild(s);
+    return;
+  }
+  chargement.remove();
+  // Une séance peut avoir un récap validé sans notes (ou l'inverse) : on réunit les deux
+  RECAPS.forEach(r => { if (!seances.some(s => s.id === r.id)) seances.push({ id: r.id, notes: [], derniere: 0 }); });
+
+  if (!seances.length) {
+    const p = H.prochaineSeance, box = el('section', 'attente');
+    box.appendChild(el('p', null, `Aucune note pour l’instant. Les premières arriveront pendant la séance du ${p.libelle}${p.heure ? ' (' + p.heure + ')' : ''}.`));
     const a = el('p'); a.innerHTML = 'En attendant, relisez <a href="histoire.html">L’histoire jusqu’ici</a>.'; box.appendChild(a);
     main.appendChild(box);
     return;
   }
 
-  // La séance affichée : celle demandée dans l'adresse (?s=S2-01), sinon la plus récente
+  // La séance affichée : celle de l'adresse (?s=S2-01), sinon la plus récente
   const demandee = new URLSearchParams(location.search).get('s');
-  const s = S.find(x => x.id === demandee) || S[0];
-  document.getElementById('titre').textContent = s.titre || 'Dernière séance';
-  document.title = 'Harmonia · ' + (s.titre || 'Dernière séance');
-  main.appendChild(el('p', 'meta', [s.id.replace(/^S2-0?/, 'Saison 2 · Séance '), s.date, s.dateEnJeu && 'en jeu : ' + s.dateEnJeu, s.preneur && 'notes de ' + s.preneur].filter(Boolean).join(' · ')));
+  const s = seances.find(x => x.id === demandee) || seances[0];
+  const recap = RECAPS.find(r => r.id === s.id);
 
-  const recap = el('div', 'recap');
-  (s.recap || []).forEach(([titre, lignes]) => {
-    const sec = el('section'); sec.appendChild(el('h2', null, titre));
-    const ul = el('ul'); lignes.forEach(l => ul.appendChild(el('li', null, l))); sec.appendChild(ul);
-    recap.appendChild(sec);
-  });
-  main.appendChild(recap);
-
-  if ((s.brut || []).length) {
-    const d = el('details', 'brut'); d.appendChild(el('summary', null, `Les notes brutes (${s.brut.length})`));
-    const notes = el('div', 'notes');
-    s.brut.forEach(n => {
-      const b = el('div', 'note'); b.appendChild(el('div', 'qui', [n.auteur, n.quand].filter(Boolean).join(' · ')));
-      b.appendChild(el('p', null, n.texte)); notes.appendChild(b);
-    });
-    d.appendChild(notes); main.appendChild(d);
+  if (seances.length > 1) {
+    const nav = el('nav', 'choix-seance'); nav.setAttribute('aria-label', 'Choisir une séance');
+    seances.forEach(x => { const a = el('a', null, nomSeance(x.id)); a.href = '?s=' + encodeURIComponent(x.id); if (x === s) a.setAttribute('aria-current', 'page'); nav.appendChild(a); });
+    main.appendChild(nav);
   }
 
-  if (S.length > 1) {
-    const arch = el('section', 'archives'); arch.appendChild(el('h2', null, 'Les séances précédentes'));
-    const ul = el('ul');
-    S.forEach(x => {
-      const li = el('li'), a = el('a', null, `${x.id.replace(/^S2-0?/, 'Séance ')} · ${x.titre || ''}`);
-      a.href = '?s=' + encodeURIComponent(x.id); if (x === s) a.setAttribute('aria-current', 'page');
-      li.appendChild(a); ul.appendChild(li);
+  const titre = (recap && recap.titre) || nomSeance(s.id);
+  document.getElementById('titre').textContent = titre;
+  document.title = 'Harmonia · ' + titre;
+  const auteurs = [...new Set(s.notes.map(n => n.auteur).filter(Boolean))].map(a => a === 'Fee BD' ? 'la Fée BD' : a);
+  main.appendChild(el('p', 'meta', [nomSeance(s.id), recap && recap.dateEnJeu && 'en jeu : ' + recap.dateEnJeu, auteurs.length && 'scribe : ' + auteurs.join(', ')].filter(Boolean).join(' · ')));
+
+  // Le récap mis en ordre (validé par Fabian), s'il existe déjà
+  if (recap && (recap.recap || []).length) {
+    const box = el('div', 'recap');
+    recap.recap.forEach(([t, lignes]) => {
+      const sec = el('section'); sec.appendChild(el('h2', null, t));
+      const ul = el('ul'); lignes.forEach(l => ul.appendChild(el('li', null, l))); sec.appendChild(ul);
+      box.appendChild(sec);
     });
-    arch.appendChild(ul); main.appendChild(arch);
+    main.appendChild(box);
+  } else if (s.notes.length) {
+    main.appendChild(el('p', 'recap-attente', 'Le récap mis en ordre de cette séance arrivera après sa relecture. En attendant, voici les notes du scribe telles qu’écrites.'));
+  }
+
+  // Les notes du scribe, chacune avec sa coche « fiches du monde »
+  if (s.notes.length) {
+    main.appendChild(el('h2', 'titre-notes', `Les notes du scribe (${s.notes.length})`));
+    s.notes.forEach(n => {
+      const art = el('article', 'note'), tete = el('div', 'tete'), qui = el('div');
+      qui.appendChild(el('span', 'qui', n.auteur === 'Fee BD' ? 'La Fée BD' : (n.auteur || 'Scribe')));
+      qui.appendChild(el('span', 'quand', n.quand));
+      const faite = TRAITEES.has(n.quand);
+      const coche = el('span', 'coche ' + (faite ? 'oui' : 'non'), faite ? '✓ Fiches du monde créées' : '○ Fiches à créer');
+      tete.append(qui, coche); art.appendChild(tete);
+      RUBRIQUES.forEach(([cle, nom]) => { if (n[cle]) { art.appendChild(el('h3', null, nom)); art.appendChild(el('p', null, n[cle])); } });
+      main.appendChild(art);
+    });
+    main.appendChild(el('p', 'legende', '✓ : les informations de cette note ont été rangées dans Le monde. ○ : pas encore.'));
   }
 })();
 </script>

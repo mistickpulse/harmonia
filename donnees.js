@@ -15,6 +15,8 @@ window.HARMONIA = {
      Si les questions du formulaire changent, les identifiants « entry.… » changent aussi : les relire dans la page du formulaire.
      auteurs : exactement les choix du formulaire, lettre pour lettre. */
   formulaire: {
+    // Le tableur des réponses, lu en direct par la page « Dernière séance » (c'est la base de données des notes)
+    lecture: 'https://docs.google.com/spreadsheets/d/1PkzqHmHqW2m0txkCZIAdcBd-bSXvG8wblC65TNQT3CM/export?format=csv',
     envoi: 'https://docs.google.com/forms/d/e/1FAIpQLSff6kxTnbG8ZN94KIQKnh-Y9nWBPH5LwQFfqHBpixrIOiZnpQ/formResponse',
     champs: {
       seance: 'entry.448728290', auteur: 'entry.1271631058', recit: 'entry.456841996', personnages: 'entry.938933139',
