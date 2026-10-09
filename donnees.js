@@ -8,6 +8,18 @@ window.HARMONIA = {
   // Prochaine séance : debut = date et heure exactes (heure de Paris) pour le compte à rebours
   prochaineSeance: { debut: '2026-10-11T00:00:00+02:00', libelle: 'Samedi 10/10', heure: 'minuit', quoi: 'Saison 2 · Séance 1' },
 
+  /* Cette semaine : l'horaire de la semaine en jeu (dates écrites à la main : le calendrier d'Harmonia n'est pas calculé).
+     jours : les 7 jours affichés ; evenements : date ('JJ/MM'), heure facultative, titre, detail.
+     Un événement sans date va dans « Bientôt ». Seulement ce que les joueurs savent. */
+  semaine: {
+    mois: 'Mois 2 sur 3 du Crépuscule Froid',
+    jours: ['15/02', '16/02', '17/02', '18/02', '19/02', '20/02', '21/02'],
+    evenements: [
+      { date: '18/02', heure: '12h30', titre: 'Le Train Frelon file vers Gravathor', detail: 'Après l’attaque de la Branche Obsidienne, le voyage continue.' },
+      { date: '', titre: 'Les portes de Gravathor vont fermer', detail: 'Pour une raison inconnue. Il faut arriver avant.' }
+    ]
+  },
+
   /* Le fil d'Ariane, version publique (validée par Fabian). Rien du fil caché.
      Chaque fil : [titre, détail, état]. État : absent = en cours, 'fait' = accompli, 'echec' = échoué.
      Dans chaque rubrique, mettre les fils terminés dans l'ordre où ils se sont produits :
@@ -47,7 +59,7 @@ window.HARMONIA = {
   departs: [
     { destination: 'Dernière séance', voie: '1', page: 'seance.html', pret: false, statut: 'En attente' },
     { destination: 'Fil d’Ariane', voie: '2', page: 'fil.html', pret: true },
-    { destination: 'Cette semaine', voie: '3', page: 'semaine.html', pret: false, statut: 'Retardé' },
+    { destination: 'Cette semaine', voie: '3', page: 'semaine.html', pret: true },
     { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: true },
     { destination: 'Le monde', voie: '5', page: 'monde.html', pret: false, statut: 'Retardé' },
     { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },

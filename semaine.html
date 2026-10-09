@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Cette semaine</title>
+<meta name="description" content="L'horaire de la semaine en jeu : ce qui vient de se passer et ce qui est prévu.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* L'affiche horaire de la gare : une ligne par jour, aujourd'hui surligné, les jours passés estompés. */
+.affiche {
+  margin-top: 2rem; padding: 1.4rem clamp(1rem, 4vw, 2rem) 1.6rem; color: #2b2116;
+  background: linear-gradient(180deg, #f1e3bf, #e3cf9f); border-radius: 3px; box-shadow: 0 20px 50px rgba(0,0,0,.6);
+  border-top: 10px solid #2b2116;
+}
+.affiche .titre-affiche { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .4rem 1rem; border-bottom: 2px solid #2b2116; padding-bottom: .5rem; margin-bottom: .4rem; }
+.affiche .titre-affiche h2 { color: #2b2116; margin: 0; }
+.affiche .titre-affiche span { font-family: var(--f-ui); font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: #7a5a22; }
+.jour { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; padding: .75rem 0; border-bottom: 1px dashed rgba(122,90,34,.5); }
+.jour .date { font-family: "Overpass Mono", monospace; font-size: 1.15rem; color: #2b2116; }
+.jour .date small { display: block; font-family: var(--f-ui); font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: #7a5a22; }
+.jour .vide { font-family: var(--f-ui); color: #8a7a62; font-style: italic; font-size: .9rem; align-self: center; }
+.evt + .evt { margin-top: .5rem; }
+.evt strong { font-family: var(--f-ui); font-weight: 700; color: #2b2116; }
+.evt .h { font-family: "Overpass Mono", monospace; color: #7a5a22; margin-right: .4rem; }
+.evt p { margin: .1rem 0 0; color: #4b3d2b; }
+.jour.passe { opacity: .55; }
+.jour.aujourdhui { background: rgba(214,164,74,.28); margin: 0 -.6rem; padding-left: .6rem; padding-right: .6rem; border-radius: 3px; border-bottom-color: transparent; }
+.jour.aujourdhui .date small { color: #a3281e; font-weight: 700; }
+.bientot { margin-top: 1.4rem; }
+.bientot h3 { font-family: var(--f-titre); font-weight: 400; font-size: 1.3rem; margin: 0 0 .4rem; color: #2b2116; }
+@media (max-width: 480px) { .jour { grid-template-columns: 1fr; gap: .3rem; } }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Voie 3</span>
+  <h1>Cette semaine</h1>
+  <p class="chapeau">Où en est-on dans le temps d’Harmonia : ce qui vient de se passer, et ce qui s’annonce.</p>
+
+  <section class="affiche" aria-labelledby="titreAffiche">
+    <div class="titre-affiche"><h2 id="titreAffiche">Horaire de la semaine</h2><span id="mois"></span></div>
+    <div id="jours"></div>
+    <div class="bientot" id="bientot"></div>
+  </section>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const H = window.HARMONIA, S = H.semaine;
+  const aujourdhui = H.dateEnJeu.slice(0, 5);
+  document.getElementById('mois').textContent = S.mois;
+  const evt = e => {
+    const d = document.createElement('div'); d.className = 'evt';
+    const t = document.createElement('div');
+    if (e.heure) { const h = document.createElement('span'); h.className = 'h'; h.textContent = e.heure; t.appendChild(h); }
+    const st = document.createElement('strong'); st.textContent = e.titre; t.appendChild(st); d.appendChild(t);
+    if (e.detail) { const p = document.createElement('p'); p.textContent = e.detail; d.appendChild(p); }
+    return d;
+  };
+  const boite = document.getElementById('jours');
+  const iAuj = S.jours.indexOf(aujourdhui);
+  S.jours.forEach((j, i) => {
+    const ligne = document.createElement('div');
+    ligne.className = 'jour' + (i === iAuj ? ' aujourdhui' : iAuj >= 0 && i < iAuj ? ' passe' : '');
+    const date = document.createElement('div'); date.className = 'date';
+    date.innerHTML = `${j}<small>${i === iAuj ? 'Aujourd’hui' : iAuj >= 0 && i < iAuj ? 'Passé' : 'À venir'}</small>`;
+    const contenu = document.createElement('div');
+    const liste = S.evenements.filter(e => e.date === j);
+    if (liste.length) liste.forEach(e => contenu.appendChild(evt(e)));
+    else { contenu.className = 'vide'; contenu.textContent = '—'; }
+    ligne.append(date, contenu); boite.appendChild(ligne);
+  });
+  const sansDate = S.evenements.filter(e => !e.date);
+  if (sansDate.length) {
+    const b = document.getElementById('bientot');
+    const h = document.createElement('h3'); h.textContent = 'Bientôt, date inconnue'; b.appendChild(h);
+    sansDate.forEach(e => b.appendChild(evt(e)));
+  }
+})();
+</script>
+</body>
+</html>
