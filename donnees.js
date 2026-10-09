@@ -24,7 +24,8 @@ window.HARMONIA = {
   /* Financement : les outils qui servent à préparer le jeu, partagés à parts égales entre les participants.
      prix en euros ; par = 'mois' ou 'an' (un prix annuel est ramené au mois).
      debut = mois où commence la première période (AAAA-MM) ; periodeMois = durée d'une période de versement (3 = tous les 3 mois).
-     participants : paye = la liste des périodes réglées, chacune désignée par son mois de début (ex. '2026-10'). */
+     participants : paye = la liste des périodes réglées, chacune désignée par son mois de début (ex. '2026-10') ;
+     prelevement: true = réglé d’office à chaque période. */
   financement: {
     debut: '2026-10',
     periodeMois: 3,
@@ -35,7 +36,7 @@ window.HARMONIA = {
       { nom: 'Roll20', usage: 'La table de jeu en ligne', prix: 0, par: 'mois', formule: 'Gratuit' }
     ],
     participants: [
-      { nom: 'Fabian', perso: 'Maître du jeu', paye: [] },
+      { nom: 'Fabian', perso: 'Maître du jeu', prelevement: true, paye: [] }, // prélevé sur son compte : réglé à chaque période
       { nom: 'Nathan', perso: 'Varynor Mornelion', paye: [] },
       { nom: 'Vincent', perso: 'Larian Feuillelune', paye: [] },
       { nom: 'Jeremy', perso: 'Kagé', paye: [] },

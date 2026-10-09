@@ -162,8 +162,8 @@
       tr.appendChild(nomCase);
       vues.forEach(p => {
         const td = document.createElement('td'); if (p === courante) td.className = 'encours';
-        const paye = (v.paye || []).includes(p.cle);
-        const [cls, txt] = paye ? ['paye', 'Payé'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
+        const paye = v.prelevement || (v.paye || []).includes(p.cle);
+        const [cls, txt] = paye ? ['paye', 'Réglé'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
         td.innerHTML = `<span class="marque-paye ${cls}">${txt}</span>`;
         tr.appendChild(td);
       });
