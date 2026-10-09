@@ -43,6 +43,9 @@ b, strong { color: var(--laiton); font-weight: 400; }
 .pied nav span { opacity: .5; }
 
 /* Bouton « Prendre des notes » vers le formulaire */
+.boutons-accueil { display: flex; flex-wrap: wrap; gap: .8rem; justify-content: center; align-items: center; margin: 1.2rem 0 0; }
+.boutons-accueil .prendre-notes { margin: 0; }
+.bouton-video { background: transparent; color: var(--laiton); box-shadow: inset 0 0 0 1px var(--laiton); }
 .prendre-notes { margin: 1.2rem 0; text-align: center; }
 .bouton-notes { display: inline-flex; align-items: center; gap: .5rem; font-family: var(--f-ui); font-weight: 700; font-size: .95rem; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; color: var(--nuit); background: var(--laiton); border-radius: 3px; padding: .8rem 1.4rem; box-shadow: 0 0 0 1px var(--laiton), 0 0 24px rgba(214,164,74,.3); }
 .bouton-notes:hover { filter: brightness(1.1); }

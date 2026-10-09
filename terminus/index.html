@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Terminus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500&display=swap">
+<style>
+/* « Le dernier trajet du Train Frelon » : douze tableaux animés, caméra lente, lumière, particules, double exposition de rêve, texte lettre par lettre, son synthétisé. */
+:root {
+  --nuit: #0b0a0d;
+  --parchemin: #efe4cf;
+  --cendre: #a79d8c;
+  --laiton: #d6a44a;
+  --braise: #e0703a;
+  --f-titre: "IM Fell English SC", "IM Fell English", Georgia, serif;
+  --f-recit: "IM Fell English", Georgia, serif;
+  --f-ui: "Alegreya Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { margin: 0; background: #000; color: var(--parchemin); font-family: var(--f-recit); overflow: hidden; }
+
+.couche { position: fixed; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+#fantome { mix-blend-mode: screen; filter: blur(14px) brightness(1.15); opacity: 0; }
+#lumiere { mix-blend-mode: soft-light; }
+.vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.85) 100%); }
+.voile { position: fixed; inset: 0; pointer-events: none; opacity: 0; }
+#noir { background: #000; }
+#blanc { background: #fff6e6; }
+#eclair { background: #9fe8ff; mix-blend-mode: screen; }
+.bande { position: fixed; left: 0; right: 0; height: 5vh; background: #000; z-index: 3; pointer-events: none; }
+.bande.haut { top: 0; } .bande.bas { bottom: 0; }
+
+.ligne { position: fixed; left: 0; right: 0; z-index: 2; pointer-events: none; padding: 0 16px; text-align: center; transform: translateY(-50%);
+  text-shadow: 0 2px 18px rgba(0,0,0,.95), 0 0 40px rgba(0,0,0,.8); }
+.ligne .mot { display: inline-block; white-space: nowrap; }
+.ligne .l { display: inline-block; opacity: 0; }
+.grand { font-family: var(--f-titre); font-size: clamp(2rem, 6vw, 4.6rem); line-height: 1.05; }
+.moyen { font-family: var(--f-titre); font-size: clamp(1.5rem, 4vw, 3rem); line-height: 1.15; }
+.petit { font-size: clamp(1.3rem, 3.3vw, 2.3rem); font-style: italic; }
+b { color: var(--laiton); font-weight: 400; }
+
+.accueil { position: fixed; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 0 16px; text-align: center; background: rgba(11,10,13,.92); transition: opacity .8s ease, visibility 0s linear .8s; }
+.accueil.parti { opacity: 0; visibility: hidden; }
+.kicker { font-family: var(--f-ui); font-weight: 500; font-size: .9rem; letter-spacing: .34em; text-transform: uppercase; color: var(--laiton); }
+.accueil h1 { margin: 0; font-family: var(--f-titre); font-weight: 400; font-size: clamp(2.6rem, 9vw, 6rem); }
+.note { font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); max-width: 52ch; line-height: 1.5; }
+.bouton { font-family: var(--f-ui); font-size: 1rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: var(--nuit); background: var(--laiton); border: 0; border-radius: 2px; padding: .85rem 1.8rem; cursor: pointer; }
+.bouton:focus-visible, .ctl:focus-visible { outline: 2px solid var(--parchemin); outline-offset: 3px; }
+
+.commandes { position: fixed; left: 50%; transform: translateX(-50%); z-index: 4; bottom: calc(env(safe-area-inset-bottom, 0px) + 1vh);
+  display: flex; gap: .3rem; align-items: center; padding: .3rem; background: rgba(11,10,13,.8); border: 1px solid rgba(239,228,207,.1); border-radius: 999px; transition: opacity .6s ease; }
+body.cache-ui .commandes { opacity: 0; }
+.ctl { font-family: var(--f-ui); font-size: .85rem; color: var(--parchemin); background: transparent; border: 0; border-radius: 999px; min-width: 2.4rem; height: 2.4rem; padding: 0 .8rem; cursor: pointer; }
+.ctl:hover { background: rgba(239,228,207,.1); }
+.chrono { font-family: var(--f-ui); font-size: .78rem; color: var(--cendre); font-variant-numeric: tabular-nums; padding: 0 .4rem; min-width: 6.5rem; text-align: center; }
+.fenetre-credits { max-width: min(40rem, calc(100vw - 32px)); max-height: 80vh; overflow: auto; color: var(--parchemin); background: #15121a; border: 1px solid rgba(214,164,74,.4); border-radius: 6px; padding: 1.4rem 1.4rem 1rem; font-family: var(--f-ui); }
+.fenetre-credits::backdrop { background: rgba(0,0,0,.75); }
+.fenetre-credits h2 { font-family: var(--f-titre); font-weight: 400; margin: 0 0 .8rem; color: var(--laiton); }
+.fenetre-credits ul { margin: 0; padding-left: 1.1rem; font-size: .9rem; line-height: 1.45; }
+.fenetre-credits li { margin: .35rem 0; }
+.fenetre-credits a { color: var(--laiton); }
+.fenetre-credits .fermer { margin-top: 1rem; font-family: var(--f-ui); background: var(--laiton); color: var(--nuit); border: 0; border-radius: 3px; padding: .6rem 1.2rem; cursor: pointer; }
+</style>
+</head>
+<body>
+<canvas class="couche" id="image"></canvas>
+<canvas class="couche" id="fantome"></canvas>
+<canvas class="couche" id="lumiere"></canvas>
+<canvas class="couche" id="particules"></canvas>
+<div class="vignette"></div>
+<div class="voile" id="eclair"></div>
+<div id="lignes"></div>
+<div class="voile" id="blanc"></div>
+<div class="voile" id="noir"></div>
+<div class="bande haut"></div><div class="bande bas"></div>
+
+<div class="accueil" id="accueil">
+  <div class="kicker">Harmonia · Saison 2</div>
+  <h1>Le dernier trajet</h1>
+  <button class="bouton" id="lancer" type="button">Lancer</button>
+  <div class="note" id="etat">Chargement des images…</div>
+</div>
+
+<nav class="commandes" aria-label="Commandes">
+  <button class="ctl" id="prec" type="button" aria-label="Plan précédent">‹</button>
+  <button class="ctl" id="lecture" type="button" aria-label="Lecture">Lecture</button>
+  <button class="ctl" id="suiv" type="button" aria-label="Plan suivant">›</button>
+  <span class="chrono" id="chrono">Plan 1 · 0 s</span>
+  <button class="ctl" id="son" type="button">Son</button>
+  <button class="ctl" id="plein" type="button" aria-label="Plein écran">⛶</button>
+  <button class="ctl" id="credits" type="button">Crédits</button>
+</nav>
+
+<script src="sons/credits.js"></script>
+<script>
+(() => {
+  /* ==========================================================
+     LES DOUZE PLANS
+     cam : [x, y, zoom] au début (de) et à la fin (a) ; x = centre horizontal du cadre dans l'image (0 à 1),
+           y = 0 cadre collé en haut, 1 collé en bas ; zoom 1 = le plus large possible.
+     lum : lumières dans l'image (x, y de 0 à 1), r = rayon, c = couleur, a = force,
+           fl = vacillement, ba = balancement, pu = pulsation. La première assombrit les bords.
+     mode : particules. entree : transition depuis le plan précédent.
+     txt : t = début (s depuis le début du plan), y = hauteur à l'écran (%).
+     rails : force du roulement du train (0 à 1). Les sons sont dans BANDE, plus bas.
+     ========================================================== */
+  const PLANS = [
+    { n: 1, d: 8.5, fond: [70, 30, 12], cam: { de: [.36, .2, 1.12], a: [.6, .62, 1.2] }, mode: 'braises', reve: .12, rails: 0,
+      lum: [{ x: .32, y: .32, r: .9, c: [255, 150, 70], a: .7, fl: .12 }, { x: .04, y: .42, r: .2, c: [255, 120, 40], a: .5, fl: .5 }, { x: .97, y: .33, r: .18, c: [255, 190, 90], a: .5, fl: .1 }],
+      txt: [{ t: 1.2, y: 74, c: 'moyen', s: 'Bastion de Fomane, 23h.' }, { t: 3.6, y: 84, c: 'petit', s: 'Des billets pour Gravathor.' }] },
+    { n: 2, d: 8, fond: [60, 40, 20], entree: { type: 'fondu', d: 1.4 }, cam: { de: [.52, .25, 1.05], a: [.42, .62, 1.38] }, mode: 'poussiere', reve: .1, rails: .5,
+      lum: [{ x: .55, y: .25, r: .85, c: [255, 190, 110], a: .65, fl: .06 }, { x: .37, y: .57, r: .14, c: [90, 220, 255], a: .8, pu: 1 }],
+      txt: [{ t: 1.4, y: 74, c: 'petit', s: 'Le commandant est des Veilleurs.' }, { t: 3.8, y: 84, c: 'moyen', s: 'Il vous confie une alarme.' }] },
+    { n: 3, d: 9, fond: [60, 38, 15], entree: { type: 'fondu', d: 1.4 }, cam: { de: [.5, .1, 1.05], a: [.56, .55, 1.32] }, mode: 'poussiere', reve: .12, rails: .5,
+      lum: [{ x: .72, y: .17, r: .8, c: [255, 190, 90], a: .75, fl: .1 }],
+      txt: [{ t: 1.2, y: 74, c: 'petit', s: 'Koma a perdu sa pièce porte-bonheur.' }, { t: 3.9, y: 84, c: 'moyen', s: 'Le symbole : sa famille, au clan des Dragons.' }] },
+    { n: 4, d: 5.2, fond: [70, 25, 20], entree: { type: 'fondu', d: .5 }, cam: { de: [.36, .42, 1.15], a: [.62, .38, 1.26] }, mode: 'chaos', reve: .08, rails: .6, secousse: 7,
+      lum: [{ x: .58, y: .13, r: .9, c: [255, 180, 100], a: .7, fl: .15, ba: 2.5 }],
+      txt: [{ t: .5, y: 76, c: 'grand', s: 'Puis la bagarre.' }] },
+    { n: 5, d: 6, fond: [40, 20, 50], entree: { type: 'fondu', d: .5 }, cam: { de: [.5, .4, 1.0], a: [.58, .4, 1.32] }, mode: 'vapeur', reve: .12, rails: .6,
+      lum: [{ x: .58, y: .09, r: .75, c: [255, 180, 110], a: .55, fl: .6 }, { x: .6, y: .35, r: .2, c: [170, 110, 230], a: .35, fl: .2 }],
+      txt: [{ t: 1.2, y: 76, c: 'petit', s: 'Et des silhouettes en violet.' }] },
+    { n: 6, d: 6.8, fond: [15, 40, 60], entree: { type: 'fondu', d: 1 }, cam: { de: [.52, .55, 1.0], a: [.62, .3, 1.24] }, mode: 'etincelles', reve: .1, rails: .6, secousse: 2, eclairs: true,
+      lum: [{ x: .62, y: .32, r: .8, c: [110, 220, 255], a: .7, fl: .7 }],
+      txt: [{ t: .9, y: 76, c: 'grand', s: 'Une surcharge.' }, { t: 3.0, y: 86, c: 'petit', s: 'Une minute pour entrer.' }] },
+    { n: 7, d: 7, fond: [50, 45, 30], entree: { type: 'fondu', d: 1 }, cam: { de: [.5, .4, 1.0], a: [.5, .18, 2.3] }, ease: 'entre', mode: 'lueurs', reve: .2, rails: .15,
+      lum: [{ x: .5, y: .33, r: .7, c: [255, 220, 150], a: .8, pu: .6 }, { x: .5, y: .2, r: .3, c: [120, 230, 255], a: .5, pu: .9 }],
+      txt: [{ t: 1.4, y: 76, c: 'grand', s: 'Dans l’orbe.' }] },
+    { n: 8, d: 9.5, fond: [40, 30, 50], entree: { type: 'blanc', d: 1 }, cam: { de: [.5, .25, 1.2], a: [.5, .4, 1.02] }, mode: 'lourde', reve: .12, rails: 0,
+      lum: [{ x: .55, y: .08, r: 1, c: [255, 240, 210], a: .6, fl: .03 }],
+      txt: [{ t: 1.2, y: 80, c: 'grand', s: 'Kael. Mirel. Dregar. Syris.', mot: 1.25 }] },
+    { n: 9, d: 8, fond: [50, 25, 55], entree: { type: 'fondu', d: 1.2 }, cam: { de: [.66, .3, 1.25], a: [.32, .62, 1.18] }, mode: 'or', reve: .14, rails: .1,
+      lum: [{ x: .68, y: .3, r: .7, c: [190, 120, 255], a: .6, pu: .5 }, { x: .22, y: .62, r: .3, c: [255, 200, 90], a: .55, fl: .1 }],
+      txt: [{ t: 1.0, y: 74, c: 'petit', s: 'Ils s’enfuient avec l’orbe.' }, { t: 3.6, y: 84, c: 'moyen', s: 'Et laissent l’or derrière eux.' }] },
+    { n: 10, d: 8, fond: [25, 25, 40], entree: { type: 'noir', d: 2.2 }, cam: { de: [.5, 0, 1.0], a: [.54, .45, 1.15] }, mode: 'poussiere', reve: .22, rails: .2,
+      lum: [{ x: .5, y: .1, r: .8, c: [255, 190, 110], a: .7, fl: .1, ba: 1 }],
+      txt: [{ t: 1.8, y: 76, c: 'moyen', s: 'Autour de vous, plus personne ne bouge.' }] },
+    { n: 11, d: 8.5, fond: [60, 40, 25], entree: { type: 'reve', d: 2.8 }, cam: { de: [.5, 0, 1.0], a: [.56, .5, 1.28] }, mode: 'poussiere', reve: .26, rails: .45,
+      lum: [{ x: .563, y: .06, r: .8, c: [255, 196, 110], a: .75, fl: .1, ba: 1 }],
+      txt: [{ t: 2.2, y: 76, c: 'petit', s: 'Ils n’étaient qu’évanouis.' }] },
+    { n: 12, d: 11, fond: [60, 70, 90], entree: { type: 'fondu', d: 1.6 }, cam: { de: [.62, .78, 1.45], a: [.58, .15, 1.04] }, mode: 'neige', reve: .14, rails: .6, fin: 2.8,
+      lum: [{ x: .68, y: .3, r: .9, c: [255, 225, 170], a: .55, fl: .03 }, { x: .69, y: .4, r: .25, c: [255, 210, 130], a: .4, pu: .4 }],
+      txt: [{ t: 2.2, y: 74, c: 'grand', s: 'Gravathor.' }, { t: 5.2, y: 85, c: 'petit', s: 'Terminus.' }] }
+  ];
+
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+  const lisse = x => x * x * (3 - 2 * x);
+  const sortie = x => 1 - Math.pow(1 - x, 3);
+  const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Minutage : chaque plan commence pendant la transition qui l'amène */
+  let cumul = 0;
+  PLANS.forEach((p, i) => { p.tr = i ? (p.entree?.d || 0) : 0; cumul -= p.tr; p.s = cumul; cumul += p.d; });
+  const TOTAL = cumul;
+
+  /* ---------- Images : « Plan 3.png », « plan-03.png »… ---------- */
+  const etat = document.getElementById('etat');
+  let charges = 0, trouvees = 0;
+  PLANS.forEach(p => {
+    const nn = String(p.n).padStart(2, '0');
+    const noms = [`Plan ${p.n}.png`, `Plan ${p.n}.jpg`, `plan-${nn}.png`, `plan-${nn}.jpg`, `plan-${p.n}.png`, `Plan ${p.n}.jpg.png`, `plan-${nn}.jpg.png`, `Plan ${nn}.png`];
+    (function essai(k) {
+      if (k >= noms.length) { fini(); return; }
+      const im = new Image();
+      im.onload = () => { p.img = im; trouvees++; fini(); };
+      im.onerror = () => essai(k + 1);
+      im.src = encodeURI(noms[k]);
+    })(0);
+  });
+  function fini() {
+    charges++;
+    const manquent = PLANS.filter(p => !p.img).map(p => p.n);
+    etat.textContent = charges < PLANS.length ? 'Chargement des images…'
+      : manquent.length ? `${trouvees} images sur 12. Plans encore provisoires : ${manquent.join(', ')}. Mets le son.` : '12 images sur 12. Mets le son.';
+  }
+
+  /* ---------- Toiles ---------- */
+  const cv = id => document.getElementById(id);
+  const ci = cv('image').getContext('2d'), cf = cv('fantome').getContext('2d'), cl = cv('lumiere').getContext('2d'), cp = cv('particules').getContext('2d');
+  let W, H, dpr;
+  function taille() {
+    dpr = Math.min(devicePixelRatio || 1, 1.5); W = Math.round(innerWidth * dpr); H = Math.round(innerHeight * dpr);
+    for (const c of [ci, cl, cp]) { c.canvas.width = W; c.canvas.height = H; }
+    cf.canvas.width = Math.round(W / 4); cf.canvas.height = Math.round(H / 4);
+  }
+  addEventListener('resize', taille); taille();
+
+  /* Quelle portion de l'image est à l'écran */
+  function cadre(p, u) {
+    const iw = p.img ? p.img.naturalWidth : 1536, ih = p.img ? p.img.naturalHeight : 1024, A = innerWidth / innerHeight;
+    const k = p.ease === 'entre' ? Math.pow(u, 2.2) : lisse(u);
+    const [x0, y0, z0] = p.cam.de, [x1, y1, z1] = p.cam.a;
+    const zoom = z0 + (z1 - z0) * k;
+    const vw = Math.min(iw, ih * A) / zoom, vh = vw / A;
+    const left = clamp((x0 + (x1 - x0) * k) * iw - vw / 2, 0, iw - vw), top = (ih - vh) * (y0 + (y1 - y0) * k);
+    return { left, top, vw, vh, iw, ih };
+  }
+  const versEcran = (c, x, y) => [(x * c.iw - c.left) / c.vw, (y * c.ih - c.top) / c.vh];
+
+  function peindre(ctx, p, c, alpha, roulis, decY, echelle) {
+    const w = ctx.canvas.width, h = ctx.canvas.height;
+    ctx.save(); ctx.globalAlpha = alpha;
+    ctx.translate(w / 2, h / 2 + decY); ctx.rotate(roulis); ctx.scale(echelle, echelle); ctx.translate(-w / 2, -h / 2);
+    if (p.img) ctx.drawImage(p.img, c.left, c.top, c.vw, c.vh, -2, -2, w + 4, h + 4);
+    else {
+      // Fond provisoire tant que l'image n'est pas là
+      const [r, g, b] = p.fond, lx = versEcran(c, p.lum[0].x, p.lum[0].y);
+      const gr = ctx.createRadialGradient(lx[0] * w, lx[1] * h, 0, lx[0] * w, lx[1] * h, Math.max(w, h) * .9);
+      gr.addColorStop(0, `rgb(${r},${g},${b})`); gr.addColorStop(1, '#050406');
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, w, h);
+      if (ctx === ci) {
+        ctx.fillStyle = 'rgba(239,228,207,.35)'; ctx.font = `${14 * dpr}px "Alegreya Sans", sans-serif`;
+        ctx.fillText(`Plan ${p.n} · image à venir`, 24 * dpr, h * .09);
+      }
+    }
+    ctx.restore();
+  }
+
+  /* ---------- Lumières ---------- */
+  function lumieres(actifs, tau) {
+    cl.clearRect(0, 0, W, H);
+    for (const { p, c, alpha } of actifs) {
+      p.lum.forEach((L, i) => {
+        let [x, y] = versEcran(c, L.x, L.y);
+        if (L.ba) x += Math.sin(tau * 1.2) * .03 * L.ba;
+        let f = 1;
+        if (L.fl) f *= 1 - L.fl * (.5 + .5 * Math.sin(tau * 13) * Math.sin(tau * 7.3));
+        if (L.pu) f *= .7 + .3 * Math.sin(tau * 2.2 * L.pu);
+        if (L.fl > .4 && Math.random() < .04) f *= .3;
+        const R = L.r * Math.max(W, H), [r, g, b] = L.c;
+        const gr = cl.createRadialGradient(x * W, y * H, 0, x * W, y * H, R);
+        gr.addColorStop(0, `rgba(${r},${g},${b},${L.a * f * alpha})`);
+        gr.addColorStop(.4, `rgba(${r},${g},${b},${L.a * f * alpha * .35})`);
+        gr.addColorStop(1, i === 0 ? `rgba(0,0,0,${.5 * alpha})` : 'rgba(0,0,0,0)');
+        cl.globalCompositeOperation = i === 0 ? 'source-over' : 'lighter';
+        cl.fillStyle = gr; cl.fillRect(0, 0, W, H);
+      });
+    }
+    cl.globalCompositeOperation = 'source-over';
+  }
+
+  /* ---------- Particules ---------- */
+  const parts = Array.from({ length: calme ? 90 : 280 }, () => neuve({}, 'poussiere', true));
+  function neuve(q, mode, partout) {
+    q.x = Math.random(); q.y = partout ? Math.random() : 1.05; q.z = Math.random(); q.ph = Math.random() * 6.28; q.v = .3 + Math.random() * .7; q.vie = 1;
+    if (mode === 'poussiere' || mode === 'braises') q.y = partout ? Math.random() : 1.05;
+    if (mode === 'lourde' || mode === 'neige') q.y = partout ? Math.random() : -.05;
+    if (mode === 'vapeur') { q.x = partout ? Math.random() : -.25; q.y = .2 + Math.random() * .6; }
+    if (mode === 'chaos') { q.x = Math.random(); q.y = Math.random(); q.dx = (Math.random() - .5) * .03; q.dy = (Math.random() - .6) * .03; }
+    if (mode === 'etincelles') { q.x = .2 + Math.random() * .6; q.y = .3 + Math.random() * .5; q.dx = (Math.random() - .5) * .02; q.dy = -Math.random() * .02; q.vie = .3 + Math.random() * .7; }
+    if (mode === 'lueurs') { q.a = Math.random() * 6.28; q.r = .3 + Math.random() * .5; }
+    if (mode === 'or') { q.x = .05 + Math.random() * .55; q.y = .5 + Math.random() * .3; q.vie = Math.random(); }
+    q.mode = mode; return q;
+  }
+  function particules(mode, dt, tau, centre) {
+    cp.clearRect(0, 0, W, H);
+    const v = calme ? .3 : 1, s = dt * 60 * v;
+    for (const q of parts) {
+      if (q.mode !== mode) neuve(q, mode, true);
+      q.ph += .05 * s;
+      let rr = 255, gg = 214, bb = 150, al = .6, ta = 1, trait = 0;
+      if (mode === 'poussiere') {
+        q.y -= q.v * .0007 * s; q.x += (Math.sin(q.ph) * .0004 + .0003) * s;
+        const d = Math.hypot(q.x - centre[0], (q.y - centre[1]) * .8); al = clamp(1 - d * 1.3) * (.4 + .6 * (.5 + .5 * Math.sin(q.ph * 2)));
+      } else if (mode === 'braises') {
+        q.y -= q.v * .0025 * s; q.x += Math.sin(q.ph) * .0012 * s; rr = 255; gg = 140; bb = 60; al = .45 + .55 * (.5 + .5 * Math.sin(q.ph * 3));
+      } else if (mode === 'lourde') {
+        q.y += q.v * .0016 * s; rr = 255; gg = 230; bb = 200; al = .25 + .3 * q.z;
+      } else if (mode === 'neige') {
+        q.y += q.v * .0022 * s; q.x += (.001 + Math.sin(q.ph) * .0008) * s; rr = 235; gg = 242; bb = 255; al = .35 + .5 * q.z; ta = 1.4;
+      } else if (mode === 'vapeur') {
+        q.x += q.v * .0018 * s; q.y -= .0002 * s;
+      } else if (mode === 'chaos') {
+        q.x += q.dx * s; q.y += q.dy * s; q.dy += .0004 * s; rr = 255; gg = 200; bb = 140; al = .7; trait = 1;
+      } else if (mode === 'etincelles') {
+        q.x += q.dx * s; q.y += q.dy * s; q.dy += .0008 * s; q.vie -= .02 * s; rr = 150; gg = 235; bb = 255; al = q.vie; trait = 1;
+        if (q.vie <= 0) neuve(q, mode, true);
+      } else if (mode === 'lueurs') {
+        q.a += .01 * s; q.r -= .0015 * s * q.v; if (q.r < .02) { q.r = .5 + Math.random() * .3; }
+        q.x = centre[0] + Math.cos(q.a) * q.r * H / W; q.y = centre[1] + Math.sin(q.a) * q.r * .9;
+        const k = q.z < .5; rr = k ? 255 : 130; gg = k ? 215 : 230; bb = k ? 140 : 255; al = .3 + .6 * (1 - q.r);
+      } else if (mode === 'or') {
+        q.vie += .02 * s; if (q.vie > 1) { neuve(q, mode, true); q.vie = 0; }
+        rr = 255; gg = 215; bb = 120; al = Math.pow(Math.sin(q.vie * Math.PI), 6); ta = 1.6;
+      }
+      if (q.y < -.1 || q.y > 1.1 || q.x < -.3 || q.x > 1.3) neuve(q, mode, false);
+      if (al < .02) continue;
+      const x = q.x * W, y = q.y * H;
+      if (mode === 'vapeur') {
+        const R = (.1 + q.z * .15) * Math.max(W, H), g = cp.createRadialGradient(x, y, 0, x, y, R);
+        g.addColorStop(0, `rgba(205,210,225,${.045 + q.z * .03})`); g.addColorStop(1, 'rgba(205,210,225,0)');
+        cp.fillStyle = g; cp.fillRect(x - R, y - R, R * 2, R * 2); continue;
+      }
+      cp.globalCompositeOperation = 'lighter';
+      if (trait) {
+        cp.strokeStyle = `rgba(${rr},${gg},${bb},${al})`; cp.lineWidth = (.8 + q.z) * dpr;
+        cp.beginPath(); cp.moveTo(x, y); cp.lineTo(x - (q.dx || 0) * W * 2, y - (q.dy || 0) * H * 2); cp.stroke();
+      } else {
+        cp.fillStyle = `rgba(${rr},${gg},${bb},${al})`;
+        cp.beginPath(); cp.arc(x, y, (.6 + q.z * 1.8) * ta * dpr, 0, 6.283); cp.fill();
+      }
+      cp.globalCompositeOperation = 'source-over';
+    }
+  }
+
+  /* ---------- Texte : lettre par lettre ---------- */
+  const lignes = [];
+  PLANS.forEach((p, i) => {
+    const suivant = PLANS[i + 1];
+    const finPlan = p.s + p.d - (suivant ? suivant.tr * .6 : (p.fin || 0) * .8) - .2;
+    p.txt.forEach(T => {
+      const el = document.createElement('div'); el.className = 'ligne'; el.style.top = T.y + '%';
+      const div = document.createElement('div'); div.className = T.c; el.appendChild(div);
+      const L = { el, t0: p.s + p.tr * .5 + T.t, t1: finPlan, lettres: [], motPas: T.mot || 0 };
+      let n = 0;
+      T.s.split(' ').forEach((mot, m, tous) => {
+        const sm = document.createElement('span'); sm.className = 'mot';
+        for (const ch of mot) { const sp = document.createElement('span'); sp.className = 'l'; sp.textContent = ch; sp.dataset.n = n++; sp.dataset.m = m; sm.appendChild(sp); L.lettres.push(sp); }
+        div.appendChild(sm); if (m < tous.length - 1) div.appendChild(document.createTextNode(' '));
+      });
+      document.getElementById('lignes').appendChild(el); lignes.push(L);
+    });
+  });
+  function texte(t) {
+    for (const L of lignes) {
+      const vis = t > L.t0 - .1 && t < L.t1 + 1;
+      L.el.style.visibility = vis ? 'visible' : 'hidden';
+      if (!vis) continue;
+      L.el.style.letterSpacing = (sortie(1 - clamp((t - L.t0) / 1.8)) * .25) + 'em';
+      for (const s of L.lettres) {
+        const k = +s.dataset.n, m = +s.dataset.m;
+        const debut = L.t0 + (L.motPas ? m * L.motPas + (k % 8) * .03 : k * .035);
+        const e = sortie(clamp((t - debut) / .9));
+        const o = clamp((t - (L.t1 - .7) - k * .01) / .7);
+        const flou = (1 - e) * 12 + o * 9;
+        s.style.opacity = (e * (1 - o)).toFixed(3);
+        s.style.transform = `translateY(${((1 - e) * .3 - o * .2).toFixed(3)}em) scale(${(1 + (1 - e) * (L.motPas ? .5 : 0)).toFixed(3)})`;
+        s.style.filter = flou > .2 ? `blur(${flou.toFixed(1)}px)` : 'none';
+      }
+    }
+  }
+
+  /* ---------- Son : de vrais enregistrements (Wikimedia Commons, dossier sons/) ----------
+     BANDE : pour chaque plan, [instant (s depuis le début du plan), son, réglages].
+     vol = volume (0 à 1) · debut = où commencer dans le fichier (s) · duree = combien de temps le jouer (s)
+     vit = vitesse (1 = normale ; plus lent = plus grave) · fondu = fondus d'entrée et de sortie (s) · boucle = rejouer en boucle */
+  const FICHIERS = {
+    musique: 'musique.mp3', wagon: 'wagon.ogg', rails: 'rails.ogg', gare: 'gare.ogg', locomotive: 'locomotive.ogg', sifflet: 'sifflet.ogg',
+    demarrage: 'demarrage.ogg', bar: 'bar.ogg', tictac: 'tictac.ogg', fusain: 'fusain.ogg', pieces: 'pieces.ogg', coup: 'coup.wav',
+    verre: 'verre.wav', vent: 'vent.ogg', porte: 'porte.wav', arcs: 'arcs.ogg', bourdon: 'bourdon.ogg', explosion: 'explosion.ogg',
+    orbe: 'orbe.wav', frappe: 'frappe.ogg', faille: 'faille.ogg', carillon: 'carillon.ogg', coeur: 'coeur.ogg',
+    grincement: 'grincement.ogg', bol: 'bol.ogg', cor: 'cor.ogg', freins: 'freins.ogg', vapeur: 'vapeur.ogg'
+  };
+  const BANDE = {
+    1: [[0, 'gare', { vol: 1, debut: 6, duree: 9.5, fondu: 1.2 }], [0, 'locomotive', { vol: .7, debut: 9, duree: 8.5, fondu: 1.5 }],
+        [.8, 'sifflet', { vol: .7, duree: 6.8, fondu: .1 }], [5.6, 'demarrage', { vol: .6, debut: 6, duree: 7, fondu: 1.5 }]],
+    2: [[0, 'bar', { vol: .45, debut: 2, duree: 17, fondu: 1.5 }], [3.6, 'tictac', { vol: .85, duree: 4.5, fondu: .4 }]],
+    3: [[.4, 'pieces', { vol: .8, debut: .5, duree: 3 }], [1.3, 'fusain', { vol: 1, debut: 1, duree: 6.5, fondu: .5 }]],
+    4: [[0, 'bar', { vol: .7, debut: 30, duree: 5.5, fondu: .3, vit: 1.1 }], [.25, 'coup', { vol: .85, duree: 1.2 }], [.8, 'verre', { vol: .7, debut: 4.4, duree: 1 }],
+        [1.5, 'coup', { vol: .8, duree: 1.2 }], [2.2, 'verre', { vol: .6, debut: 8.1, duree: 1 }], [2.9, 'coup', { vol: .85, duree: 1.2, vit: 1.1 }],
+        [3.6, 'coup', { vol: .75, duree: 1.2, vit: .9 }], [4.2, 'verre', { vol: .6, debut: 14.3, duree: 1 }]],
+    5: [[0, 'vent', { vol: 1, debut: 14, duree: 6.5, fondu: .8 }], [4.6, 'porte', { vol: .85, debut: .3, duree: 1.7 }]],
+    6: [[.1, 'bourdon', { vol: .4, debut: 1, duree: 6.3, fondu: .8 }], [.1, 'arcs', { vol: .55, duree: 5.8, fondu: .2, boucle: true }],
+        [5.9, 'explosion', { vol: .9, debut: .4, duree: 5 }]],
+    7: [[.2, 'orbe', { vol: .85, duree: 7.5, fondu: 1, vit: .8, boucle: true }]],
+    8: [[1.2, 'frappe', { vol: .9, debut: .3, duree: 1.4 }], [2.45, 'frappe', { vol: .9, debut: .3, duree: 1.4 }], [3.7, 'frappe', { vol: .9, debut: .3, duree: 1.4 }],
+        [4.95, 'frappe', { vol: 1, debut: .3, duree: 1.4, vit: .8 }]],
+    9: [[.2, 'faille', { vol: .7, duree: 3, vit: .6, fondu: .1 }], [3.8, 'carillon', { vol: .5, duree: 5, fondu: .3 }]],
+    10: [[0, 'vent', { vol: .6, debut: 20, duree: 8.5, fondu: 2 }], [.6, 'coeur', { vol: .55, duree: 7.5, fondu: 1 }],
+         [2.5, 'grincement', { vol: .9, debut: .5, duree: 2.5, fondu: .2 }], [5.4, 'grincement', { vol: .9, debut: 3, duree: 2.5, fondu: .2 }]],
+    11: [[.6, 'bol', { vol: .5, duree: 8, fondu: .1 }], [3.2, 'grincement', { vol: .8, debut: .5, duree: 2.5, fondu: .2 }]],
+    12: [[1.8, 'cor', { vol: 1, debut: 1.5, duree: 6, fondu: .8 }], [6.0, 'freins', { vol: .55, debut: 12.8, duree: 4, fondu: .6, vit: .75 }],
+         [8.3, 'vapeur', { vol: .5, debut: 4, duree: 3, fondu: .3 }]]
+  };
+  /* La musique : « Cinema Blockbuster Trailer 14 », Sascha Ende (CC BY 4.0).
+     Le fichier sons/musique.mp3 est déjà coupé : il commence à 12,9 s du morceau original (musique-complete.mp3).
+     decalage = où en est ce fichier quand la vidéo commence (s). Calé pour que :
+     le 1er impact (14 s) tombe sur « Bastion de Fomane », la pleine puissance (57,1 s) sur le flash blanc qui ouvre le plan 8,
+     le dernier impact (88 s) sur « Terminus. ». parPlan = volume relatif par plan (1 = normal). */
+  const MUSIQUE = { decalage: 0, vol: .75, parPlan: { 10: .3, 11: .5 } };
+  // de / a : portion du fichier qui tourne en boucle (s)
+  const AMBIANCES = { wagon: { vol: .5, rails: true, de: 2, a: 145 }, rails: { vol: .55, rails: true, de: 1.8, a: 7 } };
+
+  let coupe = false, sonPret = false, actifs = [], musique = null, volMusique = 0, dernierSaut = 0;
+  const ambiances = {};
+  const lecteur = nom => { const a = new Audio(encodeURI('sons/' + FICHIERS[nom])); a.preload = 'auto'; a.preservesPitch = false; return a; };
+  function audio() {
+    if (sonPret) return; sonPret = true;
+    musique = lecteur('musique'); musique.volume = 0;
+    for (const [n, A] of Object.entries(AMBIANCES)) { const a = lecteur(n); a.loop = true; a.volume = 0; a.addEventListener("loadedmetadata", () => { a.currentTime = A.de || 0; }, { once: true }); ambiances[n] = a; }
+  }
+  const CUES = PLANS.flatMap(p => (BANDE[p.n] || []).map(([dt, son, o]) => ({
+    t: p.s + p.tr * .5 + dt, son, vol: o.vol ?? .6, debut: o.debut || 0, duree: o.duree || 4, vit: o.vit || 1, fondu: o.fondu ?? .05, boucle: !!o.boucle
+  })));
+  function jouer(q) {
+    const a = lecteur(q.son); a.loop = q.boucle; a.volume = 0; a.playbackRate = q.vit;
+    const go = () => { try { a.currentTime = q.debut; } catch (e) {} a.play().catch(() => {}); };
+    a.readyState >= 1 ? go() : a.addEventListener('loadedmetadata', go, { once: true });
+    actifs.push({ q, a });
+  }
+  function couperTout() { for (const x of actifs) x.a.pause(); actifs = []; }
+  function son(dt, dom) {
+    const m = coupe ? 0 : 1;
+    // Musique : suit le temps de la vidéo (rattrapée si elle dérive), volume selon le plan
+    if (musique && musique.readyState >= 1) {
+      const voulu = MUSIQUE.decalage + t;
+      if (enLecture) {
+        // recalage seulement après un vrai saut (flèches), et jamais en boucle : certains navigateurs refusent de sauter dans un fichier ouvert depuis le disque
+        const ecart = Math.abs(musique.currentTime - voulu), maintenant = performance.now();
+        if (ecart > 1 && musique.seekable.length && maintenant - dernierSaut > 2000) { dernierSaut = maintenant; musique.currentTime = voulu; }
+        if (musique.paused) musique.play().catch(() => {});
+      } else if (!musique.paused && t < TOTAL) musique.pause(); // à la fin, on laisse la musique s’éteindre d’elle-même
+      const cible = MUSIQUE.vol * (MUSIQUE.parPlan[dom.n] ?? 1) * clamp(t / .8) * m * (enLecture || t >= TOTAL ? 1 : 0);
+      volMusique += (cible - volMusique) * Math.min(1, dt * 1.5);
+      musique.volume = clamp(volMusique);
+    }
+    for (const [n, A] of Object.entries(AMBIANCES)) {
+      const a = ambiances[n]; if (!a) continue;
+      let cible = A.vol * (A.rails ? dom.rails : 1);
+      cible *= enLecture ? m : 0;
+      a.volume = clamp(a.volume + (cible - a.volume) * Math.min(1, dt * 2.5));
+      if (A.a && a.currentTime > A.a) a.currentTime = A.de || 0;
+      if (enLecture && a.paused) a.play().catch(() => {});
+      else if (!enLecture && !a.paused) a.pause();
+    }
+    if (enLecture) for (const q of CUES) if (q.t > tPrec && q.t <= t) jouer(q);
+    actifs = actifs.filter(({ q, a }) => {
+      const l = t - q.t;
+      if (l > q.duree || l < -.1) { a.pause(); return false; }
+      const env = Math.min(clamp(l / Math.max(q.fondu, .01)), clamp((q.duree - l) / Math.max(q.fondu, .15)));
+      a.volume = clamp(q.vol * env * m);
+      if (!enLecture && !a.paused) a.pause();
+      else if (enLecture && a.paused && !a.ended && a.readyState >= 2) a.play().catch(() => {});
+      return true;
+    });
+  }
+
+  /* ---------- Lecture ---------- */
+  const noir = cv('noir'), blanc = cv('blanc'), eclair = cv('eclair'), chrono = cv('chrono'), btnLecture = cv('lecture');
+  let lance = false, enLecture = false, t = 0, avant = performance.now(), tPrec = 0;
+  function aller(nt) { t = clamp(nt, 0, TOTAL); tPrec = t; couperTout(); }
+  function lancer() { cv('accueil').classList.add('parti'); audio(); aller(0); try { musique.currentTime = MUSIQUE.decalage; } catch (e) {} lance = true; lecture(true); }
+  function lecture(v) { enLecture = v; btnLecture.textContent = v ? 'Pause' : 'Lecture'; btnLecture.setAttribute('aria-label', v ? 'Pause' : 'Lecture'); }
+  const planA = tt => { let k = 0; PLANS.forEach((p, i) => { if (tt >= p.s + p.tr * .5) k = i; }); return k; };
+  cv('lancer').addEventListener('click', lancer);
+  btnLecture.addEventListener('click', () => { if (!lance || t >= TOTAL) return lancer(); lecture(!enLecture); });
+  const debutPlan = k => PLANS[k].s + PLANS[k].tr * .5;
+  // ‹ : revient au début du plan, ou au plan précédent si on vient d'y entrer
+  cv('prec').addEventListener('click', () => { const k = planA(t); aller(t - debutPlan(k) > 1 ? debutPlan(k) : debutPlan(Math.max(0, k - 1))); });
+  cv('suiv').addEventListener('click', () => { const k = planA(t); if (k < PLANS.length - 1) aller(debutPlan(k + 1)); });
+  cv('son').addEventListener('click', e => { coupe = !coupe; e.currentTarget.textContent = coupe ? 'Muet' : 'Son'; });
+  // Crédits des sons et de la musique (obligatoires pour les licences CC BY)
+  cv('credits').addEventListener('click', () => {
+    let d = document.getElementById('fenetreCredits');
+    if (!d) {
+      d = document.createElement('dialog'); d.id = 'fenetreCredits'; d.className = 'fenetre-credits';
+      const liste = (window.CREDITS_SONS || []).map(c => {
+        const li = document.createElement('li'), a = document.createElement('a');
+        a.href = c.page; a.target = '_blank'; a.rel = 'noopener'; a.textContent = c.titre;
+        li.append(a, document.createTextNode(` · ${c.auteur} · ${c.licence}`)); return li;
+      });
+      d.innerHTML = '<h2>Crédits</h2><p>Images générées pour Harmonia. Sons et musique : Wikimedia Commons.</p><ul></ul><button type="button" class="fermer">Fermer</button>';
+      d.querySelector('ul').append(...liste);
+      d.querySelector('.fermer').addEventListener('click', () => d.close());
+      document.body.appendChild(d);
+    }
+    if (enLecture) lecture(false);
+    d.showModal();
+  });
+  cv('plein').addEventListener('click', () => { const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.(); p?.catch?.(() => {}); });
+  addEventListener('keydown', e => {
+    if (e.key === 'f' || e.key === 'F') cv('plein').click();
+    else if (e.key === ' ' && e.target.tagName !== 'BUTTON') { e.preventDefault(); btnLecture.click(); }
+    else if (e.key === 'ArrowRight') cv('suiv').click();
+    else if (e.key === 'ArrowLeft') cv('prec').click();
+    else if (e.key === 'r' || e.key === 'R') lancer();
+  });
+  let minuteur;
+  const reveil = () => { document.body.classList.remove('cache-ui'); clearTimeout(minuteur); minuteur = setTimeout(() => { if (enLecture) document.body.classList.add('cache-ui'); }, 2000); };
+  ['mousemove', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, reveil, { passive: true }));
+
+  function image(now) {
+    requestAnimationFrame(image);
+    const dt = Math.min(.05, (now - avant) / 1000); avant = now;
+    const tau = now / 1000;
+    if (enLecture) t = Math.min(TOTAL, t + dt);
+    if (typeof window.__fige === 'number') t = window.__fige; // pour vérifier une image précise
+    if (enLecture && t >= TOTAL) lecture(false);
+
+    // Plans actifs (un seul, ou deux pendant une transition)
+    const actifs = PLANS.filter(p => t >= p.s && t < p.s + p.d);
+    if (!actifs.length) actifs.push(PLANS[t <= 0 ? 0 : PLANS.length - 1]);
+    const B = actifs[actifs.length - 1], A = actifs.length > 1 ? actifs[0] : null;
+    const k = A ? clamp((t - B.s) / B.tr) : 1;
+    const type = B.entree?.type || 'fondu';
+    let aA = 1, aB = 1;
+    if (A) {
+      if (type === 'noir') { aA = clamp(1 - k * 2); aB = clamp(k * 2 - 1); }
+      else if (type === 'blanc') { aB = k > .5 ? 1 : 0; }
+      else aB = lisse(k);
+    }
+    const dom = A && k < .5 ? A : B;
+
+    // Peinture
+    ci.globalAlpha = 1; ci.fillStyle = '#000'; ci.fillRect(0, 0, W, H);
+    cf.clearRect(0, 0, cf.canvas.width, cf.canvas.height);
+    const pile = [];
+    for (const [p, al] of A ? [[A, aA], [B, aB]] : [[B, 1]]) {
+      if (al <= 0) continue;
+      const u = clamp((t - p.s) / p.d), c = cadre(p, u);
+      const sec = calme ? 0 : (p.secousse || 0) * Math.sin(tau * 31) * Math.sin(tau * 17.3);
+      const roulis = calme ? 0 : Math.sin(tau * .9) * .004 + (p.secousse ? Math.sin(tau * 23) * .002 * p.secousse : 0);
+      peindre(ci, p, c, al, roulis, (sec + (p.rails ? Math.sin(tau * 9) * Math.sin(tau * 3.1) * 1.2 * p.rails : 0)) * dpr, 1.02);
+      peindre(cf, p, c, al, -roulis, 0, 1.08 + .02 * Math.sin(tau * .5));
+      pile.push({ p, c, alpha: al });
+    }
+    const rv = dom.reve + (type === 'reve' && A ? Math.sin(Math.PI * k) * .35 : 0);
+    cv('fantome').style.opacity = (calme ? rv * .5 : rv + .08 * Math.sin(tau * .7)).toFixed(3);
+    lumieres(pile, tau);
+    const cd = pile.find(x => x.p === dom) || pile[pile.length - 1];
+    particules(dom.mode, dt, tau, versEcran(cd.c, dom.lum[0].x, dom.lum[0].y));
+
+    // Voiles : ouverture, transitions au blanc, éclairs, fermeture
+    const fin = PLANS[PLANS.length - 1];
+    let n = lance || typeof window.__fige === 'number' ? 1 - clamp(t / 1.8) : 0;
+    n = Math.max(n, clamp((t - (TOTAL - fin.fin)) / fin.fin));
+    noir.style.opacity = n.toFixed(3);
+    blanc.style.opacity = (A && type === 'blanc' && !calme ? 1 - Math.abs(k * 2 - 1) : 0).toFixed(3);
+    eclair.style.opacity = (dom.eclairs && !calme && Math.random() < .06 ? .25 + Math.random() * .3 : 0).toFixed(3);
+
+    texte(lance || typeof window.__fige === 'number' ? t : -1);
+
+    // Son : ambiances et effets, calés sur le temps de la vidéo
+    if (sonPret) son(dt, dom);
+    tPrec = t;
+    const kp = planA(t);
+    chrono.textContent = `Plan ${PLANS[kp].n} · ${Math.floor(t)} s / ${Math.round(TOTAL)} s`;
+  }
+  requestAnimationFrame(image);
+})();
+</script>
+</body>
+</html>
