@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Vidéothèque</title>
+<meta name="description" content="Les bandes-annonces de la campagne Harmonia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Les affiches du cinématographe de la gare : une vignette 16/9 par film. */
+.films { display: grid; gap: 1.6rem; margin-top: 2rem; }
+.film { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 1.2rem; align-items: center; text-decoration: none; color: inherit; padding: .8rem; border: 1px solid rgba(214,164,74,.22); border-radius: 6px; background: rgba(21,18,26,.6); transition: border-color .25s ease, background .25s ease; }
+.film:hover, .film:focus-visible { border-color: var(--laiton); background: rgba(214,164,74,.06); }
+.vignette { position: relative; aspect-ratio: 16 / 9; border-radius: 4px; overflow: hidden; background: #0b0a0d center / cover no-repeat; box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+.vignette::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,.65)); }
+.lire { position: absolute; z-index: 2; left: .6rem; bottom: .6rem; width: 2.6rem; height: 2.6rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--nuit); background: var(--laiton); box-shadow: 0 0 24px rgba(214,164,74,.45); opacity: .92; transition: transform .25s ease; }
+.film:hover .lire { transform: scale(1.1); }
+.duree { position: absolute; z-index: 2; right: .5rem; bottom: .5rem; font-family: "Overpass Mono", monospace; font-size: .75rem; color: var(--parchemin); background: rgba(0,0,0,.7); padding: .1rem .45rem; border-radius: 2px; }
+/* Écrans-titres dessinés pour les films sans image fixe */
+.ecran { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem; text-align: center; padding: 0 1rem;
+  background: radial-gradient(1px 1px at 12% 22%, #f3c46a, transparent), radial-gradient(1.5px 1.5px at 78% 30%, #d6a44a, transparent), radial-gradient(1px 1px at 33% 72%, #e0a060, transparent),
+    radial-gradient(1.5px 1.5px at 62% 80%, #f3c46a, transparent), radial-gradient(1px 1px at 88% 66%, #d6a44a, transparent), radial-gradient(1px 1px at 22% 48%, #f7d998, transparent),
+    radial-gradient(ellipse at center, #17131c, #08070a 75%); }
+.ecran .haut { font-family: var(--f-ui); font-size: clamp(.5rem, 1.6vw, .7rem); letter-spacing: .4em; text-transform: uppercase; color: var(--laiton); }
+.ecran .gros { font-family: var(--f-titre); font-size: clamp(1.6rem, 6vw, 2.8rem); line-height: 1; background: linear-gradient(180deg, var(--parchemin) 35%, var(--laiton)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ecran .bas { font-family: var(--f-titre); font-size: clamp(.7rem, 2.2vw, 1rem); color: var(--laiton); letter-spacing: .12em; }
+.ecran.recap .haut { color: var(--cendre); }
+.ecran.recap .bas { font-family: var(--f-recit); font-style: italic; color: var(--cendre); letter-spacing: 0; }
+.ecran.recap::before { content: ""; position: absolute; left: 0; right: 0; bottom: 18%; height: 1px; background: linear-gradient(90deg, transparent, rgba(214,164,74,.5), transparent); }
+.infos .genre { font-family: var(--f-ui); font-size: .75rem; letter-spacing: .24em; text-transform: uppercase; color: var(--laiton); }
+.infos h2 { margin: .2rem 0 .4rem; }
+.infos p { margin: 0; color: var(--cendre); font-style: italic; }
+@media (max-width: 600px) { .film { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Voie 8</span>
+  <h1>Vidéothèque</h1>
+  <p class="chapeau">Les bandes-annonces de la campagne. Mettez le son.</p>
+  <div class="films" id="films"></div>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const boite = document.getElementById('films');
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; };
+  (window.HARMONIA.videotheque || []).forEach(v => {
+    const a = el('a', 'film'); a.href = v.lien;
+    const vig = el('div', 'vignette');
+    if (v.image) vig.style.backgroundImage = `url("${v.image}")`;
+    else {
+      // Écran-titre dans le style du film
+      const e = el('div', 'ecran ' + (v.style || ''));
+      if (v.style === 'recap') { e.append(el('span', 'haut', 'Précédemment dans'), el('span', 'gros', 'Harmonia'), el('span', 'bas', 'Saison 1 · Crépuscule Froid 876')); }
+      else { e.append(el('span', 'haut', 'Bande-annonce'), el('span', 'gros', 'Harmonia'), el('span', 'bas', 'Saison 2')); }
+      vig.appendChild(e);
+    }
+    const lire = el('span', 'lire', '▶'); lire.setAttribute('aria-hidden', 'true'); vig.appendChild(lire);
+    if (v.duree) vig.appendChild(el('span', 'duree', v.duree));
+    const infos = el('div', 'infos');
+    infos.append(el('span', 'genre', v.genre), el('h2', '', v.titre), el('p', '', v.resume));
+    a.append(vig, infos);
+    boite.appendChild(a);
+  });
+})();
+</script>
+</body>
+</html>

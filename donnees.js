@@ -98,7 +98,29 @@ window.HARMONIA = {
     { destination: 'Prochain départ', voie: '4', page: 'prochaine.html', pret: true },
     { destination: 'Le monde', voie: '5', page: 'monde.html', pret: true },
     { destination: 'L’histoire jusqu’ici', voie: '6', page: 'histoire.html', pret: true },
-    { destination: 'Financement', voie: '7', page: 'financement.html', pret: true }
+    { destination: 'Financement', voie: '7', page: 'financement.html', pret: true },
+    { destination: 'Vidéothèque', voie: '8', page: 'videotheque.html', pret: true },
+    { destination: 'Progression', voie: '9', page: 'progression.html', pret: true }
+  ],
+
+  /* La vidéothèque : les bandes-annonces déjà montrées aux joueurs, la plus récente en premier.
+     image = vignette (une image du film) ; sans image, la vignette est un écran-titre dans le style du film (style : 'teaser' ou 'recap'). */
+  videotheque: [
+    { titre: 'Le dernier trajet', genre: 'Vidéo de lancement · Saison 2', lien: 'terminus/', image: 'terminus/Plan%201.png', duree: '1 min 21',
+      resume: 'Le Train Frelon, sa dernière ligne droite jusqu’à Gravathor.' },
+    { titre: 'Harmonia', genre: 'Bande-annonce · Saison 2', lien: 'https://mistickpulse.github.io/harmonia-jeux/teaser/index.html', style: 'teaser', duree: '15 plans',
+      resume: 'Karak-Durn, la gare des Contreforts, et ce qui attend le groupe dans le royaume des Nains.' },
+    { titre: 'Précédemment dans Harmonia', genre: 'Récapitulatif · Saison 1', lien: 'https://mistickpulse.github.io/harmonia-jeux/recap/index.html', style: 'recap', duree: '13 plans',
+      resume: 'Toute la saison 1 en quelques minutes : du Cercle des Veilleurs au Train Frelon.' }
+  ],
+
+  /* Progression : les bonus accordés EN PLUS des stats de base (montées de niveau, récompenses…).
+     Sert à amener un nouveau personnage au même niveau que le groupe.
+     Une ligne par bonus, dans l'ordre où ils ont été donnés :
+       quand = la séance ('S1' pour la saison 1, ou 'S2-01'…) ; stat = ce qui augmente (PV, Mana, une caractéristique…) ;
+       valeur = ce qu'on ajoute ('+1D20', '+2'…) ; pour = 'tous' ou une liste de personnages ; detail = facultatif.
+     Seuls les bonus « pour : 'tous' » entrent dans le récapitulatif pour un nouveau personnage. */
+  progression: [
   ],
 
   /* Financement : les outils qui servent à préparer le jeu, partagés à parts égales entre les participants.

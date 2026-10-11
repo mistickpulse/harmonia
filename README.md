@@ -10,10 +10,12 @@ Site public des joueurs : uniquement ce que les joueurs savent. Aucun secret de 
 - `seance.html` : **Dernière séance**. Lit **en direct** le tableur du formulaire (la base de données des notes, `formulaire.lecture` dans `donnees.js`) avec `notes.js`, regroupe les notes par séance, les range par rubrique ; ajoute le récap validé de `seances.js` s’il existe ; coche « Fiches du monde créées » d’après `traitees.js` (horodatages des notes déjà rangées dans Le monde).
 - `monde.html` + `monde.js` : **Le monde**, les fiches (personnages, lieux, objets, factions, questions) tirées des notes des joueurs, avec recherche ; chaque fait indique sa source ; les personnages se choisissent dans l'**arbre des lieux de rencontre** (`groupesPersonnages` et `lieu`).
 - `scribe.html` : **Carnet du scribe**, envoie les notes directement au formulaire Google (identifiants dans `formulaire` de `donnees.js`), brouillon gardé dans le navigateur, lien de secours vers le formulaire.
-- `terminus/` : **la vidéo de lancement** de la saison 2 (bouton sur l’accueil). **Copie** de `Notes/Harmonia/Harmonia/PROPS/Terminus/` : toute correction se fait dans les deux. Crédits des sons dans `terminus/sons/credits.js` (bouton « Crédits » de la vidéo).
+- `terminus/` : **la vidéo de lancement** de la saison 2 (dans la Vidéothèque). **Copie** de `Notes/Harmonia/Harmonia/PROPS/Terminus/` : toute correction se fait dans les deux. Crédits des sons dans `terminus/sons/credits.js` (bouton « Crédits » de la vidéo).
 - `commun.js` : le menu simple du pied de page, commun à toutes les pages.
 - `financement.html` : le **reçu du guichet**, les outils payants et la part de chaque participant (montants dans `donnees.js`).
-- `donnees.js` : la date en jeu, la prochaine séance, les lignes du tableau (`pret: true` quand la page existe : statut « À l’heure ») et le financement.
+- `videotheque.html` : **Vidéothèque**, les bandes-annonces déjà montrées, avec vignette (liste `videotheque` dans `donnees.js` ; la bande-annonce et le récap sont sur le site des mini-jeux, harmonia-jeux).
+- `progression.html` : **Progression**, les bonus gagnés en plus des stats de base (liste `progression` dans `donnees.js`) et leur cumul pour un nouveau personnage.
+- `donnees.js` : la date en jeu, la prochaine séance, les lignes du tableau (`pret: true` quand la page existe : statut « À l’heure »), le financement, la vidéothèque et la progression.
 - `style.css` : la charte commune.
 
 Publié avec GitHub Pages (branche `main`, dossier racine).

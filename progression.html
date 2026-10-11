@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harmonia · Progression</title>
+<meta name="description" content="Les bonus gagnés par le groupe en plus des stats de base, pour qu'un nouveau personnage arrive au même niveau.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+/* Le registre des montées : un parchemin pour le nouveau venu, puis le registre complet. */
+.nouveau { margin-top: 2rem; padding: 1.3rem clamp(1rem, 4vw, 1.8rem); color: #2b2116; background: linear-gradient(135deg, #f3e9d3, #e3d2ad); border-radius: 6px; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.nouveau h2 { color: #2b2116; }
+.nouveau p { margin: 0 0 .8rem; font-family: var(--f-ui); color: #6b5b45; }
+.cumul { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.cumul li { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; padding: .5rem 0; border-bottom: 1px dashed #a88a55; font-family: var(--f-ui); }
+.cumul li:last-child { border-bottom: 0; }
+.cumul .stat { font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .9rem; }
+.cumul .val { font-family: "Overpass Mono", monospace; font-size: 1.1rem; color: #7a3a1a; text-align: right; }
+.vide { font-style: italic; color: #6b5b45; }
+
+.registre { margin-top: 2.4rem; }
+.registre table { width: 100%; border-collapse: collapse; font-family: var(--f-ui); }
+.registre th { text-align: left; font-weight: 500; font-size: .72rem; letter-spacing: .24em; text-transform: uppercase; color: var(--laiton); padding: .4rem .5rem; border-bottom: 1px solid rgba(214,164,74,.4); }
+.registre td { padding: .6rem .5rem; border-bottom: 1px solid rgba(214,164,74,.15); vertical-align: top; }
+.registre .val { font-family: "Overpass Mono", monospace; color: #ffcf6a; white-space: nowrap; }
+.registre .detail { display: block; font-size: .85rem; color: var(--cendre); font-style: italic; }
+.registre .rien { color: var(--cendre); font-style: italic; }
+@media (max-width: 560px) {
+  .registre thead { display: none; }
+  .registre tr { display: grid; grid-template-columns: auto 1fr auto; gap: .2rem .8rem; padding: .6rem 0; border-bottom: 1px solid rgba(214,164,74,.15); }
+  .registre td { border: 0; padding: 0; }
+  .registre td.pour { grid-column: 1 / -1; color: var(--cendre); font-size: .85rem; }
+}
+</style>
+</head>
+<body>
+<header class="entete">
+  <a class="marque" href="index.html">Harmonia</a>
+  <a href="index.html">‹ Départs</a>
+</header>
+
+<main class="page">
+  <span class="kicker">Voie 9</span>
+  <h1>Progression</h1>
+  <p class="chapeau">Tout ce que le groupe a gagné en plus des stats de base, séance après séance.</p>
+
+  <section class="nouveau" aria-labelledby="titreNouveau">
+    <h2 id="titreNouveau">Pour un nouveau personnage</h2>
+    <p>À ajouter à la fiche de base pour arriver au même niveau que le groupe. Les dés se lancent une fois, à la création.</p>
+    <ul class="cumul" id="cumul"></ul>
+  </section>
+
+  <section class="registre" aria-labelledby="titreRegistre">
+    <h2 id="titreRegistre">Le registre</h2>
+    <table>
+      <thead><tr><th>Séance</th><th>Bonus</th><th></th><th>Pour</th></tr></thead>
+      <tbody id="lignes"></tbody>
+    </table>
+  </section>
+</main>
+
+<footer class="pied">
+  <nav id="menuSimple" aria-label="Menu simple"></nav>
+  Harmonia · campagne de Fabian
+</footer>
+<script src="donnees.js"></script>
+<script src="commun.js" defer></script>
+<script>
+(() => {
+  const P = window.HARMONIA.progression || [];
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; };
+  const seance = q => q === 'S1' ? 'Saison 1' : q;
+  const pourTous = b => !b.pour || b.pour === 'tous';
+
+  // Le cumul pour un nouveau venu : les bonus donnés à tout le groupe, rassemblés par stat (« +1D20 + 1D20 + 2 »)
+  const cumul = document.getElementById('cumul');
+  const parStat = new Map();
+  P.filter(pourTous).forEach(b => { if (!parStat.has(b.stat)) parStat.set(b.stat, []); parStat.get(b.stat).push(b.valeur.replace(/^\+\s*/, '')); });
+  if (!parStat.size) cumul.appendChild(el('li', 'vide', 'Aucun bonus pour l’instant : la fiche de base suffit.'));
+  parStat.forEach((vals, stat) => { const li = el('li'); li.append(el('span', 'stat', stat), el('span', 'val', '+' + vals.join(' + '))); cumul.appendChild(li); });
+
+  // Le registre complet, dans l'ordre où les bonus ont été donnés
+  const corps = document.getElementById('lignes');
+  if (!P.length) { const tr = el('tr'); const td = el('td', 'rien', 'Rien d’inscrit pour l’instant.'); td.colSpan = 4; tr.appendChild(td); corps.appendChild(tr); }
+  P.forEach(b => {
+    const tr = el('tr');
+    const quoi = el('td'); quoi.append(document.createTextNode(b.stat)); if (b.detail) quoi.appendChild(el('span', 'detail', b.detail));
+    tr.append(el('td', '', seance(b.quand)), quoi, el('td', 'val', b.valeur),
+      el('td', 'pour', pourTous(b) ? 'Tout le groupe' : [].concat(b.pour).join(', ')));
+    corps.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
