@@ -96,7 +96,7 @@
     <h2 id="titreRegistre">Registre des voyageurs</h2>
     <div class="guichet">Qui a réglé sa part</div>
     <div class="registre" id="registre"></div>
-    <p class="legende">La période en cours est surlignée. « À venir » : une période qui n’a pas encore commencé. « En retard » : une période terminée qui n’a pas été réglée.</p>
+    <p class="legende">La période en cours est surlignée. « À venir » : une période qui n’a pas encore commencé. « Reste » : une part réglée en partie, avec ce qu’il reste à verser. « En retard » : une période terminée qui n’a pas été réglée.</p>
   </section>
 
   <p class="merci">Merci à chacun : c’est grâce à vous que les cartes, les vidéos et ce site existent.</p>
@@ -158,8 +158,8 @@
   document.getElementById('totalMois').textContent = euros(arrondi(totalMois));
   document.getElementById('totalPeriode').textContent = euros(totalPeriode);
   const nb = F.participants.length;
+  const part = nb ? Math.ceil(totalPeriode / nb * 100) / 100 : 0;
   if (nb) {
-    const part = Math.ceil(totalPeriode / nb * 100) / 100;
     document.getElementById('part').textContent = euros(part);
     document.getElementById('detail').textContent = `à régler une fois pour ${N === 1 ? 'le mois' : 'les ' + N + ' mois'} (${courante.libelle}) · ${euros(totalPeriode)} ÷ ${nb} participants`;
     document.getElementById('aduMontant').textContent = euros(part);
@@ -189,8 +189,12 @@
       tr.appendChild(nomCase);
       vues.forEach(p => {
         const td = document.createElement('td'); if (p === courante) td.className = 'encours';
-        const paye = (v.prelevement && !p.avenir) || (v.paye || []).includes(p.cle);
-        const [cls, txt] = paye ? ['paye', 'Réglé'] : p.avenir ? ['avenir', 'À venir'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
+        // Versé pour cette période : une liste = réglé en entier ; un objet = le montant versé (peut être partiel)
+        const verse = Array.isArray(v.paye) ? (v.paye.includes(p.cle) ? part : 0) : ((v.paye || {})[p.cle] || 0);
+        const reste = arrondi(part - verse);
+        const paye = (v.prelevement && !p.avenir) || reste <= 0;
+        const [cls, txt] = paye ? ['paye', 'Réglé'] : verse > 0 ? [p.fini ? 'retard' : 'attente', 'Reste ' + euros(reste)] : p.avenir ? ['avenir', 'À venir'] : p.fini ? ['retard', 'En retard'] : ['attente', 'En attente'];
+        if (verse > 0 && !paye) td.title = `${euros(verse)} versés sur ${euros(part)}`;
         td.innerHTML = `<span class="marque-paye ${cls}">${txt}</span>`;
         tr.appendChild(td);
       });

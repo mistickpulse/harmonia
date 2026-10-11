@@ -121,13 +121,14 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
   })();
   if (b && ['personnages', 'lieux', 'quetes', 'objets', 'questions'].some(c => b[c])) $('plus').open = true;
   let minuteur;
-  $('carnet').addEventListener('input', () => {
-    clearTimeout(minuteur);
-    minuteur = setTimeout(() => {
-      const v = Object.fromEntries(CHAMPS.map(c => [c, $(c).value])); v.spinoff = $('spinoff').checked;
-      $('brouillon').textContent = ecrire(v) ? 'Brouillon gardé sur cet appareil' : '';
-    }, 500);
-  });
+  const garder = () => {
+    clearTimeout(minuteur); minuteur = null;
+    const v = Object.fromEntries(CHAMPS.map(c => [c, $(c).value])); v.spinoff = $('spinoff').checked;
+    $('brouillon').textContent = ecrire(v) ? 'Brouillon gardé sur cet appareil' : '';
+  };
+  $('carnet').addEventListener('input', () => { clearTimeout(minuteur); minuteur = setTimeout(garder, 500); });
+  // Actualisation ou fermeture pendant la frappe : on garde aussi les dernières lettres
+  addEventListener('pagehide', () => { if (minuteur) garder(); });
   if (b && b.recit) $('brouillon').textContent = 'Brouillon retrouvé';
 
   // Envoi au formulaire Google, en coulisses
@@ -151,7 +152,7 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
       await fetch(F.envoi, { method: 'POST', mode: 'no-cors', body: donnees });
       const seance = $('seance').value, auteur = $('auteur').value, spin = $('spinoff').checked;
       $('carnet').reset(); $('seance').value = seance; $('auteur').value = auteur; $('spinoff').checked = spin;
-      ecrire(null); $('brouillon').textContent = '';
+      clearTimeout(minuteur); minuteur = null; ecrire(null); $('brouillon').textContent = '';
       message('ok', 'Notes envoyées. Merci, scribe ! Tu peux en envoyer d’autres quand tu veux.');
     } catch (err) {
       message('erreur', 'L’envoi a échoué (pas de connexion ?). Tes notes sont toujours là : réessaie, ou utilise le formulaire Google.');
