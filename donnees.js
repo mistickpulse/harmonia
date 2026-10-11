@@ -120,7 +120,7 @@ window.HARMONIA = {
     participants: [
       { nom: 'Fabian', perso: 'Maître du jeu', prelevement: true, paye: [] }, // prélevé sur son compte : réglé à chaque période
       { nom: 'Nathan', perso: 'Varynor Mornelion', paye: [] },
-      { nom: 'Vincent', perso: 'Larian Feuillelune', paye: { '2026-10': 11.73 } },
+      { nom: 'Vincent', perso: 'Larian Feuillelune', paye: ['2026-10'] }, // complément versé le 11/10/2026 : période d'octobre réglée en entier
       { nom: 'Jeremy', perso: 'Kagé', paye: [] },
       { nom: 'Lucas', perso: 'Anoer Maethyr', paye: [] },
       { nom: 'Kelly', perso: 'Telissandre', paye: { '2026-10': 12 } },
