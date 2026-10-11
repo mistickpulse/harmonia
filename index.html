@@ -3,109 +3,109 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Harmonia · Départs</title>
-<meta name="description" content="Le site de la campagne Harmonia : dernière séance, fil d'Ariane, semaine en cours, prochain départ et le monde.">
+<title>Harmonia · Le Caravansérail</title>
+<meta name="description" content="Le site de la campagne Harmonia : dernière séance, fil d'Ariane, calendrier, prochaine séance, le monde.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Alegreya+Sans:wght@400;500;700&family=Overpass+Mono:wght@600&display=swap">
 <link rel="stylesheet" href="style.css">
 <style>
-/* Le tableau des départs d'une gare naine : un panneau de laiton, des plaquettes qui claquent en tournant. */
-.gare { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 3vh 16px 0; }
-.fronton { text-align: center; margin-bottom: 1.6rem; }
+/* Les lanternes d'Ilvar : une allée du camp des bloqués, la nuit. L'allumeur les allume une à une ;
+   une lanterne allumée = une rubrique prête. Le ciel change de temps en temps (météo dans METEO, plus bas). */
+body { background: #0b0d14; }
+#ciel { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; display: block; }
+.camp { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 3vh 16px 0; --amp: 3deg; }
+.fronton { text-align: center; margin-bottom: 1rem; }
 .fronton .kicker { display: block; margin-bottom: .3rem; }
 .fronton h1 { margin: 0; font-size: clamp(2.4rem, 9vw, 4.8rem); background: linear-gradient(180deg, var(--parchemin) 30%, var(--laiton)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fronton .lieu { font-family: var(--f-ui); font-size: .8rem; letter-spacing: .3em; text-transform: uppercase; color: var(--cendre); }
 
-.panneau {
-  /* taille d’une plaquette : 21 + 1 + 12 cases et les écarts doivent tenir dans le panneau */
-  --case: clamp(12px, calc((min(100vw, 64rem) - 150px) / 38), 28px);
-  --pas: calc(var(--case) + 2px);
-  /* colonnes de largeur fixe : les en-têtes tombent pile au-dessus des plaquettes */
-  --c-dest: calc(21 * var(--pas)); --c-voie: max(calc(var(--case) * 2.4), 3.4rem); --c-statut: calc(12 * var(--pas));
-  width: min(100%, 64rem); position: relative;
-  padding: clamp(12px, 2.5vw, 26px);
-  background: linear-gradient(180deg, #3a2b14, #1d150b 12%, #120d07 88%, #3a2b14);
-  border: 2px solid var(--laiton-sombre); border-radius: 6px;
-  box-shadow: 0 0 0 1px #000, 0 0 0 6px #2a1e0d, 0 0 0 7px var(--laiton-sombre), 0 30px 80px rgba(0,0,0,.7), inset 0 0 40px rgba(0,0,0,.8);
-}
-/* Rivets aux quatre coins */
-.panneau::before, .panneau::after { content: ""; position: absolute; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f3d28b, #7a5a22 70%); }
-.panneau::before { left: 8px; } .panneau::after { right: 8px; }
+/* La pancarte : heure réelle, date en jeu, temps qu'il fait */
+.pancarte { display: flex; gap: .4rem 1.4rem; flex-wrap: wrap; justify-content: center; align-items: baseline; padding: .55rem 1.2rem; margin-bottom: 1.4rem; border-radius: 3px;
+  background: linear-gradient(180deg, #3b2a17, #2a1d10); box-shadow: inset 0 1px 0 rgba(255,220,160,.12), 0 6px 18px rgba(0,0,0,.5); font-family: var(--f-ui); color: #e9d6b0; font-size: .85rem; letter-spacing: .12em; text-transform: uppercase; }
+.pancarte b { font-family: "Overpass Mono", monospace; font-size: 1.15rem; color: #ffcf6a; letter-spacing: .06em; }
+.pancarte .meteo { color: #bcd2e8; transition: opacity 1.2s ease; }
 
-.bandeau { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; padding: 0 4px 12px; border-bottom: 1px solid rgba(214,164,74,.35); margin-bottom: 10px; }
-.bandeau .titre { font-family: var(--f-titre); font-size: clamp(1.2rem, 3.6vw, 2rem); color: var(--laiton); letter-spacing: .06em; line-height: 1; }
-.bandeau .titre small { display: block; font-family: var(--f-ui); font-size: .62em; letter-spacing: .3em; text-transform: uppercase; color: var(--cendre); margin-top: .35rem; }
-.horloge { text-align: right; font-family: var(--f-ui); color: var(--cendre); font-size: clamp(.7rem, 1.8vw, .9rem); letter-spacing: .12em; text-transform: uppercase; }
-.horloge b { display: block; font-family: "Overpass Mono", monospace; font-size: clamp(1.3rem, 4vw, 2.1rem); color: #ffcf6a; letter-spacing: .08em; text-shadow: 0 0 12px rgba(255,190,80,.5); }
+/* L'allée : des rangées de lanternes pendues à une corde */
+.allee { width: min(100%, 60rem); display: grid; grid-template-columns: repeat(5, 1fr); row-gap: 1.6rem; }
+@media (max-width: 760px) { .allee { grid-template-columns: repeat(3, 1fr); } }
+.lanterne { position: relative; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: inherit; padding-bottom: .2rem; }
+.lanterne::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 2px; background: linear-gradient(180deg, #5a4630, #2a1f14); box-shadow: 0 2px 3px rgba(0,0,0,.6); }
+.pendule { position: relative; display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; animation: balance var(--duree, 3.6s) ease-in-out var(--phase, 0s) infinite alternate; }
+@keyframes balance { from { transform: rotate(calc(var(--amp) * -1)); } to { transform: rotate(var(--amp)); } }
+.chaine { width: 2px; height: 26px; background: repeating-linear-gradient(180deg, #8a7048 0 3px, #3a2c1a 3px 5px); }
+.anneau { width: 10px; height: 10px; margin-top: -2px; border: 2px solid #8a7048; border-radius: 50%; }
+.chapeau { width: 50px; height: 13px; margin-top: -1px; clip-path: polygon(22% 0, 78% 0, 100% 100%, 0 100%); background: linear-gradient(180deg, #6d5532, #2f2213); }
+.verre { position: relative; width: 40px; height: 54px; border: 3px solid #3d2d19; border-top-width: 2px; border-radius: 3px 3px 6px 6px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 60%, #241d16, #110d0a 75%); box-shadow: inset 0 0 6px rgba(0,0,0,.8); transition: background .6s ease, box-shadow .6s ease; }
+.verre::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: rgba(40,28,14,.85); z-index: 2; }
+.verre::after { content: ""; position: absolute; top: 6%; left: 14%; width: 4px; height: 60%; border-radius: 3px; background: rgba(255,255,255,.08); z-index: 2; }
+.socle { width: 46px; height: 7px; border-radius: 0 0 4px 4px; background: linear-gradient(180deg, #4d3a22, #241a0e); }
+.flamme { position: absolute; left: 50%; bottom: 12px; width: 12px; height: 20px; margin-left: -6px; border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%; opacity: 0; transform: scale(.2);
+  background: radial-gradient(ellipse at 50% 70%, #fff6d8 0%, #ffd27a 35%, #f08a2c 70%, rgba(224,112,58,0) 100%); filter: blur(.4px); transition: opacity .4s ease, transform .5s cubic-bezier(.2,1.6,.4,1); }
+.halo { position: absolute; left: 50%; top: 66px; width: 190px; height: 190px; margin: -95px 0 0 -95px; border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, rgba(255,196,110,.42) 0%, rgba(255,160,70,.16) 35%, rgba(255,140,60,0) 70%); transition: opacity 1s ease; mix-blend-mode: screen; }
+.allumee .verre { background: radial-gradient(ellipse at 50% 65%, #ffd98a 0%, #e98d35 45%, #5a2c10 100%); box-shadow: inset 0 0 10px rgba(255,200,120,.6); }
+.allumee .flamme { opacity: 1; transform: scale(1); animation: vacille 1.3s ease-in-out infinite alternate; }
+.allumee .halo { opacity: 1; animation: lueur 2.1s ease-in-out infinite alternate; }
+@keyframes vacille { 0% { transform: scale(1, 1); } 30% { transform: scale(.92, 1.08) translateX(-.5px); } 60% { transform: scale(1.05, .95) translateX(.5px); } 100% { transform: scale(.97, 1.04); } }
+@keyframes lueur { from { opacity: .82; } to { opacity: 1; } }
+.allumee:hover .halo, .allumee:focus-visible .halo { opacity: 1; filter: brightness(1.35); }
+/* L'étincelle de l'allumeur */
+.etincelle { position: absolute; left: 50%; top: 66px; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%; pointer-events: none; opacity: 0;
+  background: radial-gradient(circle, #fff8e0, rgba(255,210,120,.5) 30%, transparent 65%); }
+.allumee .etincelle { animation: etincelle .7s ease-out; }
+@keyframes etincelle { 0% { opacity: 1; transform: scale(.3); } 100% { opacity: 0; transform: scale(1.6); } }
+/* Lanterne éteinte : la mèche fume */
+.fumee { position: absolute; left: 50%; top: 40px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: rgba(190,190,200,.35); filter: blur(3px); opacity: 0; }
+.morte .fumee { animation: fumee 3.2s ease-out infinite; }
+.morte .fumee:nth-child(2) { animation-delay: 1.6s; }
+@keyframes fumee { 0% { opacity: 0; transform: translate(0, 0) scale(.6); } 20% { opacity: .7; } 100% { opacity: 0; transform: translate(6px, -38px) scale(2.2); } }
 
-.entetes, .ligne { display: grid; grid-template-columns: minmax(var(--c-dest), 1fr) var(--c-voie) var(--c-statut); align-items: center; gap: clamp(8px, 2vw, 22px); }
-.entetes { font-family: var(--f-ui); font-size: clamp(.6rem, 1.6vw, .75rem); letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); padding: 4px 8px 8px; }
-.ligne { padding: 8px; border-radius: 4px; text-decoration: none; color: inherit; transition: background .25s ease, box-shadow .25s ease; position: relative; }
-.ligne + .ligne { margin-top: 4px; }
-a.ligne:hover, a.ligne:focus-visible { background: rgba(214,164,74,.1); box-shadow: inset 3px 0 0 var(--laiton); }
-a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
-.ligne[aria-disabled="true"] { cursor: default; opacity: .78; }
-.col-voie { text-align: center; justify-self: center; }
-.entetes .col-voie { justify-self: stretch; }
+.etiquette { margin-top: .9rem; min-width: 7.2rem; max-width: 100%; padding: .35rem .6rem .4rem; text-align: center; border-radius: 2px; position: relative;
+  background: linear-gradient(180deg, #4a3520, #33240f); box-shadow: inset 0 1px 0 rgba(255,220,160,.1), 0 4px 10px rgba(0,0,0,.55); }
+.etiquette .nom { display: block; font-family: var(--f-titre); font-size: clamp(.95rem, 2.4vw, 1.15rem); line-height: 1.15; color: #f1e2c2; }
+.etiquette .etat { display: block; margin-top: .15rem; font-family: var(--f-ui); font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: #9fe8a8; }
+.morte .etiquette { opacity: .7; }
+.morte .etiquette .etat { color: #e0a060; }
+a.lanterne:hover .nom, a.lanterne:focus-visible .nom { color: #ffd98a; }
+a.lanterne:focus-visible { outline: none; }
+a.lanterne:focus-visible .etiquette { outline: 2px solid var(--parchemin); outline-offset: 3px; }
 
-/* Les plaquettes */
-.plaquettes { display: inline-flex; gap: 2px; }
-.case {
-  width: var(--case); height: calc(var(--case) * 1.45); display: inline-flex; align-items: center; justify-content: center;
-  font-family: "Overpass Mono", ui-monospace, monospace; font-weight: 600; font-size: calc(var(--case) * .78); color: #f2e6cc;
-  background: linear-gradient(180deg, #2a2620 0%, #1b1813 49%, #000 50%, #1d1a15 51%, #2b2721 100%);
-  border-radius: 2px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 1px 0 rgba(0,0,0,.8); position: relative; overflow: hidden;
-}
-.case.tourne { animation: claque .07s linear; }
-@keyframes claque { 0% { transform: perspective(200px) rotateX(0); } 50% { transform: perspective(200px) rotateX(-70deg); filter: brightness(.6); } 100% { transform: perspective(200px) rotateX(0); } }
-.statut .case { color: #ffcf6a; }
-.ligne.heure .statut .case { color: #9fe8a8; }
-.ligne:not(.heure) .statut .case { color: #e0a060; }
+/* Le crieur annonce le prochain départ */
+.crieur { width: min(100%, 44rem); margin-top: 2rem; text-align: center; font-family: var(--f-ui); color: var(--cendre); }
+.crieur .qui { font-size: .75rem; letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); }
+.crieur q { display: block; margin-top: .3rem; font-family: var(--f-recit); font-style: italic; font-size: clamp(1.05rem, 3vw, 1.3rem); color: var(--parchemin); quotes: "« " " »"; }
 
-.sous { width: min(100%, 64rem); display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; margin-top: 1rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
-.sous .runes { color: var(--runes); letter-spacing: .4em; opacity: .7; }
-
-/* Sur téléphone : la destination en haut, voie et statut en dessous */
-@media (max-width: 640px) {
-  .panneau { --case: clamp(9px, calc((100vw - 100px) / 23), 22px); }
-  .entetes { display: none; }
-  .ligne { grid-template-columns: 1fr auto; justify-items: start; grid-template-areas: "dest dest" "statut voie"; row-gap: 6px; padding: 10px 8px; border-bottom: 1px solid rgba(214,164,74,.15); }
-  .col-dest { grid-area: dest; } .col-voie { grid-area: voie; } .col-statut { grid-area: statut; }
-  .col-statut .case, .col-voie .case { --case: clamp(8px, calc((100vw - 100px) / 27), 16px); }
-}
-.priere { width: min(100%, 64rem); margin-top: 1.6rem; padding: 1.2rem clamp(1rem, 4vw, 2rem); border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: radial-gradient(ellipse at top, rgba(214,164,74,.08), transparent 70%); text-align: center; }
+.priere { width: min(100%, 60rem); margin-top: 1.6rem; padding: 1.2rem clamp(1rem, 4vw, 2rem); border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: rgba(11,10,13,.72); text-align: center; }
 .priere h2 { margin: 0 0 .8rem; font-size: clamp(.75rem, 2vw, .85rem); font-family: var(--f-ui); letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); }
 .priere blockquote { margin: 0 auto; max-width: 40em; font-style: italic; color: #d8c8a8; line-height: 1.65; }
 .priere blockquote p { margin: 0 0 .7em; }
 .priere blockquote p:last-child { margin-bottom: 0; }
-.lisible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+footer.pied { background: rgba(11,10,13,.6); }
+@media (prefers-reduced-motion: reduce) { .pendule { animation: none; } }
 </style>
 </head>
 <body>
-<main class="gare">
+<canvas id="ciel" aria-hidden="true"></canvas>
+<main class="camp" id="camp">
   <header class="fronton">
     <span class="kicker">Karak-Durn · Saison 2</span>
     <h1>Harmonia</h1>
+    <span class="lieu">Le Caravansérail · Les Hautes Portes</span>
   </header>
 
-  <section class="panneau" aria-labelledby="titreDeparts">
-    <div class="bandeau">
-      <div class="titre" id="titreDeparts">Départs<small>Gare des Contreforts · Gravathor</small></div>
-      <div class="horloge" aria-label="Date en jeu"><b id="heure">--:--</b><span id="dateJeu"></span></div>
-    </div>
-    <div class="entetes" aria-hidden="true"><span>Destination</span><span class="col-voie">Voie</span><span>Statut</span></div>
-    <nav id="lignes" aria-label="Rubriques du site"></nav>
-  </section>
-
-  <div class="boutons-accueil">
-
-    <a class="bouton-notes" href="#priere"><span aria-hidden="true">✦</span> La prière</a>
-    <div class="prendre-notes"></div>
+  <div class="pancarte" aria-label="Heure, date en jeu et temps qu'il fait">
+    <b id="heure">--:--</b><span id="dateJeu"></span><span class="meteo" id="meteo"></span>
   </div>
 
-  <div class="sous">
-    <span>Prochain départ : <b id="prochain"></b></span>
-    <span class="runes" aria-hidden="true">ᚺᚨᚱᛗᛟᚾᛁᚨ</span>
+  <nav class="allee" id="allee" aria-label="Rubriques du site"></nav>
+
+  <p class="crieur"><span class="qui">Olaf le crieur</span><q id="annonce"></q></p>
+
+  <div class="boutons-accueil">
+    <a class="bouton-notes" href="#priere"><span aria-hidden="true">✦</span> La prière</a>
+    <div class="prendre-notes"></div>
   </div>
 
   <section class="priere" id="priere" aria-labelledby="titrePriere" hidden>
@@ -113,7 +113,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
     <blockquote id="texte-priere"></blockquote>
   </section>
 
-  <footer class="pied" style="width:100%;margin-top:auto">
+  <footer class="pied" style="width:100%;margin-top:2.5rem">
     <nav id="menuSimple" aria-label="Menu simple"></nav>
     Harmonia · campagne de Fabian
   </footer>
@@ -135,49 +135,120 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 (() => {
   const H = window.HARMONIA;
   const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZÉÈÀ0123456789·’ ';
-  const LARG = { dest: 21, voie: 1, statut: 12 };
-  const statutDe = d => d.statut || (d.pret ? 'À l’heure' : 'Retardé'); // un statut écrit à la main l’emporte
-  const versPlaquettes = (txt, n) => (txt.toUpperCase() + ' '.repeat(n)).slice(0, n);
+  const statutDe = d => d.statut || (d.pret ? 'Allumée' : 'Pas encore');
 
-  // Les plaquettes : chaque case tourne un certain nombre de fois avant de s'arrêter sur sa lettre
-  function plaquettes(txt, n, retard) {
-    const boite = document.createElement('span'); boite.className = 'plaquettes'; boite.setAttribute('aria-hidden', 'true');
-    [...versPlaquettes(txt, n)].forEach((lettre, i) => {
-      const c = document.createElement('span'); c.className = 'case'; boite.appendChild(c);
-      if (calme) { c.textContent = lettre; return; }
-      let tours = 5 + Math.floor(Math.random() * 9);
-      const tic = () => {
-        c.classList.remove('tourne'); void c.offsetWidth; c.classList.add('tourne');
-        c.textContent = tours > 0 ? ALPHABET[Math.floor(Math.random() * ALPHABET.length)] : lettre;
-        if (tours-- > 0) setTimeout(tic, 55 + Math.random() * 25);
-      };
-      setTimeout(tic, retard + i * 35);
-    });
-    return boite;
-  }
-
-  const lignes = document.getElementById('lignes');
+  // Les lanternes : une par ligne de « departs » (donnees.js) ; l'allumeur passe de l'une à l'autre
+  const allee = document.getElementById('allee');
   H.departs.forEach((d, k) => {
     const l = document.createElement(d.pret ? 'a' : 'div');
-    l.className = 'ligne' + (d.pret ? ' pret' : '') + (statutDe(d) === 'À l’heure' ? ' heure' : '');
+    l.className = 'lanterne';
     if (d.pret) l.href = d.page; else l.setAttribute('aria-disabled', 'true');
-    const lu = document.createElement('span'); lu.className = 'lisible';
-    lu.textContent = `${d.destination}, voie ${d.voie}, ${statutDe(d)}`; l.appendChild(lu);
-    const col = (cls, el) => { const s = document.createElement('span'); s.className = cls; s.appendChild(el); l.appendChild(s); };
-    col('col-dest', plaquettes(d.destination, LARG.dest, 150 + k * 260));
-    col('col-voie', plaquettes(d.voie, LARG.voie, 350 + k * 260));
-    col('col-statut statut', plaquettes(statutDe(d), LARG.statut, 450 + k * 260));
-    lignes.appendChild(l);
+    l.style.setProperty('--duree', (3 + Math.random() * 1.6).toFixed(2) + 's');
+    l.style.setProperty('--phase', (-Math.random() * 4).toFixed(2) + 's');
+    l.innerHTML = '<span class="pendule" aria-hidden="true"><span class="chaine"></span><span class="anneau"></span><span class="chapeau"></span>'
+      + '<span class="verre"><span class="flamme"></span></span><span class="socle"></span><span class="halo"></span><span class="etincelle"></span>'
+      + '<span class="fumee"></span><span class="fumee"></span></span>'
+      + '<span class="etiquette"><span class="nom"></span><span class="etat"></span></span>';
+    l.querySelector('.nom').textContent = d.destination;
+    l.querySelector('.etat').textContent = statutDe(d);
+    allee.appendChild(l);
+    setTimeout(() => l.classList.add(d.pret ? 'allumee' : 'morte'), calme ? 0 : 500 + k * 320);
   });
 
-  // Horloge : l'heure réelle, la date d'Harmonia
+  // La pancarte : l'heure réelle, la date d'Harmonia
   document.getElementById('dateJeu').textContent = `${H.dateEnJeu} · ${H.saison}`;
   const heure = document.getElementById('heure');
   (function tic() { const d = new Date(); heure.textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); setTimeout(tic, 1000 * (60 - d.getSeconds())); })();
 
   const p = H.prochaineSeance;
-  document.getElementById('prochain').textContent = [p.libelle, p.heure, p.quoi].filter(Boolean).join(' · ');
+  document.getElementById('annonce').textContent = 'Prochain départ : ' + [p.libelle, p.heure, p.quoi].filter(Boolean).join(' · ') + ' !';
+
+  /* ---------- Le ciel : la météo change toutes les DUREE millisecondes, en fondu ----------
+     ciel = haut, milieu, bas (RVB) ; etoiles, neige, pluie, brume = 0 à 1 ; vent = 0 à 1 (fait aussi balancer les lanternes). */
+  const DUREE = 40000;
+  const METEO = [
+    { nom: 'Nuit claire',       ciel: [[10, 16, 34], [22, 30, 52], [40, 36, 44]], etoiles: 1,  neige: 0, pluie: 0, brume: .08, vent: .15 },
+    { nom: 'Vent du col',       ciel: [[12, 17, 30], [24, 30, 46], [36, 34, 42]], etoiles: .5, neige: 0, pluie: 0, brume: .12, vent: 1 },
+    { nom: 'Neige',             ciel: [[26, 29, 38], [40, 43, 52], [52, 50, 56]], etoiles: 0,  neige: 1, pluie: 0, brume: .25, vent: .35 },
+    { nom: 'Brouillard',        ciel: [[30, 33, 40], [42, 45, 51], [50, 51, 56]], etoiles: 0,  neige: 0, pluie: 0, brume: 1,   vent: .08 },
+    { nom: 'Pluie verglaçante', ciel: [[14, 18, 28], [26, 31, 42], [36, 38, 46]], etoiles: 0,  neige: 0, pluie: 1, brume: .3,  vent: .55 }
+  ];
+  const cv = document.getElementById('ciel'), cx = cv.getContext('2d');
+  const camp = document.getElementById('camp'), meteoTxt = document.getElementById('meteo');
+  let W, Ht, dpr;
+  const taille = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = cv.width = innerWidth * dpr; Ht = cv.height = innerHeight * dpr; };
+  addEventListener('resize', taille); taille();
+
+  let n = Math.min(METEO.length - 1, parseInt(new URLSearchParams(location.search).get('meteo'), 10) || 0); // ?meteo=2 : commencer par la neige (pour vérifier)
+  const cible = () => METEO[n];
+  const m = JSON.parse(JSON.stringify(METEO[n])); // l'état affiché, qui glisse vers la cible
+  const annoncer = () => { meteoTxt.style.opacity = 0; setTimeout(() => { meteoTxt.textContent = cible().nom; meteoTxt.style.opacity = 1; }, 600); };
+  meteoTxt.textContent = cible().nom;
+  if (!calme) setInterval(() => { n = (n + 1) % METEO.length; annoncer(); }, DUREE);
+
+  const R = Math.random;
+  const etoiles = Array.from({ length: 140 }, () => ({ x: R(), y: R() * .65, r: R() * 1.2 + .3, ph: R() * 6.28 }));
+  const flocons = Array.from({ length: calme ? 0 : 160 }, () => ({ x: R(), y: R(), r: R() * 2 + .6, v: R() * .5 + .35, ph: R() * 6.28 }));
+  const gouttes = Array.from({ length: calme ? 0 : 140 }, () => ({ x: R(), y: R(), l: R() * 14 + 10, v: R() * 6 + 12 }));
+  const nappes = Array.from({ length: 7 }, (_, i) => ({ x: R(), y: .35 + R() * .6, r: .35 + R() * .3, v: (R() * .6 + .2) * (i % 2 ? 1 : -1) }));
+  const rafales = Array.from({ length: calme ? 0 : 26 }, () => ({ x: R(), y: R() * .8, l: R() * 120 + 60, v: R() * 8 + 10 }));
+  const feux = Array.from({ length: 6 }, (_, i) => ({ x: (i + .5) / 6 + (R() - .5) * .08, ph: R() * 6.28 }));
+  const glisse = (a, b, k) => a + (b - a) * k;
+  const rvb = c => `rgb(${c.map(Math.round).join(',')})`;
+
+  let t0 = 0;
+  function dessin(t) {
+    const dt = Math.min(50, t - t0) / 16.7; t0 = t;
+    const c = cible(), k = calme ? 1 : .006 * dt;
+    ['etoiles', 'neige', 'pluie', 'brume', 'vent'].forEach(p => m[p] = glisse(m[p], c[p], k));
+    m.ciel.forEach((col, i) => col.forEach((v, j) => col[j] = glisse(v, c.ciel[i][j], k)));
+    camp.style.setProperty('--amp', (2 + m.vent * 7).toFixed(2) + 'deg');
+
+    const g = cx.createLinearGradient(0, 0, 0, Ht);
+    g.addColorStop(0, rvb(m.ciel[0])); g.addColorStop(.55, rvb(m.ciel[1])); g.addColorStop(1, rvb(m.ciel[2]));
+    cx.fillStyle = g; cx.fillRect(0, 0, W, Ht);
+
+    // Étoiles
+    if (m.etoiles > .01) etoiles.forEach(s => {
+      cx.globalAlpha = m.etoiles * (.45 + .55 * Math.sin(t / 900 + s.ph) ** 2);
+      cx.fillStyle = '#f4ecd8'; cx.beginPath(); cx.arc(s.x * W, s.y * Ht, s.r * dpr, 0, 6.28); cx.fill();
+    });
+    // Les feux du camp, au loin
+    feux.forEach(f => {
+      const r = (60 + 10 * Math.sin(t / 300 + f.ph)) * dpr, x = f.x * W, y = Ht * .98;
+      const fg = cx.createRadialGradient(x, y, 0, x, y, r);
+      fg.addColorStop(0, 'rgba(255,150,60,.35)'); fg.addColorStop(1, 'rgba(255,120,40,0)');
+      cx.globalAlpha = 1 - m.brume * .5; cx.fillStyle = fg; cx.fillRect(x - r, y - r, r * 2, r * 2);
+    });
+    // Rafales
+    if (m.vent > .5) { cx.strokeStyle = '#cfd8e6'; cx.lineWidth = dpr; rafales.forEach(s => {
+      s.x += s.v * m.vent * dt / W * dpr; if (s.x * W > W + s.l * dpr) { s.x = -s.l * dpr / W; s.y = R() * .8; }
+      cx.globalAlpha = (m.vent - .5) * .35; cx.beginPath(); cx.moveTo(s.x * W, s.y * Ht); cx.lineTo(s.x * W - s.l * dpr, s.y * Ht + 4 * dpr); cx.stroke();
+    }); }
+    // Neige
+    if (m.neige > .01) { cx.fillStyle = '#f2f4f8'; flocons.forEach(f => {
+      f.y += f.v * dt * dpr / Ht * 1.6; f.x += (Math.sin(t / 1400 + f.ph) * .3 + m.vent * 1.4) * dt * dpr / W;
+      if (f.y > 1) { f.y = -.02; f.x = R(); } if (f.x > 1.02) f.x = -.02;
+      cx.globalAlpha = m.neige * .85; cx.beginPath(); cx.arc(f.x * W, f.y * Ht, f.r * dpr, 0, 6.28); cx.fill();
+    }); }
+    // Pluie verglaçante
+    if (m.pluie > .01) { cx.strokeStyle = '#b9cbe0'; cx.lineWidth = dpr; gouttes.forEach(d => {
+      const vx = m.vent * 4; d.y += d.v * dt * dpr / Ht; d.x += vx * dt * dpr / W;
+      if (d.y > 1) { d.y = -.05; d.x = R(); } if (d.x > 1.02) d.x = -.02;
+      cx.globalAlpha = m.pluie * .45; cx.beginPath(); cx.moveTo(d.x * W, d.y * Ht); cx.lineTo(d.x * W - vx * d.l * .25 * dpr, d.y * Ht - d.l * dpr); cx.stroke();
+    }); }
+    // Brume
+    if (m.brume > .01) nappes.forEach(b => {
+      b.x += b.v * .0004 * dt; if (b.x > 1.4) b.x = -.4; if (b.x < -.4) b.x = 1.4;
+      const r = b.r * Math.max(W, Ht), x = b.x * W, y = b.y * Ht;
+      const bg = cx.createRadialGradient(x, y, 0, x, y, r);
+      bg.addColorStop(0, 'rgba(170,176,190,.28)'); bg.addColorStop(1, 'rgba(170,176,190,0)');
+      cx.globalAlpha = m.brume; cx.fillStyle = bg; cx.fillRect(x - r, y - r, r * 2, r * 2);
+    });
+    cx.globalAlpha = 1;
+    if (!calme) requestAnimationFrame(dessin);
+  }
+  requestAnimationFrame(dessin);
 })();
 </script>
 </body>

@@ -2,7 +2,8 @@
 
 Site public des joueurs : uniquement ce que les joueurs savent. Aucun secret de MJ ici.
 
-- `index.html` : l'accueil, le **tableau des départs** de la gare des Contreforts (chaque ligne est une rubrique), et **la prière** du début de séance (texte dans `priere` de `donnees.js`, bouton « La prière » pour y aller).
+- `index.html` : l'accueil, **les lanternes d'Ilvar** au Caravansérail (une lanterne par rubrique, tirée des lignes de `departs` ; allumée = page prête ; elles se balancent selon le vent ; la météo du ciel change toutes les 40 s, liste `METEO` dans la page, `?meteo=2` pour en forcer une), et **la prière** du début de séance (texte dans `priere` de `donnees.js`, bouton « La prière » pour y aller).
+- `gare.html` : **archive** de l'ancien accueil, le tableau des départs de la gare des Contreforts (non relié au menu).
 - `histoire.html` : **L'histoire jusqu'ici**, le résumé de la saison 1.
 - `prochaine.html` : **Prochain départ**, le billet de train et le compte à rebours (`prochaineSeance` dans `donnees.js`).
 - `fil.html` : **Fil d’Ariane**, la feuille de route (`fil` dans `donnees.js`, version publique validée).
