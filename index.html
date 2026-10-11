@@ -73,6 +73,11 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
   .col-dest { grid-area: dest; } .col-voie { grid-area: voie; } .col-statut { grid-area: statut; }
   .col-statut .case, .col-voie .case { --case: clamp(8px, calc((100vw - 100px) / 27), 16px); }
 }
+.priere { width: min(100%, 64rem); margin-top: 1.6rem; padding: 1.2rem clamp(1rem, 4vw, 2rem); border: 1px solid rgba(214,164,74,.35); border-radius: 4px; background: radial-gradient(ellipse at top, rgba(214,164,74,.08), transparent 70%); text-align: center; }
+.priere h2 { margin: 0 0 .8rem; font-size: clamp(.75rem, 2vw, .85rem); font-family: var(--f-ui); letter-spacing: .3em; text-transform: uppercase; color: var(--laiton); }
+.priere blockquote { margin: 0 auto; max-width: 40em; font-style: italic; color: #d8c8a8; line-height: 1.65; }
+.priere blockquote p { margin: 0 0 .7em; }
+.priere blockquote p:last-child { margin-bottom: 0; }
 .lisible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
 </head>
@@ -94,6 +99,7 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 
   <div class="boutons-accueil">
     <a class="bouton-notes bouton-video" href="terminus/"><span aria-hidden="true">▶</span> Vidéo de lancement</a>
+    <a class="bouton-notes" href="#priere"><span aria-hidden="true">✦</span> La prière</a>
     <div class="prendre-notes"></div>
   </div>
 
@@ -102,6 +108,11 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
     <span class="runes" aria-hidden="true">ᚺᚨᚱᛗᛟᚾᛁᚨ</span>
   </div>
 
+  <section class="priere" id="priere" aria-labelledby="titrePriere" hidden>
+    <h2 id="titrePriere">La prière</h2>
+    <blockquote id="texte-priere"></blockquote>
+  </section>
+
   <footer class="pied" style="width:100%;margin-top:auto">
     <nav id="menuSimple" aria-label="Menu simple"></nav>
     Harmonia · campagne de Fabian
@@ -109,6 +120,16 @@ a.ligne:hover .case, a.ligne:focus-visible .case { color: #fff3d6; }
 </main>
 
 <script src="donnees.js"></script>
+<script>
+// La prière du début de séance (texte dans donnees.js)
+(() => {
+  const P = (window.HARMONIA || {}).priere || [];
+  if (!P.length) return;
+  const q = document.getElementById('texte-priere');
+  P.forEach(t => { const p = document.createElement('p'); p.textContent = t; q.appendChild(p); });
+  document.getElementById('priere').hidden = false;
+})();
+</script>
 <script src="commun.js" defer></script>
 <script>
 (() => {

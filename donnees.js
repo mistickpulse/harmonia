@@ -5,6 +5,13 @@ window.HARMONIA = {
   dateEnJeu: '18/02/876',
   saison: 'Crépuscule Froid',
 
+  // La prière dite au début de chaque séance, affichée sur l'accueil (même texte que dans les Sept Sceaux, harmonia-jeux)
+  priere: [
+    'Le vent souffle à travers les vallées et les cités, portant avec lui des fragments d’un chant oublié. Il ne s’impose pas, il se cache, se laisse deviner… Mais il attend. Un signe, un pas en avant, une volonté qui brise le silence. Écoutez bien, car c’est à vous de réveiller l’écho endormi.',
+    'Ce n’est pas une mélodie figée, ni un simple vestige du passé. C’est un murmure vivant, un fil ténu entre hier et demain. Chaque pierre, chaque feuille frissonne sous ses fréquences, effleurée par la mémoire d’un monde qui refuse de s’éteindre.',
+    'Une question murmurée à l’ombre des étoiles. Et peut-être que la réponse apparaîtra.'
+  ],
+
   // Prochaine séance : debut = date et heure exactes (heure de Paris) pour le compte à rebours
   // Lien du formulaire Google (vide = le bouton « Prendre des notes » reste caché). Sert aussi de secours si le carnet du scribe ne marche pas.
   formulaireNotes: 'https://forms.gle/nHYskgtPsZEtWc5q9',

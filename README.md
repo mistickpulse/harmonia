@@ -2,13 +2,13 @@
 
 Site public des joueurs : uniquement ce que les joueurs savent. Aucun secret de MJ ici.
 
-- `index.html` : l'accueil, le **tableau des départs** de la gare des Contreforts (chaque ligne est une rubrique).
+- `index.html` : l'accueil, le **tableau des départs** de la gare des Contreforts (chaque ligne est une rubrique), et **la prière** du début de séance (texte dans `priere` de `donnees.js`, bouton « La prière » pour y aller).
 - `histoire.html` : **L'histoire jusqu'ici**, le résumé de la saison 1.
 - `prochaine.html` : **Prochain départ**, le billet de train et le compte à rebours (`prochaineSeance` dans `donnees.js`).
 - `fil.html` : **Fil d’Ariane**, la feuille de route (`fil` dans `donnees.js`, version publique validée).
 - `calendrier.html` : **Calendrier**, l’horaire de la semaine en jeu (`semaine` dans `donnees.js`, dates écrites à la main).
 - `seance.html` : **Dernière séance**. Lit **en direct** le tableur du formulaire (la base de données des notes, `formulaire.lecture` dans `donnees.js`) avec `notes.js`, regroupe les notes par séance, les range par rubrique ; ajoute le récap validé de `seances.js` s’il existe ; coche « Fiches du monde créées » d’après `traitees.js` (horodatages des notes déjà rangées dans Le monde).
-- `monde.html` + `monde.js` : **Le monde**, les fiches (personnages, lieux, objets, factions, questions) tirées des notes des joueurs, avec recherche ; chaque fait indique sa source.
+- `monde.html` + `monde.js` : **Le monde**, les fiches (personnages, lieux, objets, factions, questions) tirées des notes des joueurs, avec recherche ; chaque fait indique sa source ; les personnages se choisissent dans l'**arbre des lieux de rencontre** (`groupesPersonnages` et `lieu`).
 - `scribe.html` : **Carnet du scribe**, envoie les notes directement au formulaire Google (identifiants dans `formulaire` de `donnees.js`), brouillon gardé dans le navigateur, lien de secours vers le formulaire.
 - `terminus/` : **la vidéo de lancement** de la saison 2 (bouton sur l’accueil). **Copie** de `Notes/Harmonia/Harmonia/PROPS/Terminus/` : toute correction se fait dans les deux. Crédits des sons dans `terminus/sons/credits.js` (bouton « Crédits » de la vidéo).
 - `commun.js` : le menu simple du pied de page, commun à toutes les pages.

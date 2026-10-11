@@ -29,6 +29,21 @@
 .fiche li { margin: .25rem 0; }
 .fiche .source { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: #7a5a22; margin-left: .3rem; white-space: nowrap; }
 .fiche .rien { font-family: var(--f-ui); font-size: .85rem; color: #7a6a52; }
+.corps.avec-arbre { display: grid; grid-template-columns: 15.5rem 1fr; gap: 1.2rem; align-items: start; margin-top: 1rem; }
+.corps.avec-arbre .fiches { margin-top: 0; }
+@media (max-width: 760px) { .corps.avec-arbre { grid-template-columns: 1fr; } }
+.arbre { position: sticky; top: 1rem; font-family: var(--f-ui); background: #1a1410; border: 1px solid var(--laiton-sombre); border-radius: 4px; padding: .5rem .4rem; }
+.arbre[hidden] { display: none; }
+.arbre summary { cursor: pointer; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--laiton); padding: .3rem .5rem; }
+.arbre ul { list-style: none; margin: 0; padding: 0; }
+.arbre ul ul { margin-left: .75rem; padding-left: .5rem; border-left: 1px solid rgba(214,164,74,.25); }
+.arbre button { display: flex; width: 100%; justify-content: space-between; gap: .6rem; text-align: left; font: inherit; font-size: .9rem; color: var(--parchemin); background: none; border: 0; border-radius: 3px; padding: .3rem .5rem; cursor: pointer; }
+.arbre button:hover { background: rgba(214,164,74,.12); }
+.arbre button.branche { font-weight: 700; }
+.arbre button[aria-current="true"] { background: var(--laiton); color: var(--nuit); }
+.arbre button .nb { opacity: .75; font-variant-numeric: tabular-nums; }
+.fiches h3.groupe { grid-column: 1 / -1; margin: .8rem 0 -.3rem; font-family: var(--f-ui); font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; color: var(--laiton); border-bottom: 1px solid rgba(214,164,74,.35); padding-bottom: .3rem; }
+.fiches h3.groupe:first-child { margin-top: 0; }
 .vide { margin-top: 1.4rem; color: var(--cendre); font-style: italic; }
 .note-source { margin-top: 2rem; font-family: var(--f-ui); font-size: .85rem; color: var(--cendre); }
 </style>
@@ -48,7 +63,10 @@
     <div class="onglets" role="tablist" id="onglets" aria-label="Catégories"></div>
     <label class="recherche"><span class="lisible">Chercher une fiche</span><input type="search" id="recherche" placeholder="Chercher…" autocomplete="off"></label>
   </div>
-  <div class="fiches" id="fiches" role="tabpanel"></div>
+  <div class="corps" id="corps">
+    <details class="arbre" id="arbre" open hidden><summary>Lieux de rencontre · <span id="arbreChoix">Tous les lieux</span></summary><ul id="arbreRacine"></ul></details>
+    <div class="fiches" id="fiches" role="tabpanel"></div>
+  </div>
   <p class="vide" id="vide" hidden>Aucune fiche ne correspond.</p>
 
   <p class="note-source">Chaque fait indique d’où il vient : <b>Saison 1</b> pour ce qui s’est passé avant Gravathor, ou le numéro de la séance où il a été noté.</p>
@@ -68,7 +86,10 @@
   const CATEGORIES = [['personnages', 'Personnages'], ['lieux', 'Lieux'], ['objets', 'Objets'], ['factions', 'Factions'], ['questions', 'Questions en suspens']];
   const sourceLisible = s => s === 'S1' ? 'Saison 1' : 'Séance ' + s.replace(/^S2-0?/, '');
   const sansAccents = t => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-  let courante = CATEGORIES[0][0];
+  let courante = CATEGORIES[0][0], selection = '';
+  const FEUILLES = M.groupesPersonnages || [], SEP = ' › ';
+  const arbre = document.getElementById('arbre'), corps = document.getElementById('corps');
+  const dans = (lieu, chemin) => !chemin || lieu === chemin || (lieu || '').startsWith(chemin + SEP);
   const onglets = document.getElementById('onglets'), fiches = document.getElementById('fiches'), recherche = document.getElementById('recherche');
 
   CATEGORIES.forEach(([cle, nom]) => {
@@ -78,6 +99,50 @@
     onglets.appendChild(b);
   });
 
+  // Personnages : l'arbre des lieux. Chaque nœud affiche son nombre de fiches ; cliquer une branche affiche toutes ses feuilles.
+  const racine = { nom: 'Tous les lieux', chemin: '', enfants: [] };
+  FEUILLES.forEach(feuille => {
+    let n = racine;
+    feuille.split(SEP).forEach((nom, i, t) => {
+      const chemin = t.slice(0, i + 1).join(SEP);
+      let e = n.enfants.find(x => x.chemin === chemin);
+      if (!e) { e = { nom, chemin, enfants: [] }; n.enfants.push(e); }
+      n = e;
+    });
+  });
+  const boutons = [], petitEcran = matchMedia('(max-width: 760px)');
+  (function dessiner(n, ul) {
+    const li = document.createElement('li'), b = document.createElement('button');
+    b.type = 'button'; b.dataset.chemin = n.chemin; if (n.enfants.length) b.className = 'branche';
+    const nb = M.personnages.filter(p => dans(p.lieu, n.chemin)).length;
+    b.innerHTML = '<span></span><span class="nb"></span>'; b.firstChild.textContent = n.nom; b.lastChild.textContent = nb;
+    b.addEventListener('click', () => {
+      selection = n.chemin; document.getElementById('arbreChoix').textContent = n.nom;
+      if (petitEcran.matches) arbre.open = false; // sur téléphone, on replie l'arbre pour voir les fiches
+      afficher();
+    });
+    boutons.push(b); li.appendChild(b);
+    if (n.enfants.length) { const sous = document.createElement('ul'); n.enfants.forEach(e => dessiner(e, sous)); li.appendChild(sous); }
+    ul.appendChild(li);
+  })(racine, document.getElementById('arbreRacine'));
+  if (petitEcran.matches) arbre.open = false;
+
+  function carte(f) {
+    const a = document.createElement('article'); a.className = 'fiche';
+    const h = document.createElement('h2'); h.textContent = f.nom; a.appendChild(h);
+    if (f.resume) { const p = document.createElement('p'); p.className = 'resume'; p.textContent = f.resume; a.appendChild(p); }
+    if (f.faits.length) {
+      const ul = document.createElement('ul');
+      f.faits.forEach(([texte, src]) => {
+        const li = document.createElement('li'); li.textContent = texte;
+        const s = document.createElement('span'); s.className = 'source'; s.textContent = sourceLisible(src); li.appendChild(s);
+        ul.appendChild(li);
+      });
+      a.appendChild(ul);
+    } else { const p = document.createElement('p'); p.className = 'rien'; p.textContent = 'Pas encore de réponse.'; a.appendChild(p); }
+    return a;
+  }
+
   function afficher() {
     onglets.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.cle === courante)));
     const q = sansAccents(recherche.value.trim());
@@ -85,21 +150,27 @@
     const liste = q ? CATEGORIES.flatMap(([c]) => M[c] || []) : (M[courante] || []);
     const trouvees = liste.filter(f => !q || sansAccents([f.nom, f.resume, ...f.faits.map(x => x[0])].join(' ')).includes(q));
     fiches.innerHTML = '';
-    trouvees.forEach(f => {
-      const a = document.createElement('article'); a.className = 'fiche';
-      const h = document.createElement('h2'); h.textContent = f.nom; a.appendChild(h);
-      if (f.resume) { const p = document.createElement('p'); p.className = 'resume'; p.textContent = f.resume; a.appendChild(p); }
-      if (f.faits.length) {
-        const ul = document.createElement('ul');
-        f.faits.forEach(([texte, src]) => {
-          const li = document.createElement('li'); li.textContent = texte;
-          const s = document.createElement('span'); s.className = 'source'; s.textContent = sourceLisible(src); li.appendChild(s);
-          ul.appendChild(li);
-        });
-        a.appendChild(ul);
-      } else { const p = document.createElement('p'); p.className = 'rien'; p.textContent = 'Pas encore de réponse.'; a.appendChild(p); }
-      fiches.appendChild(a);
-    });
+    const parLieu = courante === 'personnages' && !q;
+    arbre.hidden = !parLieu; corps.classList.toggle('avec-arbre', parLieu);
+    boutons.forEach(b => b.setAttribute('aria-current', String(b.dataset.chemin === selection)));
+    if (parLieu) {
+      // une feuille = un titre (son chemin sous la sélection), puis ses fiches
+      FEUILLES.filter(f => dans(f, selection)).forEach(feuille => {
+        const dedans = trouvees.filter(f => f.lieu === feuille);
+        if (!dedans.length) return;
+        if (feuille !== selection) {
+          const t = document.createElement('h3'); t.className = 'groupe';
+          t.textContent = selection ? feuille.slice(selection.length + SEP.length) : feuille;
+          fiches.appendChild(t);
+        }
+        dedans.forEach(f => fiches.appendChild(carte(f)));
+      });
+      const orphelins = trouvees.filter(f => !FEUILLES.includes(f.lieu));
+      if (!selection && orphelins.length) {
+        const t = document.createElement('h3'); t.className = 'groupe'; t.textContent = 'Ailleurs'; fiches.appendChild(t);
+        orphelins.forEach(f => fiches.appendChild(carte(f)));
+      }
+    } else trouvees.forEach(f => fiches.appendChild(carte(f)));
     document.getElementById('vide').hidden = trouvees.length > 0;
   }
   recherche.addEventListener('input', afficher);

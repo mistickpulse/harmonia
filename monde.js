@@ -1,113 +1,130 @@
 /* Le monde : les fiches tirées de ce que les joueurs savent (notes des joueurs, « L'histoire jusqu'ici », fil d'Ariane).
    Chaque fiche : nom, resume (une ligne), faits : [texte, source] (source = 'S1' pour la saison 1, ou l'id d'une séance, ex. 'S2-01').
+   Personnages : lieu = où le groupe les a rencontrés, sous forme de chemin dans l'arbre (« Gravathor › Les Hautes Portes › … ») ;
+   ce chemin doit être une des feuilles de groupesPersonnages.
    Rien de ce que seul le MJ sait. */
 window.HARMONIA_MONDE = {
+  // L'arbre des lieux, dans l'ordre d'affichage : une feuille par ligne, les niveaux séparés par « › ».
+  groupesPersonnages: [
+    'Le groupe',
+    'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués',
+    'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes',
+    'Gravathor › Les Hautes Portes › La Grande Porte › Les Douanes',
+    'Gravathor › La Cité Intérieure',
+    'Gravathor › Pas encore rencontrés',
+    'Le Train Frelon › L’équipage et la gare',
+    'Le Train Frelon › La Branche Obsidienne',
+    'Valperce',
+    'Le Refuge Déphasé',
+    'Le désert',
+    'Visions du futur'
+  ],
   personnages: [
-    { nom: 'Koma', resume: 'Compagnon du groupe.', faits: [
+    { nom: 'Koma', lieu: 'Le groupe', resume: 'Compagnon du groupe.', faits: [
       ['Depuis le passage chez l’alchimiste, il n’a plus jamais marché droit.', 'S1'],
       ['Il a perdu sa pièce porte-bonheur dans le Train Frelon. Son symbole est celui de sa famille, au clan des Dragons.', 'S1'],
       ['Le groupe a promis de l’aider à retrouver sa famille, dans le 5e Royaume.', 'S1'],
       ['Dans une vision du futur, il porte des écailles vert émeraude.', 'S1']
     ] },
-    { nom: 'La Fée BD', resume: 'Ancienne compagne du groupe.', faits: [
+    { nom: 'La Fée BD', lieu: 'Le groupe', resume: 'Ancienne compagne du groupe.', faits: [
       ['Elle est morte dans l’artefact du Train Frelon.', 'S1'],
       ['Elle connaissait une alliée naine, Mina Frappeforte.', 'S1']
     ] },
-    { nom: 'Sorra', resume: 'Contact à la guilde des marchands de la capitale naine.', faits: [
+    { nom: 'Sorra', lieu: 'Gravathor › La Cité Intérieure', resume: 'Contact à la guilde des marchands de la capitale naine.', faits: [
       ['C’est à Sorra qu’il faut livrer le Coffre de Mnémarèse.', 'S1'],
       ['La guilde des marchands a son siège en Cité Intérieure.', 'S2-01']
     ] },
-    { nom: 'Lord Xavier Valcaris', resume: 'Hôte d’un dîner décisif.', faits: [
+    { nom: 'Lord Xavier Valcaris', lieu: 'Valperce', resume: 'Hôte d’un dîner décisif.', faits: [
       ['Lors de son banquet, des bagues sont offertes sur un plateau : elles mordent le doigt et ne s’enlèvent plus.', 'S1']
     ] },
-    { nom: 'Erindis Solastre', resume: 'La vraie coupable de Valperce.', faits: [
+    { nom: 'Erindis Solastre', lieu: 'Valperce', resume: 'La vraie coupable de Valperce.', faits: [
       ['Démasquée, ses aveux ont lavé le groupe de toute accusation.', 'S1']
     ] },
-    { nom: 'Aelys Vhorian', resume: 'Le père de la technomagie.', faits: [
+    { nom: 'Aelys Vhorian', lieu: 'Le Refuge Déphasé', resume: 'Le père de la technomagie.', faits: [
       ['Il parle au groupe à travers le temps, depuis le Refuge Déphasé.', 'S1'],
       ['Il sut capturer le Chant des Cieux et l’enfermer dans un cristal, au cœur de la Citadelle de Braem-Valor.', 'S1']
     ] },
-    { nom: '8run0', resume: 'Le Conservateur du Silence.', faits: [
+    { nom: '8run0', lieu: 'Le Refuge Déphasé', resume: 'Le Conservateur du Silence.', faits: [
       ['Kagé lui a confié son bras tranché.', 'S1']
     ] },
-    { nom: 'Alix Gontran', resume: 'L’Éminence de l’Ombre.', faits: [
+    { nom: 'Alix Gontran', lieu: 'Visions du futur', resume: 'L’Éminence de l’Ombre.', faits: [
       ['Son nom est apparu dans une vision du futur.', 'S1'],
       ['Kagé reconnaît son odeur.', 'S1']
     ] },
-    { nom: 'Zeyrion, le Premier Écho', resume: 'Une figure d’une vision du futur.', faits: [
+    { nom: 'Zeyrion, le Premier Écho', lieu: 'Visions du futur', resume: 'Une figure d’une vision du futur.', faits: [
       ['Dans cette vision, il tombe sous les coups du groupe.', 'S1']
     ] },
-    { nom: 'Edgard', resume: 'Ancien conseiller des Moussym.', faits: [
+    { nom: 'Edgard', lieu: 'Le désert', resume: 'Ancien conseiller des Moussym.', faits: [
       ['Il a trahi les Moussym en allumant toutes les urnes. Varynor l’a abattu.', 'S1']
     ] },
-    { nom: 'Briké, le commandant du Train Frelon', resume: 'Un nain, membre des Veilleurs.', faits: [
+    { nom: 'Briké, le commandant du Train Frelon', lieu: 'Le Train Frelon › L’équipage et la gare', resume: 'Un nain, membre des Veilleurs.', faits: [
       ['Il a confié au groupe une alarme, au cas où la cargaison serait attaquée.', 'S1'],
       ['À l’arrivée, il sait qu’il devra répondre de l’échec devant le Cercle : « Je crois que c’est la merde. »', 'S2-01'],
       ['L’officier d’escorte l’a sermonné devant tout le quai, puis lui a ordonné de mener le groupe jusqu’à la cité.', 'S2-01']
     ] },
-    { nom: 'L’officier d’escorte', resume: 'Commande les soldats venus chercher l’artefact du train.', faits: [
+    { nom: 'L’officier d’escorte', lieu: 'Le Train Frelon › L’équipage et la gare', resume: 'Commande les soldats venus chercher l’artefact du train.', faits: [
       ['Il connaît Briké. Furieux devant le wagon vide, il a bouclé le quai et interrogé chaque passager.', 'S2-01']
     ] },
-    { nom: 'Le greffier à la broche', resume: 'Il prenait des notes derrière l’officier.', faits: [
+    { nom: 'Le greffier à la broche', lieu: 'Le Train Frelon › L’équipage et la gare', resume: 'Il prenait des notes derrière l’officier.', faits: [
       ['Une broche de bronze en forme de clé de voûte. Ni bague ni tatouage.', 'S2-01'],
       ['Après les témoignages, il a déchiré sa feuille.', 'S2-01']
     ] },
-    { nom: 'Brunhilde Pèsor', resume: 'Cheffe des Douanes.', faits: [
+    { nom: 'Brunhilde Pèsor', lieu: 'Gravathor › Les Hautes Portes › La Grande Porte › Les Douanes', resume: 'Cheffe des Douanes.', faits: [
       ['Ses hommes ont été attaqués. Elle fait circuler les avis de recherche de la Branche Obsidienne.', 'S2-01']
     ] },
-    { nom: 'Ansgar Pèsefort', resume: 'Douanier, chargé des pesées lourdes.', faits: [] },
-    { nom: 'Grolf « Deux-Dos » Rochemousse', resume: 'Portefaix des Douanes, 3 écus l’heure.', faits: [
+    { nom: 'Ansgar Pèsefort', lieu: 'Gravathor › Les Hautes Portes › La Grande Porte › Les Douanes', resume: 'Douanier, chargé des pesées lourdes.', faits: [] },
+    { nom: 'Grolf « Deux-Dos » Rochemousse', lieu: 'Gravathor › Les Hautes Portes › La Grande Porte › Les Douanes', resume: 'Portefaix des Douanes, 3 écus l’heure.', faits: [
       ['Il a perdu un bras de fer contre Varynor (20 écus en jeu) et chambré Anoer.', 'S2-01']
     ] },
-    { nom: 'Ilvar Cendremain', resume: 'L’allumeur de lanternes de la cité.', faits: [
+    { nom: 'Ilvar Cendremain', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'L’allumeur de lanternes de la cité.', faits: [
       ['Grand et élancé pour un nain. En est-il vraiment un ?', 'S2-01'],
       ['Il a conseillé l’auberge pour dormir.', 'S2-01']
     ] },
-    { nom: 'Olaf le Crieur', resume: 'Crieur du camp des bloqués.', faits: [['Il annonce chaque jour que la Porte rouvrira demain. Personne n’y croit.', 'S2-01']] },
-    { nom: 'Le Plaignant', resume: 'Meneur du camp des bloqués.', faits: [
+    { nom: 'Olaf le Crieur', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Crieur du camp des bloqués.', faits: [['Il annonce chaque jour que la Porte rouvrira demain. Personne n’y croit.', 'S2-01']] },
+    { nom: 'Le Plaignant', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Meneur du camp des bloqués.', faits: [
       ['Il appelle à la révolte : fermer une cité si bien défendue serait une erreur.', 'S2-01'],
       ['Selon lui, chaque soir, des monstres tentent de passer les murailles, sans succès.', 'S2-01']
     ] },
-    { nom: 'Joren Vasque', resume: 'Bloqué au camp, sa femme et ses deux enfants restés dehors.', faits: [
+    { nom: 'Joren Vasque', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Bloqué au camp, sa femme et ses deux enfants restés dehors.', faits: [
       ['Larian a promis de faire passer un message à sa famille, et de faire entrer sa femme dans la cité. Elle est habillée en rouge vif.', 'S2-01'],
       ['Il partage sa tente avec le groupe.', 'S2-01']
     ] },
-    { nom: 'Ysolde Marrin', resume: 'Couturière, humaine d’âge mûr.', faits: [
+    { nom: 'Ysolde Marrin', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Couturière, humaine d’âge mûr.', faits: [
       ['Effrayée, sa bourse est tout ce qui lui reste. Kagé lui a donné 10 PO (10 écus).', 'S2-01'],
       ['Elle doit coudre un pull rose pour Kagé.', 'S2-01']
     ] },
-    { nom: 'Dagny Troquebien', resume: 'Troqueuse naine : elle ne vend rien, elle échange.', faits: [
+    { nom: 'Dagny Troquebien', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Troqueuse naine : elle ne vend rien, elle échange.', faits: [
       ['Elle a cédé à Kagé une boussole et une gourde contre une statuette, et l’a envoyé servir de commis à l’auberge.', 'S2-01']
     ] },
-    { nom: 'Brim et Brom', resume: 'Jumeaux de sept ans, au camp des bloqués.', faits: [
+    { nom: 'Brim et Brom', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Jumeaux de sept ans, au camp des bloqués.', faits: [
       ['Leurs parents sont restés dehors. Leur tente leur a été donnée par Nariz Bavel.', 'S2-01'],
       ['Varynor a joué « à la herse » avec eux et leur a donné 10 écus.', 'S2-01']
     ] },
-    { nom: 'Fenna Grisemèche', resume: 'Humaine couverte de suie, les mains bandées.', faits: [] },
-    { nom: 'Mère Ysaure', resume: 'Soigneuse du camp des bloqués.', faits: [
+    { nom: 'Fenna Grisemèche', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Humaine couverte de suie, les mains bandées.', faits: [] },
+    { nom: 'Mère Ysaure', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Soigneuse du camp des bloqués.', faits: [
       ['Elle a appris à Varynor que l’Éphéméride de Sangrun sert à guérir de la sève noire.', 'S2-01']
     ] },
-    { nom: 'Maëlle Racineuse', resume: 'Herboriste, vieille humaine voûtée qui regarde les langues.', faits: [
+    { nom: 'Maëlle Racineuse', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Herboriste, vieille humaine voûtée qui regarde les langues.', faits: [
       ['Elle a offert un thé relaxant à Telissandre.', 'S2-01']
     ] },
-    { nom: 'Ottilie Grainfort', resume: 'Marchande de grain au Marché des Caravanes.', faits: [
+    { nom: 'Ottilie Grainfort', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Marchande de grain au Marché des Caravanes.', faits: [
       ['Elle soupçonne la guilde des marchands de garder d’importants stocks de grain.', 'S2-01'],
       ['Elle a demandé à Anoer et Telissandre de copier le registre des stocks de la Guilde.', 'S2-01']
     ] },
-    { nom: 'Kael', resume: 'Membre de la Branche Obsidienne.', faits: [
+    { nom: 'Kael', lieu: 'Le Train Frelon › La Branche Obsidienne', resume: 'Membre de la Branche Obsidienne.', faits: [
       ['Il s’est enfui avec l’orbe du Train Frelon, avec Mirel, Dregar et Syris.', 'S1'],
       ['Aux Douanes, son portrait est affiché : « voleur d’or et d’artefacts ». Le dessin est de Varynor.', 'S2-01']
     ] },
-    { nom: 'Mirel', resume: 'Membre de la Branche Obsidienne.', faits: [['Elle s’est enfuie avec l’orbe du Train Frelon.', 'S1']] },
-    { nom: 'Dregar', resume: 'Membre de la Branche Obsidienne.', faits: [['Il s’est enfui avec l’orbe du Train Frelon.', 'S1']] },
-    { nom: 'Syris', resume: 'Membre de la Branche Obsidienne.', faits: [['Il s’est enfui avec l’orbe du Train Frelon.', 'S1']] },
-    { nom: 'Nariz Bavel, « Météore »', resume: 'Contact du Cercle des Veilleurs dans le royaume des Nains.', faits: [
+    { nom: 'Mirel', lieu: 'Le Train Frelon › La Branche Obsidienne', resume: 'Membre de la Branche Obsidienne.', faits: [['Elle s’est enfuie avec l’orbe du Train Frelon.', 'S1']] },
+    { nom: 'Dregar', lieu: 'Le Train Frelon › La Branche Obsidienne', resume: 'Membre de la Branche Obsidienne.', faits: [['Il s’est enfui avec l’orbe du Train Frelon.', 'S1']] },
+    { nom: 'Syris', lieu: 'Le Train Frelon › La Branche Obsidienne', resume: 'Membre de la Branche Obsidienne.', faits: [['Il s’est enfui avec l’orbe du Train Frelon.', 'S1']] },
+    { nom: 'Nariz Bavel, « Météore »', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Contact du Cercle des Veilleurs dans le royaume des Nains.', faits: [
       ['Un nain transcendant puissant, tatoué jusqu’à l’épaule.', 'S1'],
       ['Au camp des bloqués, il passe pour un chef d’escorte de caravanes et rassure les réfugiés.', 'S2-01'],
       ['À 20h, il a pris Larian à part et lui a montré sa bague du Cercle : il est Météore. Il offre au groupe une tente et un lit à l’auberge.', 'S2-01']
     ] },
-    { nom: 'Mina Frappeforte', resume: 'Une alliée naine.', faits: [['La Fée BD la connaît.', 'S1']] },
-    { nom: 'Reduz', resume: 'La mère de Kamot, à Valperce.', faits: [['Varynor cherche un remède pour elle.', 'S1']] }
+    { nom: 'Mina Frappeforte', lieu: 'Gravathor › Pas encore rencontrés', resume: 'Une alliée naine.', faits: [['La Fée BD la connaît.', 'S1']] },
+    { nom: 'Reduz', lieu: 'Valperce', resume: 'La mère de Kamot, à Valperce.', faits: [['Varynor cherche un remède pour elle.', 'S1']] }
   ],
   lieux: [
     { nom: 'Gravathor', resume: 'La capitale du royaume des Nains, Karak-Durn.', faits: [
