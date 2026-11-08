@@ -9,9 +9,10 @@ window.HARMONIA_MONDE = {
     'Le groupe',
     'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués',
     'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes',
+    'Gravathor › Les Hautes Portes › Le Caravansérail › Les Entrepôts de la Guilde',
+    'Gravathor › Les Hautes Portes › Le Caravansérail › L’Auberge du Dernier Relais',
     'Gravathor › Les Hautes Portes › La Grande Porte › Les Douanes',
     'Gravathor › La Cité Intérieure',
-    'Gravathor › Pas encore rencontrés',
     'Le Train Frelon › L’équipage et la gare',
     'Le Train Frelon › La Branche Obsidienne',
     'Valperce',
@@ -25,6 +26,15 @@ window.HARMONIA_MONDE = {
       ['Il a perdu sa pièce porte-bonheur dans le Train Frelon. Son symbole est celui de sa famille, au clan des Dragons.', 'S1'],
       ['Le groupe a promis de l’aider à retrouver sa famille, dans le 5e Royaume.', 'S1'],
       ['Dans une vision du futur, il porte des écailles vert émeraude.', 'S1']
+    ] },
+    { nom: 'Larian Feuillelune', lieu: 'Le groupe', resume: 'Calligraphe runique, mort à Gravathor.', faits: [
+      ['Il a découvert, grâce à une rune de mémoire, que Mina Frappeforte vole le fourrage.', 'S2-02'],
+      ['Sa formation finie, il a rendu sa montre à gousset à son maître, Reilbas.', 'S2-02'],
+      ['Il a été tué le soir du 18/02 au camp des bloqués, une morsure de vampire au cou.', 'S2-02']
+    ] },
+    { nom: 'Reilbas', lieu: 'Le groupe', resume: 'Humain, le maître de Larian.', faits: [
+      ['Retrouvé à l’auberge. Il marche désormais avec le groupe.', 'S2-02'],
+      ['Météore lui a demandé que personne ne parle du vampire.', 'S2-02']
     ] },
     { nom: 'La Fée BD', lieu: 'Le groupe', resume: 'Ancienne compagne du groupe.', faits: [
       ['Elle est morte dans l’artefact du Train Frelon.', 'S1'],
@@ -87,7 +97,8 @@ window.HARMONIA_MONDE = {
     ] },
     { nom: 'Joren Vasque', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Bloqué au camp, sa femme et ses deux enfants restés dehors.', faits: [
       ['Larian a promis de faire passer un message à sa famille, et de faire entrer sa femme dans la cité. Elle est habillée en rouge vif.', 'S2-01'],
-      ['Il partage sa tente avec le groupe.', 'S2-01']
+      ['Il partage sa tente avec le groupe.', 'S2-01'],
+      ['La promesse venait de Larian, mort depuis.', 'S2-02']
     ] },
     { nom: 'Ysolde Marrin', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Couturière, humaine d’âge mûr.', faits: [
       ['Effrayée, sa bourse est tout ce qui lui reste. Kagé lui a donné 10 PO (10 écus).', 'S2-01'],
@@ -105,11 +116,13 @@ window.HARMONIA_MONDE = {
       ['Elle a appris à Varynor que l’Éphéméride de Sangrun sert à guérir de la sève noire.', 'S2-01']
     ] },
     { nom: 'Maëlle Racineuse', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Herboriste, vieille humaine voûtée qui regarde les langues.', faits: [
-      ['Elle a offert un thé relaxant à Telissandre.', 'S2-01']
+      ['Elle a offert un thé relaxant à Telissandre.', 'S2-01'],
+      ['Le sang de vampire dépérit en quelques heures, et les vampires sont chassés pour leur sang. Elle l’achète cher : Anoer lui a vendu une fiole pour 50 pièces d’or.', 'S2-02']
     ] },
     { nom: 'Ottilie Grainfort', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Marchande de grain au Marché des Caravanes.', faits: [
       ['Elle soupçonne la guilde des marchands de garder d’importants stocks de grain.', 'S2-01'],
-      ['Elle a demandé à Anoer et Telissandre de copier le registre des stocks de la Guilde.', 'S2-01']
+      ['Elle a demandé à Anoer et Telissandre de copier le registre des stocks de la Guilde.', 'S2-01'],
+      ['Elle a montré la copie de la page du grain au crieur, ce qui a déclenché une courte émeute.', 'S2-02']
     ] },
     { nom: 'Kael', lieu: 'Le Train Frelon › La Branche Obsidienne', resume: 'Membre de la Branche Obsidienne.', faits: [
       ['Il s’est enfui avec l’orbe du Train Frelon, avec Mirel, Dregar et Syris.', 'S1'],
@@ -121,30 +134,53 @@ window.HARMONIA_MONDE = {
     { nom: 'Nariz Bavel, « Météore »', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le camp des bloqués', resume: 'Contact du Cercle des Veilleurs dans le royaume des Nains.', faits: [
       ['Un nain transcendant puissant, tatoué jusqu’à l’épaule.', 'S1'],
       ['Au camp des bloqués, il passe pour un chef d’escorte de caravanes et rassure les réfugiés.', 'S2-01'],
-      ['À 20h, il a pris Larian à part et lui a montré sa bague du Cercle : il est Météore. Il offre au groupe une tente et un lit à l’auberge.', 'S2-01']
+      ['À 20h, il a pris Larian à part et lui a montré sa bague du Cercle : il est Météore. Il offre au groupe une tente et un lit à l’auberge.', 'S2-01'],
+      ['Sur les lieux de la mort de Larian, il a renvoyé le groupe et menacé Anoer de conséquences s’il désobéissait encore.', 'S2-02'],
+      ['Il a calmé l’émeute du camp, le matin du 19/02.', 'S2-02']
     ] },
-    { nom: 'Mina Frappeforte', lieu: 'Gravathor › Pas encore rencontrés', resume: 'Une alliée naine.', faits: [['La Fée BD la connaît.', 'S1']] },
+    { nom: 'Mina Frappeforte', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Les Entrepôts de la Guilde', resume: 'Naine musclée, les bras brûlés.', faits: [
+      ['La Fée BD la connaissait.', 'S1'],
+      ['Selon elle, des gens disparaissent environ toutes les deux semaines dans la cité.', 'S2-02'],
+      ['C’est elle qui vole le fourrage des entrepôts, et elle en porte à Gerd.', 'S2-02']
+    ] },
+    { nom: 'Ebbo Plombeclair', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Les Entrepôts de la Guilde', resume: 'Nain sec, au comptoir des entrepôts.', faits: [['Il a demandé au groupe d’enquêter sur le vol de foin.', 'S2-02']] },
+    { nom: 'Oddo Crinfauve', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Les Entrepôts de la Guilde', resume: 'Garçon d’écurie humain.', faits: [] },
+    { nom: 'Dric', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › L’Auberge du Dernier Relais', resume: 'Le commis de l’auberge.', faits: [['Attaqué avec Larian et Ravok au camp des bloqués. Il reste introuvable.', 'S2-02']] },
+    { nom: 'Tiko', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › L’Auberge du Dernier Relais', resume: 'Un gamin qui fait les courses.', faits: [['Kagé l’a envoyé porter les épluchures à Mina.', 'S2-02']] },
+    { nom: 'Balthus Teintefine', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Drapier, humain assez maigre.', faits: [['Il a vendu tout son tissu violet, et en a livré une partie à côté des chantiers.', 'S2-02']] },
+    { nom: 'Sifa Doréal', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Vendeuse d’épices, humaine au teint hâlé.', faits: [['Contre 10 pièces d’or : un marché noir existe en Cité Intérieure.', 'S2-02']] },
+    { nom: 'Gerd Chèvremont', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Éleveur.', faits: [['Il a expliqué à Anoer que son œuf est rare.', 'S2-02']] },
+    { nom: 'Oswin Mèchelongue', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Marchand de lampes et de bougies.', faits: [['Pour lui, les cris des monstres et l’arrivée des artefacts semblent concorder.', 'S2-02']] },
+    { nom: 'Frida Rapiéçure', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Naine à l’esprit vif, vend des vêtements.', faits: [['Elle ne vend aucun vêtement enchanté.', 'S2-02']] },
+    { nom: 'Korvin Nœudsec', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Nain, vend des cordes.', faits: [['Il a tenté d’arnaquer Anoer sur la corde de l’Automate.', 'S2-02']] },
+    { nom: 'La vieille au pendentif', lieu: 'Gravathor › Les Hautes Portes › Le Caravansérail › Le Marché des Caravanes', resume: 'Une grand-mère du marché.', faits: [['Elle a vendu un pendentif à Varynor contre 5 morceaux de pain.', 'S2-02']] },
     { nom: 'Reduz', lieu: 'Valperce', resume: 'La mère de Kamot, à Valperce.', faits: [['Varynor cherche un remède pour elle.', 'S1']] }
   ],
   lieux: [
     { nom: 'Gravathor', resume: 'La capitale du royaume des Nains, Karak-Durn.', faits: [
       ['Ses portes vont fermer pour une raison inconnue.', 'S1'],
       ['Une rumeur parle d’un vampire dans la capitale naine.', 'S1'],
+      ['La rumeur est vraie : un vampire a tué Larian au camp des bloqués.', 'S2-02'],
       ['Une cité taillée dans la montagne, hérissée de défenses technomagiques. On s’y sent tout petit.', 'S2-01'],
       ['Ses portes se sont fermées le 18/02, avancées au jour même à cause du vol de l’artefact du train.', 'S2-01'],
       ['Gravathor voue un culte à la montagne.', 'S2-01']
     ] },
     { nom: 'Les Douanes', resume: 'À la Grande Porte : cargaisons en attente, tables de pesée couvertes de paille.', faits: [
       ['Au fond, une porte couverte de runes technomagiques.', 'S2-01'],
-      ['Des gardes y ont été tués et de l’or volé. Les avis de recherche accusent la Branche Obsidienne.', 'S2-01']
+      ['Des gardes y ont été attaqués, mais l’attaque a échoué. Les avis de recherche accusent la Branche Obsidienne.', 'S2-02']
     ] },
     { nom: 'Le Caravansérail', resume: 'Un marché taillé dans la pierre, devenu refuge depuis la fermeture.', faits: [
       ['On y trouve une auberge.', 'S2-01']
     ] },
-    { nom: 'Le camp des bloqués', resume: 'Une ancienne place marchande où se sont réfugiés ceux que la fermeture a piégés.', faits: [] },
+    { nom: 'Le camp des bloqués', resume: 'Une ancienne place marchande où se sont réfugiés ceux que la fermeture a piégés.', faits: [
+      ['Larian y a été tué le 18/02. Le lendemain, la copie de la page du grain y a déclenché une courte émeute : trois civils blessés.', 'S2-02']
+    ] },
+    { nom: 'L’Auberge du Dernier Relais', resume: 'Au Caravansérail, pleine à craquer.', faits: [['Kagé et Larian y ont travaillé le soir du 18/02.', 'S2-02']] },
+    { nom: 'Les Bastions', resume: 'Les remparts de Gravathor.', faits: [['Le groupe y arrive le matin du 19/02.', 'S2-02']] },
     { nom: 'Le Marché des Caravanes', resume: 'Le marché du Caravansérail.', faits: [] },
     { nom: 'Les entrepôts de la Guilde', resume: 'Où la guilde des marchands garde ses stocks.', faits: [
-      ['Ottilie veut une copie du registre des stocks.', 'S2-01']
+      ['Ottilie veut une copie du registre des stocks.', 'S2-01'],
+      ['Une quinzaine de chariots de grain sont arrivés, dont 10 il y a 4 jours. L’entrepôt A en garde une dizaine.', 'S2-02']
     ] },
     { nom: 'Le Train Frelon', resume: 'Le train qui relie le Bastion de Fomane à Gravathor.', faits: [
       ['Attaqué par la Branche Obsidienne : bagarre générale au wagon-restaurant, l’orbe a été volé.', 'S1']
@@ -189,6 +225,11 @@ window.HARMONIA_MONDE = {
     { nom: 'L’Éphéméride de Sangrun', resume: 'Une plante rare et mystérieuse, nourrie des énergies magiques.', faits: [
       ['Elle sert à guérir de la sève noire. Il y a plusieurs façons de la faire pousser.', 'S2-01']
     ] },
+    { nom: 'Le pendentif de la vieille', resume: 'Acheté par Varynor.', faits: [['Contre 5 morceaux de pain, au Marché des Caravanes.', 'S2-02']] },
+    { nom: 'L’œuf d’Anoer', resume: 'Un œuf rare.', faits: [['Il éclot sous une certaine condition, et se lie à la première personne qu’il voit.', 'S2-02']] },
+    { nom: 'Les herbes émeraude', resume: 'Connues de Kagé.', faits: [['Plantées, elles peuvent faire pousser un Arbre à gemmes. Les graines sont fragiles.', 'S2-02']] },
+    { nom: 'La page du grain', resume: 'Copiée dans le registre de la Guilde.', faits: [['La copie a été remise à Ottilie, puis montrée au crieur du camp.', 'S2-02']] },
+    { nom: 'La montre à gousset', resume: 'Celle de Reilbas.', faits: [['Larian la lui a rendue à la fin de sa formation.', 'S2-02']] },
     { nom: 'La boussole et la gourde de Dagny', resume: 'Obtenues par Kagé contre une statuette.', faits: [] },
     { nom: 'Les avis de recherche', resume: 'Affichés aux Douanes.', faits: [
       ['Les quatre de la Branche Obsidienne, d’après les portraits de Varynor.', 'S2-01']
@@ -205,7 +246,8 @@ window.HARMONIA_MONDE = {
       ['Silhouettes en violet dans le Train Frelon.', 'S1']
     ] },
     { nom: 'La guilde des marchands', resume: 'Celle à qui le coffre doit être livré.', faits: [
-      ['Ottilie Grainfort l’accuse de retenir le grain pendant que les prix flambent.', 'S2-01']
+      ['Ottilie Grainfort l’accuse de retenir le grain pendant que les prix flambent.', 'S2-01'],
+      ['Son registre le confirme : l’entrepôt A garde une dizaine de chariots de grain.', 'S2-02']
     ] },
     { nom: 'Les Arches du Renouveau', resume: 'Un culte de Valperce.', faits: [['Tombé, son chef vaincu.', 'S1']] },
     { nom: 'Les Lueurs Vaines', resume: 'Ennemis vaincus au sud de Valperce.', faits: [['Pulvérisées dans leur caverne.', 'S1']] },
@@ -218,6 +260,9 @@ window.HARMONIA_MONDE = {
       ['La fermeture a été avancée au jour même à cause du vol de l’artefact du train.', 'S2-01']
     ] },
     { nom: 'Pourquoi le greffier a-t-il déchiré ses notes ?', resume: 'L’homme à la broche en clé de voûte.', faits: [] },
-    { nom: 'Comment la Branche a-t-elle pu frapper les Douanes ?', resume: 'L’attaque date d’il y a 12 heures, le train n’est arrivé que depuis une heure.', faits: [] }
+    { nom: 'Comment la Branche a-t-elle pu frapper les Douanes ?', resume: 'L’attaque date d’il y a 12 heures, le train n’est arrivé que depuis une heure.', faits: [['L’attaque a échoué.', 'S2-02']] },
+    { nom: 'Qui est le vampire de Gravathor ?', resume: 'Une forme humanoïde tombée de la muraille.', faits: [['Il a tué Larian. Météore veut qu’on n’en parle pas.', 'S2-02']] },
+    { nom: 'Où est Dric ?', resume: 'Le commis de l’auberge reste introuvable.', faits: [] },
+    { nom: 'Pourquoi des gens disparaissent-ils tous les quinze jours ?', resume: 'Selon Mina Frappeforte.', faits: [] }
   ]
 };

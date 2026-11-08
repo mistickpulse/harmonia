@@ -99,7 +99,7 @@ details.plus summary { cursor: pointer; font-family: var(--f-ui); font-weight: 7
   // « Spin-off » n’est pas une question du formulaire : la case s’ajoute au numéro de séance (« S2-02 · Spin-off »)
   const CLE = 'harmonia-scribe-brouillon';
   $('lienSecours').href = H.formulaireNotes;
-  F.auteurs.forEach(a => $('auteur').appendChild(new Option(a === 'Fee BD' ? 'La Fée BD' : a, a)));
+  F.auteurs.forEach(a => $('auteur').appendChild(new Option(({ 'Fee BD': 'La Fée BD', Larian: 'Reilbas' })[a] || a, a)));
 
   // Brouillon : gardé dans ce navigateur, pour ne rien perdre si la page se ferme
   const lire = () => { try { return JSON.parse(localStorage.getItem(CLE) || 'null'); } catch (e) { return null; } };

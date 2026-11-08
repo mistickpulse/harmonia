@@ -2,7 +2,7 @@
    Tout ce qui est ici est PUBLIC : uniquement ce que les joueurs savent. */
 window.HARMONIA = {
   // Date en jeu (format du monde : JJ/MM/876)
-  dateEnJeu: '18/02/876',
+  dateEnJeu: '19/02/876',
   saison: 'Crépuscule Froid',
 
   // La prière dite au début de chaque séance, affichée sur l'accueil (même texte que dans les Sept Sceaux, harmonia-jeux)
@@ -16,7 +16,7 @@ window.HARMONIA = {
   // Lien du formulaire Google (vide = le bouton « Prendre des notes » reste caché). Sert aussi de secours si le carnet du scribe ne marche pas.
   formulaireNotes: 'https://forms.gle/nHYskgtPsZEtWc5q9',
   // La séance en cours, préremplie dans le carnet du scribe (à avancer après chaque séance)
-  seanceEnCours: 'S2-02',
+  seanceEnCours: 'S2-03',
 
   /* Le carnet du scribe envoie ses notes directement au formulaire Google (sans l'afficher).
      Si les questions du formulaire changent, les identifiants « entry.… » changent aussi : les relire dans la page du formulaire.
@@ -29,10 +29,10 @@ window.HARMONIA = {
       seance: 'entry.448728290', auteur: 'entry.1271631058', recit: 'entry.456841996', personnages: 'entry.938933139',
       lieux: 'entry.529195451', quetes: 'entry.451837171', objets: 'entry.868465274', questions: 'entry.910113382'
     },
-    auteurs: ['Varynor', 'Anoer', 'Larian', 'Kagé', 'Telissandre', 'Serah'] // « Fee BD » existe encore dans le formulaire, mais la Fée BD ne joue plus
+    auteurs: ['Varynor', 'Anoer', 'Larian', 'Kagé', 'Telissandre', 'Serah'], // « Larian » s'affiche « Reilbas » dans le carnet, tant que le formulaire n'a pas de choix Reilbas ; « Fee BD » existe encore dans le formulaire, mais la Fée BD ne joue plus
   },
 
-  prochaineSeance: { debut: '2026-11-08T17:00:00+01:00', libelle: 'Dimanche 08/11', heure: '17h', quoi: 'Saison 2 · Séance 2' },
+  prochaineSeance: { debut: '2026-11-29T14:00:00+01:00', libelle: 'Dimanche 29/11', heure: '14h', quoi: 'Saison 2 · Séance 3' },
 
   /* Calendrier : l'horaire de la semaine en jeu (dates écrites à la main : le calendrier d'Harmonia n'est pas calculé).
      jours : les 7 jours affichés ; evenements : date ('JJ/MM'), heure facultative, titre, detail.
@@ -45,7 +45,10 @@ window.HARMONIA = {
       { date: '18/02', titre: 'Les portes de Gravathor se ferment', detail: 'Avancée au jour même à cause du vol de l’artefact. Le groupe entre quelques minutes avant.' },
       { date: '18/02', heure: '20h', titre: 'Météore se fait connaître', detail: 'Nariz Bavel, au camp des bloqués.' },
       { date: '18/02', heure: 'le soir', titre: 'Kagé, commis à l’auberge', detail: 'Le service promis à Dagny Troquebien.' },
-      { date: '19/02', heure: 'le matin', titre: 'Déposition à la Garnison', detail: 'Témoignage sur l’attaque du train. Obligatoire avant de pouvoir descendre en Cité Intérieure.' },
+      { date: '18/02', heure: 'la nuit', titre: 'Larian est tué', detail: 'Au camp des bloqués, par un vampire tombé de la muraille.' },
+      { date: '19/02', heure: 'le matin', titre: 'Courte émeute au camp', detail: 'La copie de la page du grain, montrée au crieur par Ottilie. Trois civils blessés.' },
+      { date: '19/02', titre: 'Le groupe arrive aux Bastions', detail: '' },
+      { date: '19/02', titre: 'Déposition à la Garnison', detail: 'À faire. Témoignage sur l’attaque du train. Obligatoire avant de pouvoir descendre en Cité Intérieure.' },
       { date: '19/02', titre: 'Le pull rose de Kagé', detail: 'Ysolde Marrin doit le lui remettre.' }
     ]
   },
@@ -59,18 +62,20 @@ window.HARMONIA = {
       ['Récupérer le Coffre de Mnémarèse', 'repris aux Lueurs Vaines, dans une caverne au sud de Valperce.', 'fait'],
       ['Prendre le train pour Gravathor', 'billets obtenus au Bastion de Fomane, pour avoir sauvé la foule du marché.', 'fait'],
       ['Entrer dans Gravathor avant la fermeture', 'passé quelques minutes avant que la Porte ne se referme.', 'fait'],
-      ['Faire sa déposition à la Garnison', 'demain : sans elle, impossible de descendre en Cité Intérieure.'],
+      ['Faire sa déposition à la Garnison', 'à faire : sans elle, impossible de descendre en Cité Intérieure.'],
       ['Livrer le Coffre de Mnémarèse', 'à Sorra, à la guilde des marchands, en Cité Intérieure. Varynor porte le coffre. La mission confiée par le Cercle des Veilleurs.']
     ] },
     { titre: 'Ce que le groupe a promis', points: [
       ['Retrouver le symbole de la famille de Koma', 'Varynor l’a dessiné : celui de sa famille, au clan des Dragons.', 'fait'],
       ['Aider Koma à retrouver sa famille', 'dans le 5e Royaume.'],
-      ['Faire passer un message à la famille de Joren Vasque, et faire entrer sa femme', 'promis par Larian. Sa femme et ses deux enfants sont restés dehors ; elle est habillée en rouge vif.'],
-      ['Servir de commis à l’auberge', 'Kagé, ce soir, pour Dagny Troquebien.'],
-      ['Copier le registre des stocks de la Guilde', 'Anoer et Telissandre, pour Ottilie Grainfort, aux entrepôts de la Guilde.']
+      ['Servir de commis à l’auberge', 'Kagé, le soir du 18/02.', 'fait'],
+      ['Copier le registre des stocks de la Guilde', 'la copie de la page du grain, remise à Ottilie. Elle a déclenché une courte émeute au camp.', 'fait'],
+      ['Trouver qui vole le foin', 'pour Ebbo Plombeclair. Larian a découvert que c’est Mina Frappeforte : la dénoncer, ou la couvrir ?'],
+      ['Faire passer un message à la famille de Joren Vasque, et faire entrer sa femme', 'promis par Larian, mort depuis. Sa femme et ses deux enfants sont restés dehors ; elle est habillée en rouge vif.'],
+      ['Le pull rose de Kagé', 'Ysolde Marrin doit le lui remettre.']
     ] },
     { titre: 'Quêtes personnelles', points: [
-      ['Varynor veut guérir de la sève noire', 'il lui faut du sang de vampire et de l’Éphéméride de Sangrun, une plante rare (Mère Ysaure).'],
+      ['Varynor veut guérir de la sève noire', 'il lui faut du sang de vampire, qui dépérit en quelques heures (Maëlle), et de l’Éphéméride de Sangrun (Mère Ysaure).'],
       ['Anoer cherche le vampire qui l’a transformé', ''],
       ['Varynor cherche un remède', 'pour Reduz, la mère de Kamot, à Valperce.'],
       ['Anoer a eu une vision', 'une Lyre du Chant des Cieux, dans un temple au sommet d’une montagne.'],
@@ -84,7 +89,7 @@ window.HARMONIA = {
     ] },
     { titre: 'Contacts dans le royaume des Nains', points: [
       ['Retrouver Météore', 'Nariz Bavel, retrouvé au camp des bloqués : le contact du Cercle des Veilleurs.', 'fait'],
-      ['Mina Frappeforte', 'une alliée naine que connaissait la Fée BD.']
+      ['Retrouver Mina Frappeforte', 'aux entrepôts de la Guilde. Une naine que connaissait la Fée BD.', 'fait']
     ] }
   ],
 
@@ -121,6 +126,13 @@ window.HARMONIA = {
        valeur = ce qu'on ajoute ('+1D20', '+2'…) ; pour = 'tous' ou une liste de personnages ; detail = facultatif.
      Seuls les bonus « pour : 'tous' » entrent dans le récapitulatif pour un nouveau personnage. */
   progression: [
+    { quand: 'S2-02', stat: 'Points d’avancement', valeur: '+3', pour: ['Serah', 'Varynor', 'Anoer', 'Kagé'], detail: 'Montée de niveau' },
+    { quand: 'S2-02', stat: 'PV max', valeur: '+15 + 1D10', pour: ['Serah', 'Varynor', 'Anoer', 'Kagé'], detail: 'Montée de niveau' },
+    { quand: 'S2-02', stat: 'Mana max', valeur: '+20 + 1D10', pour: ['Serah', 'Varynor', 'Anoer', 'Kagé'], detail: 'Montée de niveau' },
+    { quand: 'S2-02', stat: 'Dés de dégâts', valeur: '+2 faces', pour: ['Serah', 'Varynor', 'Anoer', 'Kagé'], detail: 'Montée de niveau : 1D6 devient 1D8' },
+    { quand: 'S2-02', stat: 'Transcendance MAX', valeur: '×2 (28)', pour: ['Serah'], detail: 'Récompense des Sept Sceaux' },
+    { quand: 'S2-02', stat: 'Transcendance MAX', valeur: '+10', pour: ['Kagé'], detail: 'Récompense des Sept Sceaux : a aidé Serah' },
+    { quand: 'S2-02', stat: 'Transcendance MAX', valeur: '+5', pour: ['Varynor'], detail: 'Récompense des Sept Sceaux : demi-bonus' }
   ],
 
   /* Financement : les outils qui servent à préparer le jeu, partagés à parts égales entre les participants.
@@ -142,7 +154,7 @@ window.HARMONIA = {
     participants: [
       { nom: 'Fabian', perso: 'Maître du jeu', prelevement: true, paye: [] }, // prélevé sur son compte : réglé à chaque période
       { nom: 'Nathan', perso: 'Varynor Mornelion', paye: ['2026-10'] },
-      { nom: 'Vincent', perso: 'Larian Feuillelune', paye: ['2026-10'] }, // complément versé le 11/10/2026 : période d'octobre réglée en entier
+      { nom: 'Vincent', perso: 'Reilbas', paye: ['2026-10'] }, // complément versé le 11/10/2026 : période d'octobre réglée en entier
       { nom: 'Jeremy', perso: 'Kagé', paye: ['2026-10'] },
       { nom: 'Lucas', perso: 'Anoer Maethyr', paye: [] },
       { nom: 'Kelly', perso: 'Telissandre', paye: ['2026-10'] }, // complément de 1,40 € versé : période d'octobre réglée en entier

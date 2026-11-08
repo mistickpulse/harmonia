@@ -22,5 +22,27 @@ window.HARMONIA_SEANCES = [
       'Kagé : servir de commis à l’auberge ce soir, pour Dagny Troquebien. Ysolde lui coud un pull rose.',
       'Anoer et Telissandre : copier le registre des stocks de la Guilde, pour Ottilie.'
     ]]
+  ] },
+  { id: 'S2-02', titre: 'Une morsure au camp', date: '08/11/2026', dateEnJeu: '18 → 19/02/876', recap: [
+    ['Le récit', [
+      'Le groupe fait le tour du Marché des Caravanes, puis passe aux entrepôts de la Guilde : il copie la page du grain et Larian découvre, par une rune de mémoire, que Mina Frappeforte vole le fourrage.',
+      'À l’auberge, Kagé passe en cuisine et Larian au service. Larian y retrouve son maître, Reilbas, et lui rend sa montre à gousset.',
+      'En portant un médicament à Dric au camp des bloqués, Larian, Ravok et Dric sont attaqués par une forme tombée de la muraille. Ravok revient prévenir le groupe. Larian est retrouvé mort, une morsure de vampire au cou, et Dric reste introuvable.',
+      'Météore renvoie le groupe, menace Anoer, revenu sur ses pas, et demande à Reilbas de garder le silence sur le vampire.',
+      'Au matin, Ottilie montre la copie au crieur : courte émeute, trois civils blessés que soigne Anoer. Météore calme le camp, et le groupe arrive aux Bastions.'
+    ]],
+    ['Ce qu’on a appris', [
+      'Un vampire est bien à Gravathor.',
+      'Le sang de vampire dépérit en quelques heures, et les vampires sont chassés pour leur sang (Maëlle).',
+      'Balthus a vendu tout son tissu violet et en a livré une partie à côté des chantiers.',
+      'Une quinzaine de chariots de grain sont arrivés, dont 10 il y a 4 jours ; l’entrepôt A en garde une dizaine.',
+      'Un marché noir existe en Cité Intérieure (Sifa). Des gens disparaissent environ toutes les deux semaines (Mina).',
+      'L’attaque des Douanes annoncée avait échoué.'
+    ]],
+    ['Ce qui reste à faire', [
+      'La déposition à la Garnison, puis livrer le coffre.',
+      'Mina : la dénoncer à Ebbo, ou la couvrir ?',
+      'La promesse de Larian à Joren Vasque : qui la reprend ?'
+    ]]
   ] }
 ];
